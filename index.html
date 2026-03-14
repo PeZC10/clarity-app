@@ -4,177 +4,469 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Clarity — Think better. Decide well.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f5f4f0;
-      --surface: #ffffff;
-      --surface2: #f0eff9;
-      --text: #1a1a18;
-      --text2: #5f5e5a;
-      --text3: #989793;
-      --border: rgba(0,0,0,0.10);
-      --border2: rgba(0,0,0,0.18);
-      --purple: #534AB7;
-      --purple-dark: #3C3489;
-      --purple-light: #EEEDFE;
-      --teal: #9FE1CB;
-      --radius: 12px;
-      --radius-sm: 8px;
+      --cream: #FAF8F4;
+      --cream2: #F3F0EA;
+      --cream3: #EAE6DC;
+      --ink: #1C1917;
+      --ink2: #57534E;
+      --ink3: #A8A29E;
+      --purple: #4338CA;
+      --purple2: #6366F1;
+      --purple-soft: #EEF2FF;
+      --teal: #0D9488;
+      --teal-soft: #CCFBF1;
+      --border: rgba(28,25,23,0.10);
+      --border2: rgba(28,25,23,0.18);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --serif: 'Lora', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
     }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #18181a;
-        --surface: #222224;
-        --surface2: #26215C;
-        --text: #f0efe9;
-        --text2: #b4b2a9;
-        --text3: #666460;
-        --border: rgba(255,255,255,0.09);
-        --border2: rgba(255,255,255,0.16);
-        --purple-light: #2a2660;
-      }
-    }
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: var(--sans);
+      background: var(--cream);
+      color: var(--ink);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── LANDING PAGE ─────────────────────────────── */
+    #landing {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 0 0 80px;
     }
 
-    nav {
+    .land-nav {
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      animation: fadeDown 0.6s ease both;
+    }
+
+    .land-logo {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.3px;
+    }
+
+    .land-logo em { color: var(--purple); font-style: italic; }
+
+    .land-badge {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--purple);
+      background: var(--purple-soft);
+      padding: 5px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+    }
+
+    .land-hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px 60px;
+    }
+
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink3);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(38px, 7vw, 72px);
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.15;
+      letter-spacing: -1px;
+      max-width: 700px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+
+    .hero-title em {
+      color: var(--purple);
+      font-style: italic;
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      color: var(--ink2);
+      line-height: 1.7;
+      max-width: 480px;
+      margin-bottom: 48px;
+      font-weight: 300;
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--ink);
+      color: var(--cream);
+      font-family: var(--sans);
+      font-size: 15px;
+      font-weight: 500;
+      padding: 16px 32px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      animation: fadeUp 0.7s 0.4s ease both;
+      letter-spacing: 0.2px;
+    }
+
+    .hero-cta:hover {
+      background: var(--purple);
+      transform: translateY(-2px);
+    }
+
+    .hero-cta .arrow {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      transition: transform 0.2s;
+    }
+
+    .hero-cta:hover .arrow { transform: translateX(3px); }
+
+    .hero-features {
+      display: flex;
+      gap: 32px;
+      margin-top: 64px;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp 0.7s 0.5s ease both;
+    }
+
+    .feat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--ink3);
+    }
+
+    .feat-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+
+    .land-footer {
+      padding: 20px 32px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--ink3);
+      border-top: 0.5px solid var(--border);
+      animation: fadeUp 0.7s 0.6s ease both;
+    }
+
+    /* ── APP ──────────────────────────────────────── */
+    #app {
+      display: none;
+      min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 80px;
+    }
+
+    #app.visible { display: flex; }
+
+    .app-nav {
       width: 100%;
-      padding: 16px 24px;
+      padding: 18px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 0.5px solid var(--border);
-      background: var(--surface);
+      background: var(--cream);
       position: sticky;
       top: 0;
       z-index: 10;
     }
 
-    .nav-logo { font-size: 18px; font-weight: 600; color: var(--purple); letter-spacing: -0.3px; }
-    .nav-tagline { font-size: 12px; color: var(--text3); }
-    .nav-badge { font-size: 11px; background: var(--purple-light); color: var(--purple); padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+    .app-logo {
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ink);
+    }
 
-    main { width: 100%; max-width: 620px; padding: 32px 20px 0; }
+    .app-logo em { color: var(--purple); font-style: italic; }
 
-    .progress-wrap { margin-bottom: 24px; }
-    .progress-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .progress-label { font-size: 12px; color: var(--text3); font-weight: 500; letter-spacing: 0.3px; }
-    .progress-bar { height: 3px; background: var(--border); border-radius: 2px; }
-    .progress-fill { height: 100%; background: var(--purple); border-radius: 2px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
-    .steps { display: flex; gap: 5px; margin-top: 8px; }
-    .step { flex: 1; height: 3px; border-radius: 2px; background: var(--border); transition: background 0.3s; }
-    .step.done { background: var(--teal); }
-    .step.active { background: var(--purple); }
+    .app-step {
+      font-size: 12px;
+      color: var(--ink3);
+      font-weight: 400;
+    }
 
-    .card {
-      background: var(--surface);
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
+    .app-back {
+      font-size: 13px;
+      color: var(--ink3);
+      cursor: pointer;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 0.5px solid var(--border2);
+      background: transparent;
+      font-family: var(--sans);
+      transition: all 0.15s;
+    }
+
+    .app-back:hover { background: var(--cream2); color: var(--ink); }
+
+    /* PROGRESS */
+    .progress-wrap {
+      width: 100%;
+      max-width: 580px;
+      padding: 28px 24px 0;
+    }
+
+    .progress-bar {
+      height: 2px;
+      background: var(--cream3);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--purple);
+      border-radius: 2px;
+      transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+
+    .ps {
+      font-size: 11px;
+      color: var(--ink3);
+      transition: color 0.3s;
+    }
+
+    .ps.active { color: var(--purple); font-weight: 500; }
+    .ps.done { color: var(--teal); }
+
+    /* MAIN CONTENT */
+    main {
+      width: 100%;
+      max-width: 580px;
+      padding: 36px 24px 0;
+    }
+
+    .phase { animation: fadeUp 0.4s ease both; }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--purple);
+      letter-spacing: 1px;
+      text-transform: uppercase;
       margin-bottom: 12px;
-      animation: fadeUp 0.25s ease;
     }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+    .phase-title {
+      font-family: var(--serif);
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.3;
+      margin-bottom: 8px;
     }
 
-    .card-eyebrow { font-size: 11px; font-weight: 600; color: var(--purple); letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 8px; }
-    .card-title { font-size: 18px; font-weight: 500; color: var(--text); margin-bottom: 6px; line-height: 1.35; }
-    .card-body { font-size: 14px; color: var(--text2); line-height: 1.65; }
+    .phase-sub {
+      font-size: 14px;
+      color: var(--ink2);
+      line-height: 1.65;
+      margin-bottom: 28px;
+      font-weight: 300;
+    }
 
-    .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px; }
+    /* CATEGORY GRID */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 28px;
+    }
 
     .cat-btn {
-      padding: 12px 14px;
+      padding: 16px;
       border-radius: var(--radius-sm);
       border: 0.5px solid var(--border);
-      background: var(--bg);
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text2);
+      background: white;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--ink2);
       cursor: pointer;
       text-align: left;
-      font-family: inherit;
-      transition: all 0.15s;
+      font-family: var(--sans);
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      line-height: 1.3;
     }
 
-    .cat-btn .icon { font-size: 16px; width: 20px; }
-    .cat-btn:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-light); }
-    .cat-btn.selected { border-color: var(--purple); color: var(--purple); background: var(--purple-light); border-width: 1.5px; }
+    .cat-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--cream2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
 
+    .cat-btn:hover { border-color: var(--purple); color: var(--ink); transform: translateY(-1px); }
+    .cat-btn:hover .cat-icon { background: var(--purple-soft); }
+    .cat-btn.selected { border-color: var(--purple); border-width: 1.5px; color: var(--ink); background: white; }
+    .cat-btn.selected .cat-icon { background: var(--purple-soft); }
+
+    /* TEXTAREA */
     textarea {
       width: 100%;
       border: 0.5px solid var(--border2);
       border-radius: var(--radius-sm);
-      padding: 14px;
-      font-size: 14px;
-      font-family: inherit;
-      color: var(--text);
-      background: var(--surface);
+      padding: 16px 18px;
+      font-size: 15px;
+      font-family: var(--sans);
+      font-weight: 300;
+      color: var(--ink);
+      background: white;
       resize: none;
-      min-height: 110px;
-      line-height: 1.65;
-      margin-top: 14px;
-      transition: border-color 0.15s;
+      min-height: 130px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
-    textarea:focus { outline: none; border-color: var(--purple); border-width: 1px; }
-    textarea::placeholder { color: var(--text3); }
+    textarea:focus {
+      outline: none;
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(67,56,202,0.08);
+    }
 
-    .btn-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+    textarea::placeholder { color: var(--ink3); font-style: italic; }
 
-    .btn {
+    /* BUTTONS */
+    .btn-row { display: flex; gap: 10px; align-items: center; }
+
+    .btn-primary {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 11px 20px;
-      border-radius: var(--radius-sm);
-      border: 0.5px solid var(--border2);
-      background: transparent;
+      gap: 8px;
+      background: var(--ink);
+      color: var(--cream);
+      font-family: var(--sans);
       font-size: 14px;
       font-weight: 500;
-      color: var(--text);
+      padding: 13px 24px;
+      border-radius: 50px;
+      border: none;
       cursor: pointer;
-      font-family: inherit;
+      transition: all 0.2s ease;
+      letter-spacing: 0.2px;
+    }
+
+    .btn-primary:hover { background: var(--purple); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--sans);
+      font-size: 14px;
+      color: var(--ink3);
+      background: transparent;
+      border: 0.5px solid var(--border2);
+      padding: 12px 20px;
+      border-radius: 50px;
+      cursor: pointer;
       transition: all 0.15s;
     }
 
-    .btn:hover { background: var(--surface2); }
-    .btn-primary { background: var(--purple); color: #fff; border-color: var(--purple); }
-    .btn-primary:hover { background: var(--purple-dark); border-color: var(--purple-dark); }
-    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+    .btn-secondary:hover { color: var(--ink); background: var(--cream2); }
 
-    .ai-box {
-      background: var(--surface2);
-      border-radius: var(--radius-sm);
-      padding: 16px;
-      margin-top: 14px;
-      font-size: 14px;
-      color: var(--text);
-      line-height: 1.7;
-      white-space: pre-wrap;
+    /* AI RESPONSE */
+    .ai-card {
+      background: white;
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 20px;
     }
 
-    .thinking { display: flex; align-items: center; gap: 10px; padding: 12px 0; font-size: 13px; color: var(--text3); }
-    .dots { display: flex; gap: 4px; }
-    .dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--purple); animation: pulse 1.2s infinite; }
+    .ai-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--teal);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .ai-text {
+      font-size: 15px;
+      color: var(--ink);
+      line-height: 1.75;
+      white-space: pre-wrap;
+      font-weight: 300;
+    }
+
+    /* THINKING */
+    .thinking {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 0;
+      font-size: 13px;
+      color: var(--ink3);
+      font-style: italic;
+    }
+
+    .dots { display: flex; gap: 5px; }
+    .dots span {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--purple);
+      animation: pulse 1.4s infinite ease-in-out;
+    }
     .dots span:nth-child(2) { animation-delay: 0.2s; }
     .dots span:nth-child(3) { animation-delay: 0.4s; }
 
@@ -183,143 +475,266 @@
       40% { opacity: 1; transform: scale(1); }
     }
 
-    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-    .chip { background: var(--purple-light); color: var(--purple); font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 20px; }
+    /* CHIPS */
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+    .chip {
+      background: var(--purple-soft);
+      color: var(--purple);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 13px;
+      border-radius: 20px;
+      letter-spacing: 0.2px;
+    }
 
-    .summary-accent { border-left: 3px solid var(--purple); padding-left: 14px; margin-top: 14px; border-radius: 0; }
+    /* SUMMARY */
+    .summary-rule {
+      width: 32px;
+      height: 2px;
+      background: var(--purple);
+      margin-bottom: 16px;
+      border-radius: 2px;
+    }
 
-    .restart-row { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+    /* ERROR */
+    .error-box {
+      background: #FEF2F2;
+      border: 0.5px solid #FECACA;
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #991B1B;
+      margin-top: 12px;
+      line-height: 1.6;
+    }
 
-    .error-box { background: #FCEBEB; border: 0.5px solid #F09595; border-radius: var(--radius-sm); padding: 12px 16px; font-size: 13px; color: #A32D2D; margin-top: 12px; line-height: 1.5; }
+    /* DIVIDER */
+    .section-divider {
+      height: 0.5px;
+      background: var(--border);
+      margin: 24px 0;
+    }
 
-    footer { margin-top: 3rem; font-size: 12px; color: var(--text3); text-align: center; }
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* MOBILE */
+    @media (max-width: 480px) {
+      .land-nav { padding: 18px 20px; }
+      .hero-features { gap: 16px; }
+      .cat-grid { grid-template-columns: 1fr; }
+      .land-footer { padding: 16px 20px; }
+      .app-nav { padding: 14px 20px; }
+      main { padding: 28px 20px 0; }
+      .progress-wrap { padding: 20px 20px 0; }
+    }
   </style>
 </head>
 <body>
 
-<nav>
-  <div>
-    <div class="nav-logo">Clarity</div>
-    <div class="nav-tagline">Think better. Decide well.</div>
-  </div>
-  <div class="nav-badge">Beta</div>
-</nav>
+<!-- ── LANDING PAGE ───────────────────────────────────── -->
+<div id="landing">
+  <nav class="land-nav">
+    <div class="land-logo"><em>Clarity</em></div>
+    <div class="land-badge">Free Beta</div>
+  </nav>
 
-<main>
+  <div class="land-hero">
+    <div class="hero-eyebrow">Your personal decision engine</div>
+    <h1 class="hero-title">
+      Stop overthinking.<br>Start deciding <em>well.</em>
+    </h1>
+    <p class="hero-sub">
+      Clarity uses AI and behavioral science to help you work through any decision — with honesty, structure, and a concrete recommendation.
+    </p>
+    <button class="hero-cta" onclick="startApp()">
+      Make a decision
+      <span class="arrow">→</span>
+    </button>
+    <div class="hero-features">
+      <div class="feat"><div class="feat-dot"></div>Free to use</div>
+      <div class="feat"><div class="feat-dot"></div>No sign-up required</div>
+      <div class="feat"><div class="feat-dot"></div>Powered by Claude AI</div>
+      <div class="feat"><div class="feat-dot"></div>Takes 3 minutes</div>
+    </div>
+  </div>
+
+  <footer class="land-footer">
+    Built by Pedro Alvarez &mdash; Powered by Anthropic Claude
+  </footer>
+</div>
+
+<!-- ── APP ───────────────────────────────────────────── -->
+<div id="app">
+  <nav class="app-nav">
+    <div class="app-logo"><em>Clarity</em></div>
+    <span class="app-step" id="nav-step">Step 1 of 5</span>
+    <button class="app-back" onclick="goLanding()">&#8592; Home</button>
+  </nav>
+
   <div class="progress-wrap">
-    <div class="progress-top">
-      <span class="progress-label" id="phase-label">Step 1 of 5</span>
-      <span class="progress-label" id="phase-name">Choose category</span>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress" style="width:0%"></div>
     </div>
-    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
-    <div class="steps">
-      <div class="step active" id="s0"></div>
-      <div class="step" id="s1"></div>
-      <div class="step" id="s2"></div>
-      <div class="step" id="s3"></div>
-      <div class="step" id="s4"></div>
+    <div class="progress-steps">
+      <span class="ps active" id="ps0">Category</span>
+      <span class="ps" id="ps1">Decision</span>
+      <span class="ps" id="ps2">Reflect</span>
+      <span class="ps" id="ps3">Frameworks</span>
+      <span class="ps" id="ps4">Summary</span>
     </div>
   </div>
 
-  <div id="p0">
-    <div class="card">
-      <div class="card-eyebrow">Getting started</div>
-      <div class="card-title">What kind of decision are you facing?</div>
-      <div class="card-body">Select the category that best fits. This helps Clarity choose the right frameworks.</div>
+  <main>
+
+    <!-- Phase 0: Category -->
+    <div id="p0" class="phase">
+      <div class="eyebrow">Step 1</div>
+      <h2 class="phase-title">What are you deciding?</h2>
+      <p class="phase-sub">Choose a category so Clarity can select the right thinking frameworks for your situation.</p>
       <div class="cat-grid">
-        <div class="cat-btn" onclick="pick(this,'Career & Work')"><span class="icon">💼</span>Career & Work</div>
-        <div class="cat-btn" onclick="pick(this,'Finance & Money')"><span class="icon">💰</span>Finance & Money</div>
-        <div class="cat-btn" onclick="pick(this,'Relationships')"><span class="icon">🤝</span>Relationships</div>
-        <div class="cat-btn" onclick="pick(this,'Health & Lifestyle')"><span class="icon">🧘</span>Health & Lifestyle</div>
-        <div class="cat-btn" onclick="pick(this,'Education')"><span class="icon">📚</span>Education</div>
-        <div class="cat-btn" onclick="pick(this,'Big Life Change')"><span class="icon">🌎</span>Big Life Change</div>
+        <div class="cat-btn" onclick="pick(this,'Career & Work')">
+          <div class="cat-icon">💼</div>Career & Work
+        </div>
+        <div class="cat-btn" onclick="pick(this,'Finance & Money')">
+          <div class="cat-icon">💰</div>Finance & Money
+        </div>
+        <div class="cat-btn" onclick="pick(this,'Relationships')">
+          <div class="cat-icon">🤝</div>Relationships
+        </div>
+        <div class="cat-btn" onclick="pick(this,'Health & Lifestyle')">
+          <div class="cat-icon">🧘</div>Health & Lifestyle
+        </div>
+        <div class="cat-btn" onclick="pick(this,'Education')">
+          <div class="cat-icon">📚</div>Education
+        </div>
+        <div class="cat-btn" onclick="pick(this,'Big Life Change')">
+          <div class="cat-icon">🌎</div>Big Life Change
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" id="btn0" onclick="go(1)" disabled>Continue →</button>
       </div>
     </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" id="btn0" onclick="go(1)" disabled>Continue</button>
-    </div>
-  </div>
 
-  <div id="p1" style="display:none">
-    <div class="card">
-      <div class="card-eyebrow">Your decision</div>
-      <div class="card-title">Describe what you're deciding</div>
-      <div class="card-body">Be honest and specific. The more real context you give, the sharper Clarity's analysis will be.</div>
-      <textarea id="dec" placeholder="I'm trying to decide whether to..."></textarea>
+    <!-- Phase 1: Decision Input -->
+    <div id="p1" class="phase" style="display:none">
+      <div class="eyebrow">Step 2</div>
+      <h2 class="phase-title">Describe your decision</h2>
+      <p class="phase-sub">Be as specific and honest as you can. The more real context you give, the sharper Clarity's thinking will be.</p>
+      <textarea id="dec" placeholder="I'm trying to decide whether to..." rows="5"></textarea>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="analyze()">Analyze this →</button>
+        <button class="btn-secondary" onclick="go(0)">Back</button>
+      </div>
     </div>
-    <div class="btn-row">
-      <button class="btn" onclick="go(0)">Back</button>
-      <button class="btn btn-primary" onclick="analyze()">Analyze this &rarr;</button>
-    </div>
-  </div>
 
-  <div id="p2" style="display:none">
-    <div class="card">
-      <div class="card-eyebrow">Digging deeper</div>
-      <div class="card-title" id="q-title">One key question</div>
-      <div id="q-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div> Analyzing your situation...</div>
+    <!-- Phase 2: Clarifying Question -->
+    <div id="p2" class="phase" style="display:none">
+      <div class="eyebrow">Step 3</div>
+      <h2 class="phase-title" id="q-title">One question first</h2>
+      <p class="phase-sub">Before applying frameworks, Clarity needs to understand something you may not have fully considered.</p>
+      <div id="q-load" class="thinking">
+        <div class="dots"><span></span><span></span><span></span></div>
+        Thinking through your situation...
+      </div>
       <div id="q-body" style="display:none">
-        <div class="ai-box" id="q-text"></div>
-        <textarea id="ans" placeholder="Your answer..." style="min-height:90px"></textarea>
+        <div class="ai-card">
+          <div class="ai-label">Clarity asks</div>
+          <div class="ai-text" id="q-text"></div>
+        </div>
+        <textarea id="ans" placeholder="Take your time with this one..." rows="4"></textarea>
       </div>
       <div id="q-err"></div>
+      <div class="btn-row" id="q-row" style="display:none">
+        <button class="btn-primary" onclick="frameworks()">Continue →</button>
+        <button class="btn-secondary" onclick="go(1)">Back</button>
+      </div>
     </div>
-    <div class="btn-row" id="q-row" style="display:none">
-      <button class="btn" onclick="go(1)">Back</button>
-      <button class="btn btn-primary" onclick="frameworks()">Continue &rarr;</button>
-    </div>
-  </div>
 
-  <div id="p3" style="display:none">
-    <div class="card">
-      <div class="card-eyebrow">Framework analysis</div>
-      <div class="card-title">Applying decision frameworks</div>
-      <div id="f-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div> Running analysis...</div>
+    <!-- Phase 3: Framework Analysis -->
+    <div id="p3" class="phase" style="display:none">
+      <div class="eyebrow">Step 4</div>
+      <h2 class="phase-title">Applying decision frameworks</h2>
+      <p class="phase-sub">Clarity is analyzing your situation through multiple lenses of behavioral science and decision theory.</p>
+      <div id="f-load" class="thinking">
+        <div class="dots"><span></span><span></span><span></span></div>
+        Running analysis...
+      </div>
       <div id="f-body" style="display:none">
-        <div class="ai-box" id="f-text"></div>
+        <div class="ai-card">
+          <div class="ai-label">Framework analysis</div>
+          <div class="ai-text" id="f-text"></div>
+        </div>
       </div>
       <div id="f-err"></div>
+      <div class="btn-row" id="f-row" style="display:none">
+        <button class="btn-primary" onclick="summary()">Get my recommendation →</button>
+        <button class="btn-secondary" onclick="go(2)">Back</button>
+      </div>
     </div>
-    <div class="btn-row" id="f-row" style="display:none">
-      <button class="btn" onclick="go(2)">Back</button>
-      <button class="btn btn-primary" onclick="summary()">Get my recommendation &rarr;</button>
-    </div>
-  </div>
 
-  <div id="p4" style="display:none">
-    <div class="card">
-      <div class="card-eyebrow">Your clarity summary</div>
-      <div class="card-title">Here is what I see</div>
-      <div id="r-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div> Synthesizing everything...</div>
+    <!-- Phase 4: Summary -->
+    <div id="p4" class="phase" style="display:none">
+      <div class="eyebrow">Your clarity summary</div>
+      <h2 class="phase-title">Here is what I see</h2>
+      <div id="r-load" class="thinking">
+        <div class="dots"><span></span><span></span><span></span></div>
+        Synthesizing everything...
+      </div>
       <div id="r-body" style="display:none">
         <div class="chips" id="r-chips"></div>
-        <div class="summary-accent">
-          <div class="ai-box" id="r-text" style="margin-top:0; background:transparent; padding:0"></div>
+        <div class="ai-card">
+          <div class="summary-rule"></div>
+          <div class="ai-text" id="r-text"></div>
+        </div>
+        <div class="section-divider"></div>
+        <div class="btn-row">
+          <button class="btn-primary" onclick="restart()">Make another decision</button>
+          <button class="btn-secondary" onclick="goLanding()">Back to home</button>
         </div>
       </div>
       <div id="r-err"></div>
     </div>
-    <div class="restart-row" id="r-row" style="display:none">
-      <button class="btn btn-primary" onclick="restart()">Make another decision</button>
-    </div>
-  </div>
-</main>
 
-<footer>Clarity &mdash; Built by Pedro Alvarez &mdash; Powered by Claude</footer>
+  </main>
+</div>
 
 <script>
   const S = { cat:'', dec:'', q:'', ans:'', fw:'' };
-  const labels = ['Choose category','Describe decision','Key question','Framework analysis','Your summary'];
+  const stepLabels = ['Category','Decision','Reflect','Frameworks','Summary'];
+
+  function startApp() {
+    document.getElementById('landing').style.display = 'none';
+    const app = document.getElementById('app');
+    app.classList.add('visible');
+    go(0);
+  }
+
+  function goLanding() {
+    document.getElementById('app').classList.remove('visible');
+    document.getElementById('landing').style.display = 'flex';
+    restart();
+  }
 
   function go(n) {
     for(let i=0;i<5;i++){
-      document.getElementById('p'+i).style.display = i===n?'block':'none';
-      const s = document.getElementById('s'+i);
-      s.className = 'step'+(i<n?' done':i===n?' active':'');
+      const p = document.getElementById('p'+i);
+      if(p) p.style.display = i===n ? 'block' : 'none';
+      const ps = document.getElementById('ps'+i);
+      if(ps) ps.className = 'ps' + (i<n?' done':i===n?' active':'');
     }
-    document.getElementById('phase-label').textContent = `Step ${n+1} of 5`;
-    document.getElementById('phase-name').textContent = labels[n];
     document.getElementById('progress').style.width = (n*25)+'%';
+    document.getElementById('nav-step').textContent = `Step ${n+1} of 5`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function pick(el, cat) {
@@ -366,7 +781,7 @@
       document.getElementById('q-row').style.display='flex';
     } catch(e) {
       document.getElementById('q-load').style.display='none';
-      showErr('q-err', 'Could not reach the AI engine. Check that your API key is set in Vercel environment variables. Error: ' + e.message);
+      showErr('q-err', 'Could not reach the AI engine. Please check your connection and try again.');
     }
   }
 
@@ -386,7 +801,7 @@
       document.getElementById('f-row').style.display='flex';
     } catch(e) {
       document.getElementById('f-load').style.display='none';
-      showErr('f-err', 'Could not reach the AI engine. Error: ' + e.message);
+      showErr('f-err', 'Could not reach the AI engine. Please try again.');
     }
   }
 
@@ -394,7 +809,6 @@
     go(4);
     document.getElementById('r-load').style.display='flex';
     document.getElementById('r-body').style.display='none';
-    document.getElementById('r-row').style.display='none';
     document.getElementById('r-err').innerHTML='';
     try {
       const sys = `You are Clarity. Synthesize this decision. Structure: 1) Direct honest take (2-3 sentences). 2) Key tension or tradeoff (1-2 sentences). 3) Clear recommendation with one reason (2 sentences). Be specific, not a cheerleader. End with: INSIGHTS: [label1] | [label2] | [label3] (3-4 word labels each).`;
@@ -406,19 +820,21 @@
       document.getElementById('r-text').textContent = main;
       document.getElementById('r-load').style.display='none';
       document.getElementById('r-body').style.display='block';
-      document.getElementById('r-row').style.display='flex';
     } catch(e) {
       document.getElementById('r-load').style.display='none';
-      showErr('r-err', 'Could not reach the AI engine. Error: ' + e.message);
+      showErr('r-err', 'Could not reach the AI engine. Please try again.');
     }
   }
 
   function restart() {
     Object.keys(S).forEach(k=>S[k]='');
     document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
-    document.getElementById('btn0').disabled = true;
-    document.getElementById('dec').value='';
-    document.getElementById('ans').value='';
+    const btn0 = document.getElementById('btn0');
+    if(btn0) btn0.disabled = true;
+    const dec = document.getElementById('dec');
+    if(dec) dec.value='';
+    const ans = document.getElementById('ans');
+    if(ans) ans.value='';
     go(0);
   }
 </script>

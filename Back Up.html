@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clarity — Think better. Decide well.</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+      --surface2: #f0eff9;
+      --text: #1a1a18;
+      --text2: #5f5e5a;
+      --text3: #989793;
+      --border: rgba(0,0,0,0.10);
+      --border2: rgba(0,0,0,0.18);
+      --purple: #534AB7;
+      --purple-dark: #3C3489;
+      --purple-light: #EEEDFE;
+      --teal: #9FE1CB;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #18181a;
+        --surface: #222224;
+        --surface2: #26215C;
+        --text: #f0efe9;
+        --text2: #b4b2a9;
+        --text3: #666460;
+        --border: rgba(255,255,255,0.09);
+        --border2: rgba(255,255,255,0.16);
+        --purple-light: #2a2660;
+      }
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 0 80px;
+    }
+
+    nav {
+      width: 100%;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 0.5px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav-logo { font-size: 18px; font-weight: 600; color: var(--purple); letter-spacing: -0.3px; }
+    .nav-tagline { font-size: 12px; color: var(--text3); }
+    .nav-badge { font-size: 11px; background: var(--purple-light); color: var(--purple); padding: 4px 10px; border-radius: 20px; font-weight: 500; }
+
+    main { width: 100%; max-width: 620px; padding: 32px 20px 0; }
+
+    .progress-wrap { margin-bottom: 24px; }
+    .progress-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .progress-label { font-size: 12px; color: var(--text3); font-weight: 500; letter-spacing: 0.3px; }
+    .progress-bar { height: 3px; background: var(--border); border-radius: 2px; }
+    .progress-fill { height: 100%; background: var(--purple); border-radius: 2px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+    .steps { display: flex; gap: 5px; margin-top: 8px; }
+    .step { flex: 1; height: 3px; border-radius: 2px; background: var(--border); transition: background 0.3s; }
+    .step.done { background: var(--teal); }
+    .step.active { background: var(--purple); }
+
+    .card {
+      background: var(--surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 12px;
+      animation: fadeUp 0.25s ease;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-eyebrow { font-size: 11px; font-weight: 600; color: var(--purple); letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 8px; }
+    .card-title { font-size: 18px; font-weight: 500; color: var(--text); margin-bottom: 6px; line-height: 1.35; }
+    .card-body { font-size: 14px; color: var(--text2); line-height: 1.65; }
+
+    .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px; }
+
+    .cat-btn {
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      border: 0.5px solid var(--border);
+      background: var(--bg);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cat-btn .icon { font-size: 16px; width: 20px; }
+    .cat-btn:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-light); }
+    .cat-btn.selected { border-color: var(--purple); color: var(--purple); background: var(--purple-light); border-width: 1.5px; }
+
+    textarea {
+      width: 100%;
+      border: 0.5px solid var(--border2);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--surface);
+      resize: none;
+      min-height: 110px;
+      line-height: 1.65;
+      margin-top: 14px;
+      transition: border-color 0.15s;
+    }
+
+    textarea:focus { outline: none; border-color: var(--purple); border-width: 1px; }
+    textarea::placeholder { color: var(--text3); }
+
+    .btn-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 11px 20px;
+      border-radius: var(--radius-sm);
+      border: 0.5px solid var(--border2);
+      background: transparent;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .btn:hover { background: var(--surface2); }
+    .btn-primary { background: var(--purple); color: #fff; border-color: var(--purple); }
+    .btn-primary:hover { background: var(--purple-dark); border-color: var(--purple-dark); }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+
+    .ai-box {
+      background: var(--surface2);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      margin-top: 14px;
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.7;
+      white-space: pre-wrap;
+    }
+
+    .thinking { display: flex; align-items: center; gap: 10px; padding: 12px 0; font-size: 13px; color: var(--text3); }
+    .dots { display: flex; gap: 4px; }
+    .dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--purple); animation: pulse 1.2s infinite; }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes pulse {
+      0%, 80%, 100% { opacity: 0.2; transform: scale(0.7); }
+      40% { opacity: 1; transform: scale(1); }
+    }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .chip { background: var(--purple-light); color: var(--purple); font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 20px; }
+
+    .summary-accent { border-left: 3px solid var(--purple); padding-left: 14px; margin-top: 14px; border-radius: 0; }
+
+    .restart-row { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .error-box { background: #FCEBEB; border: 0.5px solid #F09595; border-radius: var(--radius-sm); padding: 12px 16px; font-size: 13px; color: #A32D2D; margin-top: 12px; line-height: 1.5; }
+
+    footer { margin-top: 3rem; font-size: 12px; color: var(--text3); text-align: center; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div>
+    <div class="nav-logo">Clarity</div>
+    <div class="nav-tagline">Think better. Decide well.</div>
+  </div>
+  <div class="nav-badge">Beta</div>
+</nav>
+
+<main>
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span class="progress-label" id="phase-label">Step 1 of 5</span>
+      <span class="progress-label" id="phase-name">Choose category</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+    <div class="steps">
+      <div class="step active" id="s0"></div>
+      <div class="step" id="s1"></div>
+      <div class="step" id="s2"></div>
+      <div class="step" id="s3"></div>
+      <div class="step" id="s4"></div>
+    </div>
+  </div>
+
+  <div id="p0">
+    <div class="card">
+      <div class="card-eyebrow">Getting started</div>
+      <div class="card-title">What kind of decision are you facing?</div>
+      <div class="card-body">Select the category that best fits. This helps Clarity choose the right frameworks.</div>
+      <div class="cat-grid">
+        <div class="cat-btn" onclick="pick(this,'Career & Work')"><span class="icon">💼</span>Career & Work</div>
+        <div class="cat-btn" onclick="pick(this,'Finance & Money')"><span class="icon">💰</span>Finance & Money</div>
+        <div class="cat-btn" onclick="pick(this,'Relationships')"><span class="icon">🤝</span>Relationships</div>
+        <div class="cat-btn" onclick="pick(this,'Health & Lifestyle')"><span class="icon">🧘</span>Health & Lifestyle</div>
+        <div class="cat-btn" onclick="pick(this,'Education')"><span class="icon">📚</span>Education</div>
+        <div class="cat-btn" onclick="pick(this,'Big Life Change')"><span class="icon">🌎</span>Big Life Change</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btn0" onclick="go(1)" disabled>Continue</button>
+    </div>
+  </div>
+
+  <div id="p1" style="display:none">
+    <div class="card">
+      <div class="card-eyebrow">Your decision</div>
+      <div class="card-title">Describe what you're deciding</div>
+      <div class="card-body">Be honest and specific. The more real context you give, the sharper Clarity's analysis will be.</div>
+      <textarea id="dec" placeholder="I'm trying to decide whether to..."></textarea>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="go(0)">Back</button>
+      <button class="btn btn-primary" onclick="analyze()">Analyze this &rarr;</button>
+    </div>
+  </div>
+
+  <div id="p2" style="display:none">
+    <div class="card">
+      <div class="card-eyebrow">Digging deeper</div>
+      <div class="card-title" id="q-title">One key question</div>
+      <div id="q-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div> Analyzing your situation...</div>
+      <div id="q-body" style="display:none">
+        <div class="ai-box" id="q-text"></div>
+        <textarea id="ans" placeholder="Your answer..." style="min-height:90px"></textarea>
+      </div>
+      <div id="q-err"></div>
+    </div>
+    <div class="btn-row" id="q-row" style="display:none">
+      <button class="btn" onclick="go(1)">Back</button>
+      <button class="btn btn-primary" onclick="frameworks()">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <div id="p3" style="display:none">
+    <div class="card">
+      <div class="card-eyebrow">Framework analysis</div>
+      <div class="card-title">Applying decision frameworks</div>
+      <div id="f-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div> Running analysis...</div>
+      <div id="f-body" style="display:none">
+        <div class="ai-box" id="f-text"></div>
+      </div>
+      <div id="f-err"></div>
+    </div>
+    <div class="btn-row" id="f-row" style="display:none">
+      <button class="btn" onclick="go(2)">Back</button>
+      <button class="btn btn-primary" onclick="summary()">Get my recommendation &rarr;</button>
+    </div>
+  </div>
+
+  <div id="p4" style="display:none">
+    <div class="card">
+      <div class="card-eyebrow">Your clarity summary</div>
+      <div class="card-title">Here is what I see</div>
+      <div id="r-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div> Synthesizing everything...</div>
+      <div id="r-body" style="display:none">
+        <div class="chips" id="r-chips"></div>
+        <div class="summary-accent">
+          <div class="ai-box" id="r-text" style="margin-top:0; background:transparent; padding:0"></div>
+        </div>
+      </div>
+      <div id="r-err"></div>
+    </div>
+    <div class="restart-row" id="r-row" style="display:none">
+      <button class="btn btn-primary" onclick="restart()">Make another decision</button>
+    </div>
+  </div>
+</main>
+
+<footer>Clarity &mdash; Built by Pedro Alvarez &mdash; Powered by Claude</footer>
+
+<script>
+  const S = { cat:'', dec:'', q:'', ans:'', fw:'' };
+  const labels = ['Choose category','Describe decision','Key question','Framework analysis','Your summary'];
+
+  function go(n) {
+    for(let i=0;i<5;i++){
+      document.getElementById('p'+i).style.display = i===n?'block':'none';
+      const s = document.getElementById('s'+i);
+      s.className = 'step'+(i<n?' done':i===n?' active':'');
+    }
+    document.getElementById('phase-label').textContent = `Step ${n+1} of 5`;
+    document.getElementById('phase-name').textContent = labels[n];
+    document.getElementById('progress').style.width = (n*25)+'%';
+  }
+
+  function pick(el, cat) {
+    S.cat = cat;
+    document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('btn0').disabled = false;
+  }
+
+  async function callClaude(prompt, system) {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    const data = await res.json();
+    return data.content?.[0]?.text || '';
+  }
+
+  function showErr(id, msg) {
+    document.getElementById(id).innerHTML = `<div class="error-box">${msg}</div>`;
+  }
+
+  async function analyze() {
+    S.dec = document.getElementById('dec').value.trim();
+    if (!S.dec) return;
+    go(2);
+    document.getElementById('q-load').style.display='flex';
+    document.getElementById('q-body').style.display='none';
+    document.getElementById('q-row').style.display='none';
+    document.getElementById('q-err').innerHTML='';
+    try {
+      const sys = `You are Clarity, an empathetic and sharp decision-thinking partner. Ask ONE powerful clarifying question that surfaces what the person hasn't fully examined yet. Be direct and warm. Keep it under 3 sentences: one observational sentence, then the question. No multiple questions. No advice yet.`;
+      S.q = await callClaude(`Category: ${S.cat}\nDecision: ${S.dec}\n\nAsk your one most important clarifying question.`, sys);
+      document.getElementById('q-text').textContent = S.q;
+      document.getElementById('q-load').style.display='none';
+      document.getElementById('q-body').style.display='block';
+      document.getElementById('q-row').style.display='flex';
+    } catch(e) {
+      document.getElementById('q-load').style.display='none';
+      showErr('q-err', 'Could not reach the AI engine. Check that your API key is set in Vercel environment variables. Error: ' + e.message);
+    }
+  }
+
+  async function frameworks() {
+    S.ans = document.getElementById('ans').value.trim();
+    go(3);
+    document.getElementById('f-load').style.display='flex';
+    document.getElementById('f-body').style.display='none';
+    document.getElementById('f-row').style.display='none';
+    document.getElementById('f-err').innerHTML='';
+    try {
+      const sys = `You are Clarity, a decision-thinking partner trained in behavioral economics and mental models. Apply 2-3 relevant decision frameworks (Expected Value, Second-Order Thinking, Pre-mortem, Reversibility Test, 10/10/10 rule, or others that fit). Be concrete and specific — not generic. Short paragraphs, no bullet points. Under 200 words.`;
+      S.fw = await callClaude(`Category: ${S.cat}\nDecision: ${S.dec}\nClarification asked: ${S.q}\nTheir answer: ${S.ans}\n\nApply your frameworks.`, sys);
+      document.getElementById('f-text').textContent = S.fw;
+      document.getElementById('f-load').style.display='none';
+      document.getElementById('f-body').style.display='block';
+      document.getElementById('f-row').style.display='flex';
+    } catch(e) {
+      document.getElementById('f-load').style.display='none';
+      showErr('f-err', 'Could not reach the AI engine. Error: ' + e.message);
+    }
+  }
+
+  async function summary() {
+    go(4);
+    document.getElementById('r-load').style.display='flex';
+    document.getElementById('r-body').style.display='none';
+    document.getElementById('r-row').style.display='none';
+    document.getElementById('r-err').innerHTML='';
+    try {
+      const sys = `You are Clarity. Synthesize this decision. Structure: 1) Direct honest take (2-3 sentences). 2) Key tension or tradeoff (1-2 sentences). 3) Clear recommendation with one reason (2 sentences). Be specific, not a cheerleader. End with: INSIGHTS: [label1] | [label2] | [label3] (3-4 word labels each).`;
+      const resp = await callClaude(`Category: ${S.cat}\nDecision: ${S.dec}\nClarifying Q: ${S.q}\nAnswer: ${S.ans}\nFramework: ${S.fw}`, sys);
+      const match = resp.match(/INSIGHTS:\s*(.+)/);
+      const main = resp.replace(/INSIGHTS:.+/s,'').trim();
+      const chips = match ? match[1].split('|').map(c=>c.trim().replace(/[\[\]]/g,'')) : [];
+      document.getElementById('r-chips').innerHTML = chips.map(c=>`<span class="chip">${c}</span>`).join('');
+      document.getElementById('r-text').textContent = main;
+      document.getElementById('r-load').style.display='none';
+      document.getElementById('r-body').style.display='block';
+      document.getElementById('r-row').style.display='flex';
+    } catch(e) {
+      document.getElementById('r-load').style.display='none';
+      showErr('r-err', 'Could not reach the AI engine. Error: ' + e.message);
+    }
+  }
+
+  function restart() {
+    Object.keys(S).forEach(k=>S[k]='');
+    document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
+    document.getElementById('btn0').disabled = true;
+    document.getElementById('dec').value='';
+    document.getElementById('ans').value='';
+    go(0);
+  }
+</script>
+</body>
+</html>
