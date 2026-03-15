@@ -140,7 +140,12 @@
     /* AI CARDS */
     .ai-card { background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
     .ai-label { font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
-    .ai-text { font-size: 15px; color: var(--ink); line-height: 1.75; white-space: pre-wrap; font-weight: 300; }
+    .ai-text { font-size: 15px; color: var(--ink); line-height: 1.75; font-weight: 300; }
+    .ai-text p { margin-bottom: 14px; }
+    .ai-text p:last-child { margin-bottom: 0; }
+    .ai-text strong { font-weight: 500; color: var(--ink); }
+    .ai-text .section-title { font-weight: 500; color: var(--purple); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; margin-top: 18px; display: block; }
+    .ai-text .section-title:first-child { margin-top: 0; }
 
     /* THINKING */
     .thinking { display: flex; align-items: center; gap: 12px; padding: 20px 0; font-size: 13px; color: var(--ink3); font-style: italic; }
@@ -686,7 +691,26 @@ async function callClaude(prompt, system, thinkingId) {
   }
 }
 
-function showErr(id, msg) { document.getElementById(id).innerHTML = `<div class="error-box">${msg}</div>`; }
+function renderMarkdown(text) {
+  if (!text) return '';
+  return text
+    .split(/\n{2,}/)
+    .map(para => {
+      para = para.trim();
+      if (!para) return '';
+      const boldTitle = para.match(/^\*\*([^*]+):\*\*\s*(.*)/s);
+      if (boldTitle) {
+        const title = boldTitle[1];
+        const rest = boldTitle[2].replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        return `<span class="section-title">${title}</span><p>${rest}</p>`;
+      }
+      const rendered = para.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      return `<p>${rendered}</p>`;
+    })
+    .join('');
+}
+
+
 function langSuffix() { return S.lang === 'es' ? ' Respond entirely in Spanish.' : ''; }
 
 async function analyze() {
@@ -703,7 +727,7 @@ async function analyze() {
     const sys = `You are Clarity, an empathetic and sharp decision-thinking partner. Ask ONE powerful clarifying question that surfaces what the person hasn't fully examined yet. Be direct and warm. Keep it under 3 sentences: one observational sentence, then the question. No multiple questions. No advice yet.${langSuffix()}`;
     const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
     S.q = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\n\nAsk your one most important clarifying question.`, sys, 'q-thinking');
-    document.getElementById('q-text').textContent = S.q;
+    document.getElementById('q-text').innerHTML = renderMarkdown(S.q);
     document.getElementById('q-load').style.display='none';
     document.getElementById('q-body').style.display='block';
     document.getElementById('q-row').style.display='flex';
@@ -722,10 +746,10 @@ async function frameworks() {
   document.getElementById('f-row').style.display='none';
   document.getElementById('f-err').innerHTML='';
   try {
-    const sys = `You are Clarity, a decision-thinking partner trained in behavioral economics and mental models. Apply 2-3 relevant decision frameworks (Expected Value, Second-Order Thinking, Pre-mortem, Reversibility Test, 10/10/10 rule, or others that fit). Be concrete and specific — not generic. Short paragraphs, no bullet points. Under 200 words.${langSuffix()}`;
+    const sys = `You are Clarity, a decision-thinking partner trained in behavioral economics and mental models. Apply 2-3 relevant decision frameworks (Expected Value, Second-Order Thinking, Pre-mortem, Reversibility Test, 10/10/10 rule, or others that fit). Format each framework as: **Framework Name:** followed by your analysis. Be concrete and specific — not generic. Keep each framework to 2-3 sentences. Under 200 words total.${langSuffix()}`;
     const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
     S.fw = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\nClarification asked: ${S.q}\nTheir answer: ${S.ans}\n\nApply your frameworks.`, sys, 'f-thinking');
-    document.getElementById('f-text').textContent = S.fw;
+    document.getElementById('f-text').innerHTML = renderMarkdown(S.fw);
     document.getElementById('f-load').style.display='none';
     document.getElementById('f-body').style.display='block';
     document.getElementById('f-row').style.display='flex';
@@ -742,14 +766,22 @@ async function summary() {
   document.getElementById('r-body').style.display='none';
   document.getElementById('r-err').innerHTML='';
   try {
-    const sys = `You are Clarity. Synthesize this decision. Structure: 1) Direct honest take (2-3 sentences). 2) Key tension or tradeoff (1-2 sentences). 3) Clear recommendation with one reason (2 sentences). Be specific, not a cheerleader. End with: INSIGHTS: [label1] | [label2] | [label3] (3-4 word labels each).${langSuffix()}`;
+    const sys = `You are Clarity. Synthesize this decision using this exact format:
+
+**Direct Honest Take:** [2-3 sentences with your honest assessment]
+
+**Key Tension:** [1-2 sentences on the core tradeoff]
+
+**Recommendation:** [2 sentences with a clear recommendation and one reason why]
+
+Be specific, not a cheerleader. End with: INSIGHTS: [label1] | [label2] | [label3] (3-4 word labels each).${langSuffix()}`;
     const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
     const resp = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\nClarifying Q: ${S.q}\nAnswer: ${S.ans}\nFramework: ${S.fw}`, sys, 'r-thinking');
     const match = resp.match(/INSIGHTS:\s*(.+)/);
     S.rec = resp.replace(/INSIGHTS:.+/s,'').trim();
     S.chips = match ? match[1].split('|').map(c=>c.trim().replace(/[\[\]]/g,'')) : [];
     document.getElementById('r-chips').innerHTML = S.chips.map(c=>`<span class="chip">${c}</span>`).join('');
-    document.getElementById('r-text').textContent = S.rec;
+    document.getElementById('r-text').innerHTML = renderMarkdown(S.rec);
     document.getElementById('r-load').style.display='none';
     document.getElementById('r-body').style.display='block';
     if (currentUser) {

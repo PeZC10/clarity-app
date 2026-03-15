@@ -103,7 +103,7 @@
 
     /* MAIN */
     main { width: 100%; max-width: 580px; padding: 36px 24px 0; }
-    .phase { animation: fadeUp 0.4s ease both; }
+    .phase { animation: fadeUp 0.4s ease forwards; }
     .eyebrow { font-size: 11px; font-weight: 500; color: var(--purple); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
     .phase-title { font-family: var(--serif); font-size: 26px; font-weight: 600; color: var(--ink); line-height: 1.3; margin-bottom: 8px; }
     .phase-sub { font-size: 14px; color: var(--ink2); line-height: 1.65; margin-bottom: 28px; font-weight: 300; }
@@ -112,13 +112,13 @@
     .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
     .cat-btn { padding: 16px; border-radius: var(--radius-sm); border: 0.5px solid var(--border); background: white; font-size: 14px; font-weight: 400; color: var(--ink2); cursor: pointer; text-align: left; font-family: var(--sans); transition: all 0.2s ease; display: flex; align-items: center; gap: 10px; }
     .cat-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--cream2); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; transition: background 0.2s; }
-    .cat-btn:hover { border-color: var(--purple); color: var(--ink); transform: translateY(-1px); }
+    .cat-btn:hover { border-color: var(--purple); color: var(--ink); }
     .cat-btn:hover .cat-icon { background: var(--purple-soft); }
     .cat-btn.selected { border-color: var(--purple); border-width: 1.5px; color: var(--ink); background: white; }
     .cat-btn.selected .cat-icon { background: var(--purple-soft); }
 
     /* TOPIC */
-    .topic-wrap { margin-top: 4px; padding-top: 16px; border-top: 0.5px solid var(--border); animation: fadeUp 0.3s ease both; }
+    .topic-wrap { margin-top: 4px; padding-top: 16px; border-top: 0.5px solid var(--border); animation: fadeUp 0.3s ease forwards; }
     .topic-label { font-size: 12px; font-weight: 500; color: var(--ink3); margin-bottom: 8px; display: block; }
     .topic-input { width: 100%; border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 14px; font-family: var(--sans); font-weight: 300; color: var(--ink); background: white; transition: border-color 0.2s; margin-bottom: 16px; }
     .topic-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(67,56,202,0.08); }
@@ -192,6 +192,19 @@
     .empty-icon { font-size: 40px; margin-bottom: 16px; }
     .empty-title { font-family: var(--serif); font-size: 20px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
     .empty-sub { font-size: 14px; color: var(--ink3); font-weight: 300; }
+
+    /* ACTION PLAN */
+    .plan-week { margin-bottom: 20px; }
+    .plan-week-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .plan-week-badge { background: var(--purple); color: white; font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.3px; white-space: nowrap; }
+    .plan-week-title { font-family: var(--serif); font-size: 15px; font-weight: 600; color: var(--ink); }
+    .plan-actions { list-style: none; padding: 0; }
+    .plan-action { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--border); font-size: 14px; color: var(--ink2); line-height: 1.55; }
+    .plan-action:last-child { border-bottom: none; }
+    .plan-action-num { width: 22px; height: 22px; border-radius: 50%; background: var(--purple-soft); color: var(--purple); font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .plan-cta { background: var(--purple-soft); border: 0.5px solid rgba(67,56,202,0.2); border-radius: var(--radius-sm); padding: 16px 18px; margin-top: 20px; font-size: 14px; color: var(--purple); line-height: 1.6; text-align: center; }
+    .btn-plan { display: inline-flex; align-items: center; gap: 8px; background: var(--purple); color: white; font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 13px 24px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s ease; }
+    .btn-plan:hover { background: var(--purple2); }
 
     /* ANIMATIONS */
     @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
@@ -381,12 +394,28 @@
         <div class="ai-card"><div class="summary-rule"></div><div class="ai-text" id="r-text"></div></div>
         <div class="section-divider"></div>
         <div class="btn-row" style="flex-wrap:wrap;">
+          <button class="btn-plan" onclick="generatePlan()" id="btn-plan">Build my action plan →</button>
           <button class="btn-primary" onclick="restart()" id="btn-restart">Make another decision</button>
           <button class="btn-secondary" onclick="goJournal()" id="btn-journal" style="display:none">View journal</button>
           <button class="btn-secondary" onclick="goLanding()" id="btn-home">Back to home</button>
         </div>
       </div>
       <div id="r-err"></div>
+    </div>
+
+    <!-- Phase 5: Action Plan -->
+    <div id="p5" class="phase" style="display:none">
+      <div class="eyebrow" id="a-step5">Your action plan</div>
+      <h2 class="phase-title" id="a-t5">30 days to make it real</h2>
+      <p class="phase-sub" id="a-s5">Based on your decision, here is a concrete plan to execute it over the next 30 days.</p>
+      <div id="plan-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div><span id="plan-thinking">Building your plan...</span></div>
+      <div id="plan-body" style="display:none"></div>
+      <div id="plan-err"></div>
+      <div class="btn-row" id="plan-row" style="display:none; flex-wrap:wrap; margin-top:20px;">
+        <button class="btn-primary" onclick="restart()" id="btn-plan-restart">Make another decision</button>
+        <button class="btn-secondary" onclick="goJournal()" id="btn-plan-journal" style="display:none">View journal</button>
+        <button class="btn-secondary" onclick="goLanding()" id="btn-plan-home">Back to home</button>
+      </div>
     </div>
   </main>
 </div>
@@ -456,6 +485,9 @@ const T = {
     jEmpty:'No decisions yet', jEmptySub:'Make your first decision and it will appear here.',
     checkin30:'30-day check-in due', checkin90:'90-day check-in due', checkin180:'180-day check-in due',
     checkinDone:'Reflected',
+    btnPlan:'Build my action plan →',
+    step5:'Your action plan', t5:'30 days to make it real', s5:'Based on your decision, here is a concrete plan to execute it over the next 30 days.',
+    planThinking:'Building your plan...',
     ps:['Category','Decision','Reflect','Frameworks','Summary']
   },
   es: {
@@ -492,6 +524,9 @@ const T = {
     jEmpty:'Aún no hay decisiones', jEmptySub:'Toma tu primera decisión y aparecerá aquí.',
     checkin30:'Revisión de 30 días pendiente', checkin90:'Revisión de 90 días pendiente', checkin180:'Revisión de 180 días pendiente',
     checkinDone:'Reflexionado',
+    btnPlan:'Crear mi plan de acción →',
+    step5:'Tu plan de acción', t5:'30 días para hacerlo realidad', s5:'Basado en tu decisión, aquí tienes un plan concreto para ejecutarlo en los próximos 30 días.',
+    planThinking:'Construyendo tu plan...',
     ps:['Categoría','Decisión','Reflexión','Marcos','Resumen']
   }
 };
@@ -614,6 +649,10 @@ function setLang(lang, btn) {
   set('btn-analyze', t.btnAnalyze); set('btn-frameworks', t.btnFrameworks); set('btn-rec', t.btnRec);
   set('btn-restart', t.btnRestart); set('btn-journal', t.btnJournal); set('btn-home', t.btnHome);
   set('save-msg', t.saveBanner); set('j-title', t.jTitle); set('j-sub', t.jSub);
+  set('btn-plan', t.btnPlan);
+  set('a-step5', t.step5); set('a-t5', t.t5); set('a-s5', t.s5);
+  set('plan-thinking', t.planThinking);
+  set('btn-plan-restart', t.btnRestart); set('btn-plan-home', t.btnHome);
   t.ps.forEach((l,i) => set('ps'+i, l));
   if(modalMode) updateModal();
 }
@@ -794,7 +833,93 @@ Be specific, not a cheerleader. End with: INSIGHTS: [label1] | [label2] | [label
   }
 }
 
-// ── SAVE DECISION ─────────────────────────────────────────
+function renderPlan(text) {
+  const weeks = [];
+  const lines = text.split('\n').filter(l => l.trim());
+  let current = null;
+  let actionNum = 0;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    const weekMatch = trimmed.match(/^\*?\*?(Week\s+\d[\d\s\-–]+|Semana\s+\d[\d\s\-–]+|Month\s+\d[\d\s\-–]+|Mes\s+\d[\d\s\-–]+)\*?\*?:?\s*(.*)/i);
+    if (weekMatch) {
+      actionNum = 0;
+      current = { title: weekMatch[1].trim(), subtitle: weekMatch[2].trim(), actions: [] };
+      weeks.push(current);
+    } else if (current && (trimmed.startsWith('-') || trimmed.startsWith('•') || trimmed.match(/^\d+\./))) {
+      actionNum++;
+      const text = trimmed.replace(/^[-•]\s*/, '').replace(/^\d+\.\s*/, '');
+      const bold = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      current.actions.push({ num: actionNum, text: bold });
+    } else if (current && trimmed && !trimmed.match(/^\*\*/) ) {
+      if (current.actions.length === 0) {
+        current.subtitle += ' ' + trimmed;
+      } else {
+        actionNum++;
+        const bold = trimmed.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        current.actions.push({ num: actionNum, text: bold });
+      }
+    }
+  }
+
+  if (weeks.length === 0) {
+    return `<div class="ai-text">${renderMarkdown(text)}</div>`;
+  }
+
+  return weeks.map(w => `
+    <div class="plan-week">
+      <div class="plan-week-header">
+        <span class="plan-week-badge">${w.title}</span>
+        ${w.subtitle ? `<span class="plan-week-title">${w.subtitle}</span>` : ''}
+      </div>
+      <ul class="plan-actions">
+        ${w.actions.map(a => `<li class="plan-action"><span class="plan-action-num">${a.num}</span><span>${a.text}</span></li>`).join('')}
+      </ul>
+    </div>
+  `).join('');
+}
+
+async function generatePlan() {
+  const t = T[S.lang];
+  for (let i = 0; i < 5; i++) {
+    const p = document.getElementById('p' + i);
+    if (p) p.style.display = 'none';
+  }
+  const p5 = document.getElementById('p5');
+  if (p5) p5.style.display = 'block';
+  document.getElementById('plan-load').style.display = 'flex';
+  document.getElementById('plan-body').style.display = 'none';
+  document.getElementById('plan-row').style.display = 'none';
+  document.getElementById('plan-err').innerHTML = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  try {
+    const sys = `You are Clarity, a practical action-planning partner. Based on this decision, create a concrete 30-day action plan divided into 3 sections:
+
+Week 1-2: Foundation (title this section with a relevant subtitle)
+Week 3-4: Building Momentum (title this section with a relevant subtitle)  
+Month 2-3: Sustaining Progress (title this section with a relevant subtitle)
+
+For each section provide exactly 3-4 specific, actionable steps. Format each step starting with a dash (-). Keep each step to 1-2 sentences. Be specific to their situation — not generic advice. Total response under 300 words.${langSuffix()}`;
+
+    const topicCtx = S.topic ? `\nContext: ${S.topic}` : '';
+    const planText = await callClaude(
+      `Category: ${S.cat}${topicCtx}\nDecision made: ${S.dec}\nRecommendation: ${S.rec}\n\nCreate a 30-day action plan.`,
+      sys, 'plan-thinking'
+    );
+
+    document.getElementById('plan-body').innerHTML = renderPlan(planText);
+    document.getElementById('plan-load').style.display = 'none';
+    document.getElementById('plan-body').style.display = 'block';
+    document.getElementById('plan-row').style.display = 'flex';
+    if (currentUser) document.getElementById('btn-plan-journal').style.display = 'inline-flex';
+  } catch(e) {
+    document.getElementById('plan-load').style.display = 'none';
+    showErr('plan-err', t.errRetry);
+  }
+}
+
+
 async function saveDecision() {
   if (!currentUser) return;
   try {
@@ -860,6 +985,9 @@ function restart() {
   const tw = document.getElementById('topic-wrap'); if(tw) tw.style.display='none';
   const sb2 = document.getElementById('save-banner'); if(sb2) sb2.style.display='none';
   const bj = document.getElementById('btn-journal'); if(bj) bj.style.display='none';
+  const p5 = document.getElementById('p5'); if(p5) p5.style.display='none';
+  const pb = document.getElementById('plan-body'); if(pb) { pb.innerHTML=''; pb.style.display='none'; }
+  const bpj = document.getElementById('btn-plan-journal'); if(bpj) bpj.style.display='none';
   go(0);
 }
 
