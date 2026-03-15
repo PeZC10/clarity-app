@@ -6,573 +6,235 @@
   <title>Clarity — Think better. Decide well.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --cream: #FAF8F4;
-      --cream2: #F3F0EA;
-      --cream3: #EAE6DC;
-      --ink: #1C1917;
-      --ink2: #57534E;
-      --ink3: #A8A29E;
-      --purple: #4338CA;
-      --purple2: #6366F1;
-      --purple-soft: #EEF2FF;
-      --teal: #0D9488;
-      --teal-soft: #CCFBF1;
-      --border: rgba(28,25,23,0.10);
-      --border2: rgba(28,25,23,0.18);
-      --radius: 16px;
-      --radius-sm: 10px;
-      --serif: 'Lora', Georgia, serif;
-      --sans: 'DM Sans', system-ui, sans-serif;
+      --cream: #FAF8F4; --cream2: #F3F0EA; --cream3: #EAE6DC;
+      --ink: #1C1917; --ink2: #57534E; --ink3: #A8A29E;
+      --purple: #4338CA; --purple2: #6366F1; --purple-soft: #EEF2FF;
+      --teal: #0D9488; --teal-soft: #CCFBF1;
+      --border: rgba(28,25,23,0.10); --border2: rgba(28,25,23,0.18);
+      --radius: 16px; --radius-sm: 10px;
+      --serif: 'Lora', Georgia, serif; --sans: 'DM Sans', system-ui, sans-serif;
     }
-
     html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--cream); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
-    body {
-      font-family: var(--sans);
-      background: var(--cream);
-      color: var(--ink);
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ── LANDING PAGE ─────────────────────────────── */
-    #landing {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .land-nav {
-      padding: 24px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      animation: fadeDown 0.6s ease both;
-    }
-
-    .land-logo {
-      font-family: var(--serif);
-      font-size: 22px;
-      font-weight: 600;
-      color: var(--ink);
-      letter-spacing: -0.3px;
-    }
-
+    /* NAV */
+    .land-nav { padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; animation: fadeDown 0.6s ease both; }
+    .land-logo { font-family: var(--serif); font-size: 22px; font-weight: 600; color: var(--ink); letter-spacing: -0.3px; }
     .land-logo em { color: var(--purple); font-style: italic; }
+    .land-badge { font-size: 11px; font-weight: 500; color: var(--purple); background: var(--purple-soft); padding: 5px 12px; border-radius: 20px; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
 
-    .land-badge {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--purple);
-      background: var(--purple-soft);
-      padding: 5px 12px;
-      border-radius: 20px;
-      letter-spacing: 0.3px;
-    }
+    /* LANG TOGGLE */
+    .lang-toggle { display: flex; align-items: center; gap: 2px; background: var(--cream2); border-radius: 20px; padding: 3px; border: 0.5px solid var(--border); }
+    .lang-btn { font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 20px; border: none; background: transparent; color: var(--ink3); cursor: pointer; font-family: var(--sans); transition: all 0.2s; }
+    .lang-btn.active { background: var(--purple); color: white; }
 
-    .land-hero {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 40px 24px 60px;
-    }
+    /* AUTH BUTTONS */
+    .btn-auth { font-size: 13px; font-weight: 500; padding: 8px 16px; border-radius: 20px; border: 0.5px solid var(--border2); background: transparent; color: var(--ink2); cursor: pointer; font-family: var(--sans); transition: all 0.15s; }
+    .btn-auth:hover { background: var(--cream2); color: var(--ink); }
+    .btn-auth-primary { background: var(--purple); color: white; border-color: var(--purple); }
+    .btn-auth-primary:hover { background: var(--purple2); }
+    .user-pill { display: flex; align-items: center; gap: 8px; background: var(--cream2); border-radius: 20px; padding: 6px 14px 6px 8px; border: 0.5px solid var(--border); }
+    .user-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--purple); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
+    .user-email { font-size: 12px; color: var(--ink2); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .btn-signout { font-size: 11px; color: var(--ink3); background: none; border: none; cursor: pointer; font-family: var(--sans); padding: 0; }
+    .btn-signout:hover { color: var(--ink); }
 
-    .hero-eyebrow {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--ink3);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-bottom: 24px;
-      animation: fadeUp 0.7s 0.1s ease both;
-    }
-
-    .hero-title {
-      font-family: var(--serif);
-      font-size: clamp(38px, 7vw, 72px);
-      font-weight: 600;
-      color: var(--ink);
-      line-height: 1.15;
-      letter-spacing: -1px;
-      max-width: 700px;
-      margin-bottom: 24px;
-      animation: fadeUp 0.7s 0.2s ease both;
-    }
-
-    .hero-title em {
-      color: var(--purple);
-      font-style: italic;
-    }
-
-    .hero-sub {
-      font-size: 17px;
-      color: var(--ink2);
-      line-height: 1.7;
-      max-width: 480px;
-      margin-bottom: 48px;
-      font-weight: 300;
-      animation: fadeUp 0.7s 0.3s ease both;
-    }
-
-    .hero-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--ink);
-      color: var(--cream);
-      font-family: var(--sans);
-      font-size: 15px;
-      font-weight: 500;
-      padding: 16px 32px;
-      border-radius: 50px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      animation: fadeUp 0.7s 0.4s ease both;
-      letter-spacing: 0.2px;
-    }
-
-    .hero-cta:hover {
-      background: var(--purple);
-      transform: translateY(-2px);
-    }
-
-    .hero-cta .arrow {
-      width: 18px;
-      height: 18px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      transition: transform 0.2s;
-    }
-
+    /* LANDING */
+    #landing { min-height: 100vh; display: flex; flex-direction: column; }
+    .land-hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 24px 60px; }
+    .hero-eyebrow { font-size: 12px; font-weight: 500; color: var(--ink3); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 24px; animation: fadeUp 0.7s 0.1s ease both; }
+    .hero-title { font-family: var(--serif); font-size: clamp(38px, 7vw, 72px); font-weight: 600; color: var(--ink); line-height: 1.15; letter-spacing: -1px; max-width: 700px; margin-bottom: 24px; animation: fadeUp 0.7s 0.2s ease both; }
+    .hero-title em { color: var(--purple); font-style: italic; }
+    .hero-sub { font-size: 17px; color: var(--ink2); line-height: 1.7; max-width: 480px; margin-bottom: 48px; font-weight: 300; animation: fadeUp 0.7s 0.3s ease both; }
+    .hero-cta { display: inline-flex; align-items: center; gap: 10px; background: var(--ink); color: var(--cream); font-family: var(--sans); font-size: 15px; font-weight: 500; padding: 16px 32px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s ease; animation: fadeUp 0.7s 0.4s ease both; }
+    .hero-cta:hover { background: var(--purple); transform: translateY(-2px); }
+    .hero-cta .arrow { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 11px; transition: transform 0.2s; }
     .hero-cta:hover .arrow { transform: translateX(3px); }
+    .hero-features { display: flex; gap: 32px; margin-top: 64px; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.7s 0.5s ease both; }
+    .feat { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink3); }
+    .feat-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--purple); }
+    .land-footer { padding: 20px 32px; text-align: center; font-size: 12px; color: var(--ink3); border-top: 0.5px solid var(--border); animation: fadeUp 0.7s 0.6s ease both; }
 
-    .hero-features {
-      display: flex;
-      gap: 32px;
-      margin-top: 64px;
-      flex-wrap: wrap;
-      justify-content: center;
-      animation: fadeUp 0.7s 0.5s ease both;
-    }
+    /* AUTH MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(28,25,23,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; animation: fadeIn 0.2s ease; }
+    .modal { background: var(--cream); border-radius: var(--radius); padding: 36px; width: 100%; max-width: 400px; position: relative; animation: fadeUp 0.25s ease; }
+    .modal-close { position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border-radius: 50%; border: none; background: var(--cream2); color: var(--ink3); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; font-family: var(--sans); }
+    .modal-title { font-family: var(--serif); font-size: 22px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .modal-sub { font-size: 13px; color: var(--ink3); margin-bottom: 24px; }
+    .form-field { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 12px; font-weight: 500; color: var(--ink2); margin-bottom: 6px; }
+    .form-input { width: 100%; border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 14px; font-family: var(--sans); color: var(--ink); background: white; transition: border-color 0.2s; }
+    .form-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(67,56,202,0.08); }
+    .form-btn { width: 100%; padding: 13px; border-radius: 50px; border: none; background: var(--purple); color: white; font-size: 14px; font-weight: 500; font-family: var(--sans); cursor: pointer; margin-top: 8px; transition: all 0.2s; }
+    .form-btn:hover { background: var(--purple2); }
+    .form-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .form-divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
+    .form-divider-line { flex: 1; height: 0.5px; background: var(--border); }
+    .form-divider-text { font-size: 12px; color: var(--ink3); }
+    .btn-google { width: 100%; padding: 12px; border-radius: 50px; border: 0.5px solid var(--border2); background: white; color: var(--ink); font-size: 14px; font-weight: 500; font-family: var(--sans); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.15s; }
+    .btn-google:hover { background: var(--cream2); }
+    .modal-switch { text-align: center; font-size: 13px; color: var(--ink3); margin-top: 16px; }
+    .modal-switch a { color: var(--purple); cursor: pointer; text-decoration: none; font-weight: 500; }
+    .modal-err { background: #FEF2F2; border: 0.5px solid #FECACA; border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13px; color: #991B1B; margin-bottom: 14px; }
 
-    .feat {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--ink3);
-    }
-
-    .feat-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--purple);
-    }
-
-    .land-footer {
-      padding: 20px 32px;
-      text-align: center;
-      font-size: 12px;
-      color: var(--ink3);
-      border-top: 0.5px solid var(--border);
-      animation: fadeUp 0.7s 0.6s ease both;
-    }
-
-    /* ── APP ──────────────────────────────────────── */
-    #app {
-      display: none;
-      min-height: 100vh;
-      flex-direction: column;
-      align-items: center;
-      padding-bottom: 80px;
-    }
-
+    /* APP */
+    #app { display: none; min-height: 100vh; flex-direction: column; align-items: center; padding-bottom: 80px; }
     #app.visible { display: flex; }
-
-    .app-nav {
-      width: 100%;
-      padding: 18px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 0.5px solid var(--border);
-      background: var(--cream);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .app-logo {
-      font-family: var(--serif);
-      font-size: 18px;
-      font-weight: 600;
-      color: var(--ink);
-    }
-
+    .app-nav { width: 100%; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border); background: var(--cream); position: sticky; top: 0; z-index: 10; }
+    .app-logo { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--ink); }
     .app-logo em { color: var(--purple); font-style: italic; }
-
-    .app-step {
-      font-size: 12px;
-      color: var(--ink3);
-      font-weight: 400;
-    }
-
-    .app-back {
-      font-size: 13px;
-      color: var(--ink3);
-      cursor: pointer;
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: 0.5px solid var(--border2);
-      background: transparent;
-      font-family: var(--sans);
-      transition: all 0.15s;
-    }
-
+    .app-step { font-size: 12px; color: var(--ink3); }
+    .app-back { font-size: 13px; color: var(--ink3); cursor: pointer; padding: 6px 14px; border-radius: 20px; border: 0.5px solid var(--border2); background: transparent; font-family: var(--sans); transition: all 0.15s; }
     .app-back:hover { background: var(--cream2); color: var(--ink); }
 
     /* PROGRESS */
-    .progress-wrap {
-      width: 100%;
-      max-width: 580px;
-      padding: 28px 24px 0;
-    }
-
-    .progress-bar {
-      height: 2px;
-      background: var(--cream3);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--purple);
-      border-radius: 2px;
-      transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
-    }
-
-    .progress-steps {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-    }
-
-    .ps {
-      font-size: 11px;
-      color: var(--ink3);
-      transition: color 0.3s;
-    }
-
+    .progress-wrap { width: 100%; max-width: 580px; padding: 28px 24px 0; }
+    .progress-bar { height: 2px; background: var(--cream3); border-radius: 2px; }
+    .progress-fill { height: 100%; background: var(--purple); border-radius: 2px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+    .progress-steps { display: flex; justify-content: space-between; margin-top: 10px; }
+    .ps { font-size: 11px; color: var(--ink3); transition: color 0.3s; }
     .ps.active { color: var(--purple); font-weight: 500; }
     .ps.done { color: var(--teal); }
 
-    /* MAIN CONTENT */
-    main {
-      width: 100%;
-      max-width: 580px;
-      padding: 36px 24px 0;
-    }
-
+    /* MAIN */
+    main { width: 100%; max-width: 580px; padding: 36px 24px 0; }
     .phase { animation: fadeUp 0.4s ease both; }
+    .eyebrow { font-size: 11px; font-weight: 500; color: var(--purple); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+    .phase-title { font-family: var(--serif); font-size: 26px; font-weight: 600; color: var(--ink); line-height: 1.3; margin-bottom: 8px; }
+    .phase-sub { font-size: 14px; color: var(--ink2); line-height: 1.65; margin-bottom: 28px; font-weight: 300; }
 
-    .eyebrow {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--purple);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    .phase-title {
-      font-family: var(--serif);
-      font-size: 26px;
-      font-weight: 600;
-      color: var(--ink);
-      line-height: 1.3;
-      margin-bottom: 8px;
-    }
-
-    .phase-sub {
-      font-size: 14px;
-      color: var(--ink2);
-      line-height: 1.65;
-      margin-bottom: 28px;
-      font-weight: 300;
-    }
-
-    /* CATEGORY GRID */
-    .cat-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 28px;
-    }
-
-    .cat-btn {
-      padding: 16px;
-      border-radius: var(--radius-sm);
-      border: 0.5px solid var(--border);
-      background: white;
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--ink2);
-      cursor: pointer;
-      text-align: left;
-      font-family: var(--sans);
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      line-height: 1.3;
-    }
-
-    .cat-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: var(--cream2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      flex-shrink: 0;
-      transition: background 0.2s;
-    }
-
+    /* CATEGORIES */
+    .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+    .cat-btn { padding: 16px; border-radius: var(--radius-sm); border: 0.5px solid var(--border); background: white; font-size: 14px; font-weight: 400; color: var(--ink2); cursor: pointer; text-align: left; font-family: var(--sans); transition: all 0.2s ease; display: flex; align-items: center; gap: 10px; }
+    .cat-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--cream2); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; transition: background 0.2s; }
     .cat-btn:hover { border-color: var(--purple); color: var(--ink); transform: translateY(-1px); }
     .cat-btn:hover .cat-icon { background: var(--purple-soft); }
     .cat-btn.selected { border-color: var(--purple); border-width: 1.5px; color: var(--ink); background: white; }
     .cat-btn.selected .cat-icon { background: var(--purple-soft); }
 
+    /* TOPIC */
+    .topic-wrap { margin-top: 4px; padding-top: 16px; border-top: 0.5px solid var(--border); animation: fadeUp 0.3s ease both; }
+    .topic-label { font-size: 12px; font-weight: 500; color: var(--ink3); margin-bottom: 8px; display: block; }
+    .topic-input { width: 100%; border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 14px; font-family: var(--sans); font-weight: 300; color: var(--ink); background: white; transition: border-color 0.2s; margin-bottom: 16px; }
+    .topic-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(67,56,202,0.08); }
+    .topic-input::placeholder { color: var(--ink3); font-style: italic; }
+
     /* TEXTAREA */
-    textarea {
-      width: 100%;
-      border: 0.5px solid var(--border2);
-      border-radius: var(--radius-sm);
-      padding: 16px 18px;
-      font-size: 15px;
-      font-family: var(--sans);
-      font-weight: 300;
-      color: var(--ink);
-      background: white;
-      resize: none;
-      min-height: 130px;
-      line-height: 1.7;
-      margin-bottom: 20px;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    textarea:focus {
-      outline: none;
-      border-color: var(--purple);
-      box-shadow: 0 0 0 3px rgba(67,56,202,0.08);
-    }
-
+    textarea { width: 100%; border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 16px 18px; font-size: 15px; font-family: var(--sans); font-weight: 300; color: var(--ink); background: white; resize: none; min-height: 130px; line-height: 1.7; margin-bottom: 20px; transition: border-color 0.2s, box-shadow 0.2s; }
+    textarea:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(67,56,202,0.08); }
     textarea::placeholder { color: var(--ink3); font-style: italic; }
 
     /* BUTTONS */
     .btn-row { display: flex; gap: 10px; align-items: center; }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--ink);
-      color: var(--cream);
-      font-family: var(--sans);
-      font-size: 14px;
-      font-weight: 500;
-      padding: 13px 24px;
-      border-radius: 50px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      letter-spacing: 0.2px;
-    }
-
+    .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: var(--cream); font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 13px 24px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s ease; }
     .btn-primary:hover { background: var(--purple); transform: translateY(-1px); }
     .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-
-    .btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      font-family: var(--sans);
-      font-size: 14px;
-      color: var(--ink3);
-      background: transparent;
-      border: 0.5px solid var(--border2);
-      padding: 12px 20px;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
+    .btn-secondary { display: inline-flex; align-items: center; font-family: var(--sans); font-size: 14px; color: var(--ink3); background: transparent; border: 0.5px solid var(--border2); padding: 12px 20px; border-radius: 50px; cursor: pointer; transition: all 0.15s; }
     .btn-secondary:hover { color: var(--ink); background: var(--cream2); }
 
-    /* AI RESPONSE */
-    .ai-card {
-      background: white;
-      border: 0.5px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      margin-bottom: 20px;
-    }
-
-    .ai-label {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--teal);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    .ai-text {
-      font-size: 15px;
-      color: var(--ink);
-      line-height: 1.75;
-      white-space: pre-wrap;
-      font-weight: 300;
-    }
+    /* AI CARDS */
+    .ai-card { background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
+    .ai-label { font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+    .ai-text { font-size: 15px; color: var(--ink); line-height: 1.75; white-space: pre-wrap; font-weight: 300; }
 
     /* THINKING */
-    .thinking {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 20px 0;
-      font-size: 13px;
-      color: var(--ink3);
-      font-style: italic;
-    }
-
+    .thinking { display: flex; align-items: center; gap: 12px; padding: 20px 0; font-size: 13px; color: var(--ink3); font-style: italic; }
     .dots { display: flex; gap: 5px; }
-    .dots span {
-      width: 5px; height: 5px; border-radius: 50%;
-      background: var(--purple);
-      animation: pulse 1.4s infinite ease-in-out;
-    }
+    .dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--purple); animation: pulse 1.4s infinite ease-in-out; }
     .dots span:nth-child(2) { animation-delay: 0.2s; }
     .dots span:nth-child(3) { animation-delay: 0.4s; }
 
-    @keyframes pulse {
-      0%, 80%, 100% { opacity: 0.2; transform: scale(0.7); }
-      40% { opacity: 1; transform: scale(1); }
-    }
-
     /* CHIPS */
     .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
-    .chip {
-      background: var(--purple-soft);
-      color: var(--purple);
-      font-size: 12px;
-      font-weight: 500;
-      padding: 5px 13px;
-      border-radius: 20px;
-      letter-spacing: 0.2px;
-    }
+    .chip { background: var(--purple-soft); color: var(--purple); font-size: 12px; font-weight: 500; padding: 5px 13px; border-radius: 20px; }
 
     /* SUMMARY */
-    .summary-rule {
-      width: 32px;
-      height: 2px;
-      background: var(--purple);
-      margin-bottom: 16px;
-      border-radius: 2px;
-    }
+    .summary-rule { width: 32px; height: 2px; background: var(--purple); margin-bottom: 16px; border-radius: 2px; }
+    .section-divider { height: 0.5px; background: var(--border); margin: 24px 0; }
+
+    /* SAVE BANNER */
+    .save-banner { background: var(--purple-soft); border: 0.5px solid rgba(67,56,202,0.2); border-radius: var(--radius-sm); padding: 14px 18px; font-size: 13px; color: var(--purple); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .save-banner .save-icon { font-size: 16px; }
 
     /* ERROR */
-    .error-box {
-      background: #FEF2F2;
-      border: 0.5px solid #FECACA;
-      border-radius: var(--radius-sm);
-      padding: 14px 18px;
-      font-size: 13px;
-      color: #991B1B;
-      margin-top: 12px;
-      line-height: 1.6;
-    }
+    .error-box { background: #FEF2F2; border: 0.5px solid #FECACA; border-radius: var(--radius-sm); padding: 14px 18px; font-size: 13px; color: #991B1B; margin-top: 12px; line-height: 1.6; }
 
-    /* DIVIDER */
-    .section-divider {
-      height: 0.5px;
-      background: var(--border);
-      margin: 24px 0;
-    }
+    /* JOURNAL PAGE */
+    #journal { display: none; min-height: 100vh; flex-direction: column; align-items: center; padding-bottom: 80px; }
+    #journal.visible { display: flex; }
+    .journal-nav { width: 100%; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border); background: var(--cream); position: sticky; top: 0; z-index: 10; }
+    .journal-content { width: 100%; max-width: 580px; padding: 36px 24px 0; }
+    .journal-header { margin-bottom: 28px; }
+    .journal-title { font-family: var(--serif); font-size: 28px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .journal-sub { font-size: 14px; color: var(--ink3); font-weight: 300; }
+    .decision-card { background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; }
+    .decision-card:hover { border-color: var(--purple); transform: translateY(-1px); }
+    .decision-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+    .decision-cat { font-size: 11px; font-weight: 500; color: var(--purple); background: var(--purple-soft); padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+    .decision-date { font-size: 11px; color: var(--ink3); white-space: nowrap; }
+    .decision-text { font-size: 14px; color: var(--ink); line-height: 1.5; font-weight: 400; margin-bottom: 8px; }
+    .decision-rec { font-size: 13px; color: var(--ink2); line-height: 1.5; font-weight: 300; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .checkin-badges { display: flex; gap: 6px; margin-top: 10px; }
+    .checkin-badge { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
+    .checkin-pending { background: #FEF3C7; color: #92400E; }
+    .checkin-done { background: var(--teal-soft); color: var(--teal); }
+    .empty-journal { text-align: center; padding: 60px 20px; }
+    .empty-icon { font-size: 40px; margin-bottom: 16px; }
+    .empty-title { font-family: var(--serif); font-size: 20px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+    .empty-sub { font-size: 14px; color: var(--ink3); font-weight: 300; }
 
     /* ANIMATIONS */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* LANGUAGE TOGGLE */
-    .lang-toggle { display: flex; align-items: center; gap: 2px; background: var(--cream2); border-radius: 20px; padding: 3px; border: 0.5px solid var(--border); }
-    .lang-btn { font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 20px; border: none; background: transparent; color: var(--ink3); cursor: pointer; font-family: var(--sans); transition: all 0.2s; }
-    .lang-btn.active { background: var(--purple); color: white; }
-
-    /* TOPIC INPUT */
-    .topic-wrap { margin-top: 16px; padding-top: 16px; border-top: 0.5px solid var(--border); animation: fadeUp 0.3s ease both; }
-    .topic-label { font-size: 12px; font-weight: 500; color: var(--ink3); margin-bottom: 8px; display: block; }
-    .topic-input { width: 100%; border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 14px; font-family: var(--sans); font-weight: 300; color: var(--ink); background: white; transition: border-color 0.2s, box-shadow 0.2s; margin-bottom: 16px; }
-    .topic-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(67,56,202,0.08); }
-    .topic-input::placeholder { color: var(--ink3); font-style: italic; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes pulse { 0%, 80%, 100% { opacity: 0.2; transform: scale(0.7); } 40% { opacity: 1; transform: scale(1); } }
 
     /* MOBILE */
     @media (max-width: 480px) {
-      .land-nav { padding: 18px 20px; }
+      .land-nav { padding: 16px 20px; }
       .hero-features { gap: 16px; }
       .cat-grid { grid-template-columns: 1fr; }
-      .land-footer { padding: 16px 20px; }
-      .app-nav { padding: 14px 20px; }
-      main { padding: 28px 20px 0; }
+      .app-nav, .journal-nav { padding: 12px 20px; }
+      main, .journal-content { padding: 24px 20px 0; }
       .progress-wrap { padding: 20px 20px 0; }
+      .user-email { display: none; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── LANDING PAGE ───────────────────────────────────── -->
+<!-- ── LANDING ─────────────────────────────────────────── -->
 <div id="landing">
   <nav class="land-nav">
     <div class="land-logo"><em>Clarity</em></div>
-    <div style="display:flex;align-items:center;gap:12px;">
+    <div class="nav-right">
       <div class="lang-toggle">
         <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
         <button class="lang-btn" onclick="setLang('es',this)">ES</button>
       </div>
-      <div class="land-badge" id="land-badge">Free Beta</div>
+      <div id="land-auth-btns">
+        <button class="btn-auth" onclick="openModal('signin')" id="l-signin-btn">Sign in</button>
+        <button class="btn-auth btn-auth-primary" onclick="openModal('signup')" id="l-signup-btn">Sign up free</button>
+      </div>
+      <div id="land-user-info" style="display:none">
+        <div class="user-pill">
+          <div class="user-avatar" id="land-avatar">P</div>
+          <span class="user-email" id="land-email"></span>
+          <button class="btn-signout" onclick="signOut()" id="l-signout-btn">Sign out</button>
+        </div>
+      </div>
     </div>
   </nav>
 
   <div class="land-hero">
     <div class="hero-eyebrow" id="l-eyebrow">Your personal decision engine</div>
-    <h1 class="hero-title" id="l-title">
-      Stop overthinking.<br>Start deciding <em>well.</em>
-    </h1>
-    <p class="hero-sub" id="l-sub">
-      Clarity uses AI and behavioral science to help you work through any decision — with honesty, structure, and a concrete recommendation.
-    </p>
+    <h1 class="hero-title" id="l-title">Stop overthinking.<br>Start deciding <em>well.</em></h1>
+    <p class="hero-sub" id="l-sub">Clarity uses AI and behavioral science to help you work through any decision — with honesty, structure, and a concrete recommendation.</p>
     <button class="hero-cta" onclick="startApp()">
       <span id="l-cta">Make a decision</span>
       <span class="arrow">→</span>
@@ -584,13 +246,40 @@
       <div class="feat"><div class="feat-dot"></div><span id="l-f4">Takes 3 minutes</span></div>
     </div>
   </div>
-
-  <footer class="land-footer">
-    <span id="land-footer-text">Built by Pedro &mdash; Powered by Anthropic Claude</span>
-  </footer>
+  <footer class="land-footer"><span id="land-footer-text">Built by Pedro — Powered by Anthropic Claude</span></footer>
 </div>
 
-<!-- ── APP ───────────────────────────────────────────── -->
+<!-- ── AUTH MODAL ──────────────────────────────────────── -->
+<div id="auth-modal" style="display:none">
+  <div class="modal-overlay" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div class="modal-title" id="modal-title">Sign in</div>
+      <div class="modal-sub" id="modal-sub">Welcome back to Clarity</div>
+      <div id="modal-err" style="display:none" class="modal-err"></div>
+      <button class="btn-google" onclick="signInWithGoogle()">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        <span id="google-btn-text">Continue with Google</span>
+      </button>
+      <div class="form-divider"><div class="form-divider-line"></div><div class="form-divider-text">or</div><div class="form-divider-line"></div></div>
+      <div class="form-field">
+        <label class="form-label" id="email-label">Email</label>
+        <input type="email" class="form-input" id="auth-email" placeholder="you@email.com">
+      </div>
+      <div class="form-field">
+        <label class="form-label" id="pass-label">Password</label>
+        <input type="password" class="form-input" id="auth-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')submitAuth()">
+      </div>
+      <button class="form-btn" onclick="submitAuth()" id="modal-submit-btn">Sign in</button>
+      <div class="modal-switch" id="modal-switch">
+        <span id="modal-switch-text">Don't have an account?</span>
+        <a onclick="toggleModal()" id="modal-switch-link">Sign up</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── APP ────────────────────────────────────────────── -->
 <div id="app">
   <nav class="app-nav">
     <div class="app-logo"><em>Clarity</em></div>
@@ -600,14 +289,11 @@
         <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
         <button class="lang-btn" onclick="setLang('es',this)">ES</button>
       </div>
-      <button class="app-back" onclick="goLanding()" id="back-btn">&#8592; Home</button>
+      <button class="app-back" onclick="goLanding()" id="back-btn">← Home</button>
     </div>
   </nav>
-
   <div class="progress-wrap">
-    <div class="progress-bar">
-      <div class="progress-fill" id="progress" style="width:0%"></div>
-    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
     <div class="progress-steps">
       <span class="ps active" id="ps0">Category</span>
       <span class="ps" id="ps1">Decision</span>
@@ -616,48 +302,32 @@
       <span class="ps" id="ps4">Summary</span>
     </div>
   </div>
-
   <main>
-
-    <!-- Phase 0: Category -->
     <div id="p0" class="phase">
       <div class="eyebrow" id="a-step1">Step 1</div>
       <h2 class="phase-title" id="a-t0">What are you deciding?</h2>
-      <p class="phase-sub" id="a-s0">Choose a category so Clarity can select the right thinking frameworks for your situation.</p>
+      <p class="phase-sub" id="a-s0">Choose a category so Clarity can select the right thinking frameworks.</p>
       <div class="cat-grid">
-        <div class="cat-btn" onclick="pick(this,'Career & Work')">
-          <div class="cat-icon">💼</div><span id="c0">Career & Work</span>
-        </div>
-        <div class="cat-btn" onclick="pick(this,'Finance & Money')">
-          <div class="cat-icon">💰</div><span id="c1">Finance & Money</span>
-        </div>
-        <div class="cat-btn" onclick="pick(this,'Relationships')">
-          <div class="cat-icon">🤝</div><span id="c2">Relationships</span>
-        </div>
-        <div class="cat-btn" onclick="pick(this,'Health & Lifestyle')">
-          <div class="cat-icon">🧘</div><span id="c3">Health & Lifestyle</span>
-        </div>
-        <div class="cat-btn" onclick="pick(this,'Education')">
-          <div class="cat-icon">📚</div><span id="c4">Education</span>
-        </div>
-        <div class="cat-btn" onclick="pick(this,'Big Life Change')">
-          <div class="cat-icon">🌎</div><span id="c5">Big Life Change</span>
-        </div>
+        <div class="cat-btn" onclick="pick(this,'Career & Work')"><div class="cat-icon">💼</div><span id="c0">Career & Work</span></div>
+        <div class="cat-btn" onclick="pick(this,'Finance & Money')"><div class="cat-icon">💰</div><span id="c1">Finance & Money</span></div>
+        <div class="cat-btn" onclick="pick(this,'Relationships')"><div class="cat-icon">🤝</div><span id="c2">Relationships</span></div>
+        <div class="cat-btn" onclick="pick(this,'Health & Lifestyle')"><div class="cat-icon">🧘</div><span id="c3">Health & Lifestyle</span></div>
+        <div class="cat-btn" onclick="pick(this,'Education')"><div class="cat-icon">📚</div><span id="c4">Education</span></div>
+        <div class="cat-btn" onclick="pick(this,'Big Life Change')"><div class="cat-icon">🌎</div><span id="c5">Big Life Change</span></div>
       </div>
       <div class="topic-wrap" id="topic-wrap" style="display:none">
         <label class="topic-label" id="topic-label">Want to be more specific? Describe your situation briefly (optional)</label>
         <input type="text" class="topic-input" id="topic" placeholder="e.g. Deciding whether to accept a job offer in another city...">
       </div>
       <div class="btn-row" style="margin-top:8px;">
-        <button class="btn-primary" id="btn0" onclick="go(1)" disabled id="a-btn0">Continue →</button>
+        <button class="btn-primary" id="btn0" onclick="go(1)" disabled>Continue →</button>
       </div>
     </div>
 
-    <!-- Phase 1: Decision Input -->
     <div id="p1" class="phase" style="display:none">
       <div class="eyebrow" id="a-step2">Step 2</div>
       <h2 class="phase-title" id="a-t1">Describe your decision</h2>
-      <p class="phase-sub" id="a-s1">Be as specific and honest as you can. The more real context you give, the sharper Clarity's thinking will be.</p>
+      <p class="phase-sub" id="a-s1">Be as specific and honest as you can. The more context you give, the sharper Clarity's analysis will be.</p>
       <textarea id="dec" placeholder="I'm trying to decide whether to..." rows="5"></textarea>
       <div class="btn-row">
         <button class="btn-primary" onclick="analyze()" id="btn-analyze">Analyze this →</button>
@@ -665,20 +335,13 @@
       </div>
     </div>
 
-    <!-- Phase 2: Clarifying Question -->
     <div id="p2" class="phase" style="display:none">
       <div class="eyebrow" id="a-step3">Step 3</div>
       <h2 class="phase-title" id="a-t2">One question first</h2>
       <p class="phase-sub" id="a-s2">Before applying frameworks, Clarity needs to understand something you may not have fully considered.</p>
-      <div id="q-load" class="thinking">
-        <div class="dots"><span></span><span></span><span></span></div>
-        <span id="q-thinking">Thinking through your situation...</span>
-      </div>
+      <div id="q-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div><span id="q-thinking">Thinking through your situation...</span></div>
       <div id="q-body" style="display:none">
-        <div class="ai-card">
-          <div class="ai-label" id="clarity-asks-label">Clarity asks</div>
-          <div class="ai-text" id="q-text"></div>
-        </div>
+        <div class="ai-card"><div class="ai-label" id="clarity-asks-label">Clarity asks</div><div class="ai-text" id="q-text"></div></div>
         <textarea id="ans" placeholder="Take your time with this one..." rows="4"></textarea>
       </div>
       <div id="q-err"></div>
@@ -688,20 +351,13 @@
       </div>
     </div>
 
-    <!-- Phase 3: Framework Analysis -->
     <div id="p3" class="phase" style="display:none">
       <div class="eyebrow" id="a-step4">Step 4</div>
       <h2 class="phase-title" id="a-t3">Applying decision frameworks</h2>
       <p class="phase-sub" id="a-s3">Clarity is analyzing your situation through multiple lenses of behavioral science and decision theory.</p>
-      <div id="f-load" class="thinking">
-        <div class="dots"><span></span><span></span><span></span></div>
-        <span id="f-thinking">Running analysis...</span>
-      </div>
+      <div id="f-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div><span id="f-thinking">Running analysis...</span></div>
       <div id="f-body" style="display:none">
-        <div class="ai-card">
-          <div class="ai-label" id="f-label">Framework analysis</div>
-          <div class="ai-text" id="f-text"></div>
-        </div>
+        <div class="ai-card"><div class="ai-label" id="f-label">Framework analysis</div><div class="ai-text" id="f-text"></div></div>
       </div>
       <div id="f-err"></div>
       <div class="btn-row" id="f-row" style="display:none">
@@ -710,275 +366,472 @@
       </div>
     </div>
 
-    <!-- Phase 4: Summary -->
     <div id="p4" class="phase" style="display:none">
       <div class="eyebrow" id="a-summary-eyebrow">Your clarity summary</div>
       <h2 class="phase-title" id="a-t4">Here is what I see</h2>
-      <div id="r-load" class="thinking">
-        <div class="dots"><span></span><span></span><span></span></div>
-        <span id="r-thinking">Synthesizing everything...</span>
-      </div>
+      <div id="r-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div><span id="r-thinking">Synthesizing everything...</span></div>
       <div id="r-body" style="display:none">
+        <div id="save-banner" style="display:none" class="save-banner"><span class="save-icon">✓</span><span id="save-msg">Decision saved to your journal</span></div>
         <div class="chips" id="r-chips"></div>
-        <div class="ai-card">
-          <div class="summary-rule"></div>
-          <div class="ai-text" id="r-text"></div>
-        </div>
+        <div class="ai-card"><div class="summary-rule"></div><div class="ai-text" id="r-text"></div></div>
         <div class="section-divider"></div>
-        <div class="btn-row">
+        <div class="btn-row" style="flex-wrap:wrap;">
           <button class="btn-primary" onclick="restart()" id="btn-restart">Make another decision</button>
+          <button class="btn-secondary" onclick="goJournal()" id="btn-journal" style="display:none">View journal</button>
           <button class="btn-secondary" onclick="goLanding()" id="btn-home">Back to home</button>
         </div>
       </div>
       <div id="r-err"></div>
     </div>
-
   </main>
 </div>
 
+<!-- ── JOURNAL ─────────────────────────────────────────── -->
+<div id="journal">
+  <nav class="journal-nav">
+    <div class="app-logo"><em>Clarity</em></div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+        <button class="lang-btn" onclick="setLang('es',this)">ES</button>
+      </div>
+      <button class="app-back" onclick="goLanding()">← Home</button>
+    </div>
+  </nav>
+  <div class="journal-content">
+    <div class="journal-header">
+      <div class="journal-title" id="j-title">Decision Journal</div>
+      <div class="journal-sub" id="j-sub">Your full history of decisions and reflections</div>
+    </div>
+    <div id="journal-list"></div>
+  </div>
+</div>
+
 <script>
-  const S = { cat:'', topic:'', dec:'', q:'', ans:'', fw:'', lang:'en' };
+const SUPABASE_URL = 'https://olqadwjnhaulcndoicrj.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_UzMP3KhdC3SqFEGWzElh4A_0kZX63jF';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  const T = {
-    en: {
-      badge: 'Free Beta', eyebrow: 'Your personal decision engine',
-      title: 'Stop overthinking.<br>Start deciding <em>well.</em>',
-      sub: 'Clarity uses AI and behavioral science to help you work through any decision — with honesty, structure, and a concrete recommendation.',
-      cta: 'Make a decision', f1: 'Free to use', f2: 'No sign-up required', f3: 'Powered by Claude AI', f4: 'Takes 3 minutes',
-      footer: 'Built by Pedro — Powered by Anthropic Claude',
-      step1:'Step 1', t0:'What are you deciding?', s0:'Choose a category so Clarity can select the right thinking frameworks for your situation.',
-      topicLabel: 'Want to be more specific? Describe your situation briefly (optional)',
-      topicPlaceholder: 'e.g. Deciding whether to accept a job offer in another city...',
-      btnContinue: 'Continue →', btnBack: '← Home', navStep: 'Step',
-      c0:'Career & Work', c1:'Finance & Money', c2:'Relationships', c3:'Health & Lifestyle', c4:'Education', c5:'Big Life Change',
-      step2:'Step 2', t1:'Describe your decision', s1:'Be as specific and honest as you can. The more real context you give, the sharper Clarity\'s thinking will be.',
-      decPlaceholder: 'I\'m trying to decide whether to...',
-      step3:'Step 3', t2:'One question first', s2:'Before applying frameworks, Clarity needs to understand something you may not have fully considered.',
-      thinking1: 'Thinking through your situation...', clarityAsks: 'Clarity asks',
-      ansPH: 'Take your time with this one...',
-      step4:'Step 4', t3:'Applying decision frameworks', s3:'Clarity is analyzing your situation through multiple lenses of behavioral science and decision theory.',
-      thinking2: 'Running analysis...', frameworkLabel: 'Framework analysis',
-      t4:'Here is what I see', thinking3: 'Synthesizing everything...',
-      btnAnalyze: 'Analyze this →', btnFrameworks: 'Continue →', btnRec: 'Get my recommendation →',
-      btnRestart: 'Make another decision', btnHome: 'Back to home',
-      errConn: 'Could not reach the AI engine. Please check your connection and try again.',
-      errRetry: 'Could not reach the AI engine. Please try again.',
-      summaryEyebrow: 'Your clarity summary',
-      ps: ['Category','Decision','Reflect','Frameworks','Summary']
-    },
-    es: {
-      badge: 'Beta Gratuita', eyebrow: 'Tu motor personal de decisiones',
-      title: 'Deja de dudar.<br>Empieza a decidir <em>bien.</em>',
-      sub: 'Clarity usa inteligencia artificial y ciencia del comportamiento para ayudarte a tomar cualquier decisión — con honestidad, estructura y una recomendación concreta.',
-      cta: 'Tomar una decisión', f1: 'Gratis', f2: 'Sin registro', f3: 'Impulsado por Claude AI', f4: 'Solo 3 minutos',
-      footer: 'Creado por Pedro — Impulsado por Anthropic Claude',
-      step1:'Paso 1', t0:'¿Qué estás decidiendo?', s0:'Elige una categoría para que Clarity seleccione los marcos de pensamiento adecuados para tu situación.',
-      topicLabel: '¿Quieres ser más específico? Describe brevemente tu situación (opcional)',
-      topicPlaceholder: 'Ej. Estoy decidiendo si aceptar una oferta de trabajo en otra ciudad...',
-      btnContinue: 'Continuar →', btnBack: '← Inicio', navStep: 'Paso',
-      c0:'Carrera & Trabajo', c1:'Finanzas & Dinero', c2:'Relaciones', c3:'Salud & Estilo de vida', c4:'Educación', c5:'Gran Cambio de Vida',
-      step2:'Paso 2', t1:'Describe tu decisión', s1:'Sé lo más específico y honesto posible. Cuanto más contexto real des, más preciso será el análisis de Clarity.',
-      decPlaceholder: 'Estoy tratando de decidir si...',
-      step3:'Paso 3', t2:'Una pregunta primero', s2:'Antes de aplicar los marcos, Clarity necesita entender algo que quizás no hayas considerado del todo.',
-      thinking1: 'Pensando en tu situación...', clarityAsks: 'Clarity pregunta',
-      ansPH: 'Tómate tu tiempo con esta...',
-      step4:'Paso 4', t3:'Aplicando marcos de decisión', s3:'Clarity está analizando tu situación a través de múltiples perspectivas de ciencia del comportamiento.',
-      thinking2: 'Ejecutando análisis...', frameworkLabel: 'Análisis de marcos',
-      t4:'Esto es lo que veo', thinking3: 'Sintetizando todo...',
-      btnAnalyze: 'Analizar →', btnFrameworks: 'Continuar →', btnRec: 'Ver mi recomendación →',
-      btnRestart: 'Tomar otra decisión', btnHome: 'Volver al inicio',
-      errConn: 'No se pudo conectar al motor de IA. Por favor verifica tu conexión e intenta de nuevo.',
-      errRetry: 'No se pudo conectar al motor de IA. Por favor intenta de nuevo.',
-      summaryEyebrow: 'Tu resumen de claridad',
-      ps: ['Categoría','Decisión','Reflexión','Marcos','Resumen']
+let currentUser = null;
+let modalMode = 'signin';
+const S = { cat:'', topic:'', dec:'', q:'', ans:'', fw:'', rec:'', chips:[], lang:'en' };
+
+const T = {
+  en: {
+    badge:'Free Beta', eyebrow:'Your personal decision engine',
+    title:'Stop overthinking.<br>Start deciding <em>well.</em>',
+    sub:'Clarity uses AI and behavioral science to help you work through any decision — with honesty, structure, and a concrete recommendation.',
+    cta:'Make a decision', f1:'Free to use', f2:'No sign-up required', f3:'Powered by Claude AI', f4:'Takes 3 minutes',
+    footer:'Built by Pedro — Powered by Anthropic Claude',
+    signin:'Sign in', signup:'Sign up free', signout:'Sign out',
+    googleBtn:'Continue with Google', emailLabel:'Email', passLabel:'Password',
+    signinTitle:'Sign in', signinSub:'Welcome back to Clarity',
+    signupTitle:'Create account', signupSub:'Start your decision journal today',
+    switchSignin:"Don't have an account?", switchSignup:'Already have an account?',
+    switchLinkSignin:'Sign up', switchLinkSignup:'Sign in',
+    step1:'Step 1', t0:'What are you deciding?', s0:'Choose a category so Clarity can select the right thinking frameworks.',
+    topicLabel:'Want to be more specific? Describe your situation briefly (optional)',
+    topicPH:'e.g. Deciding whether to accept a job offer in another city...',
+    btnContinue:'Continue →', btnBack:'← Home', navStep:'Step',
+    c0:'Career & Work', c1:'Finance & Money', c2:'Relationships', c3:'Health & Lifestyle', c4:'Education', c5:'Big Life Change',
+    step2:'Step 2', t1:'Describe your decision', s1:'Be as specific and honest as you can.',
+    decPH:'I\'m trying to decide whether to...',
+    step3:'Step 3', t2:'One question first', s2:'Before applying frameworks, Clarity needs to understand something you may not have fully considered.',
+    thinking1:'Thinking through your situation...', clarityAsks:'Clarity asks', ansPH:'Take your time with this one...',
+    step4:'Step 4', t3:'Applying decision frameworks', s3:'Clarity is analyzing your situation through multiple lenses.',
+    thinking2:'Running analysis...', frameworkLabel:'Framework analysis',
+    t4:'Here is what I see', thinking3:'Synthesizing everything...',
+    btnAnalyze:'Analyze this →', btnFrameworks:'Continue →', btnRec:'Get my recommendation →',
+    btnRestart:'Make another decision', btnJournal:'View journal', btnHome:'Back to home',
+    summaryEyebrow:'Your clarity summary',
+    saveBanner:'Decision saved to your journal',
+    errConn:'Could not reach the AI engine. Please check your connection and try again.',
+    errRetry:'Could not reach the AI engine. Please try again.',
+    jTitle:'Decision Journal', jSub:'Your full history of decisions and reflections',
+    jEmpty:'No decisions yet', jEmptySub:'Make your first decision and it will appear here.',
+    checkin30:'30-day check-in due', checkin90:'90-day check-in due', checkin180:'180-day check-in due',
+    checkinDone:'Reflected',
+    ps:['Category','Decision','Reflect','Frameworks','Summary']
+  },
+  es: {
+    badge:'Beta Gratuita', eyebrow:'Tu motor personal de decisiones',
+    title:'Deja de dudar.<br>Empieza a decidir <em>bien.</em>',
+    sub:'Clarity usa inteligencia artificial y ciencia del comportamiento para ayudarte a tomar cualquier decisión — con honestidad, estructura y una recomendación concreta.',
+    cta:'Tomar una decisión', f1:'Gratis', f2:'Sin registro', f3:'Impulsado por Claude AI', f4:'Solo 3 minutos',
+    footer:'Creado por Pedro — Impulsado por Anthropic Claude',
+    signin:'Iniciar sesión', signup:'Crear cuenta gratis', signout:'Cerrar sesión',
+    googleBtn:'Continuar con Google', emailLabel:'Correo electrónico', passLabel:'Contraseña',
+    signinTitle:'Iniciar sesión', signinSub:'Bienvenido de vuelta a Clarity',
+    signupTitle:'Crear cuenta', signupSub:'Empieza tu diario de decisiones hoy',
+    switchSignin:'¿No tienes cuenta?', switchSignup:'¿Ya tienes cuenta?',
+    switchLinkSignin:'Crear cuenta', switchLinkSignup:'Iniciar sesión',
+    step1:'Paso 1', t0:'¿Qué estás decidiendo?', s0:'Elige una categoría para que Clarity seleccione los marcos adecuados.',
+    topicLabel:'¿Quieres ser más específico? Describe tu situación brevemente (opcional)',
+    topicPH:'Ej. Estoy decidiendo si aceptar una oferta de trabajo en otra ciudad...',
+    btnContinue:'Continuar →', btnBack:'← Inicio', navStep:'Paso',
+    c0:'Carrera & Trabajo', c1:'Finanzas & Dinero', c2:'Relaciones', c3:'Salud & Estilo de vida', c4:'Educación', c5:'Gran Cambio de Vida',
+    step2:'Paso 2', t1:'Describe tu decisión', s1:'Sé lo más específico y honesto posible.',
+    decPH:'Estoy tratando de decidir si...',
+    step3:'Paso 3', t2:'Una pregunta primero', s2:'Antes de aplicar los marcos, Clarity necesita entender algo que quizás no hayas considerado del todo.',
+    thinking1:'Pensando en tu situación...', clarityAsks:'Clarity pregunta', ansPH:'Tómate tu tiempo con esta...',
+    step4:'Paso 4', t3:'Aplicando marcos de decisión', s3:'Clarity analiza tu situación a través de múltiples perspectivas.',
+    thinking2:'Ejecutando análisis...', frameworkLabel:'Análisis de marcos',
+    t4:'Esto es lo que veo', thinking3:'Sintetizando todo...',
+    btnAnalyze:'Analizar →', btnFrameworks:'Continuar →', btnRec:'Ver mi recomendación →',
+    btnRestart:'Tomar otra decisión', btnJournal:'Ver diario', btnHome:'Volver al inicio',
+    summaryEyebrow:'Tu resumen de claridad',
+    saveBanner:'Decisión guardada en tu diario',
+    errConn:'No se pudo conectar al motor de IA. Por favor verifica tu conexión.',
+    errRetry:'No se pudo conectar al motor de IA. Por favor intenta de nuevo.',
+    jTitle:'Diario de Decisiones', jSub:'Tu historial completo de decisiones y reflexiones',
+    jEmpty:'Aún no hay decisiones', jEmptySub:'Toma tu primera decisión y aparecerá aquí.',
+    checkin30:'Revisión de 30 días pendiente', checkin90:'Revisión de 90 días pendiente', checkin180:'Revisión de 180 días pendiente',
+    checkinDone:'Reflexionado',
+    ps:['Categoría','Decisión','Reflexión','Marcos','Resumen']
+  }
+};
+
+// ── AUTH ──────────────────────────────────────────────────
+async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) setUser(session.user);
+  sb.auth.onAuthStateChange((_event, session) => {
+    if (session?.user) setUser(session.user);
+    else clearUser();
+  });
+}
+
+function setUser(user) {
+  currentUser = user;
+  const email = user.email || '';
+  const initial = email.charAt(0).toUpperCase();
+  document.getElementById('land-avatar').textContent = initial;
+  document.getElementById('land-email').textContent = email;
+  document.getElementById('land-auth-btns').style.display = 'none';
+  document.getElementById('land-user-info').style.display = 'flex';
+}
+
+function clearUser() {
+  currentUser = null;
+  document.getElementById('land-auth-btns').style.display = 'flex';
+  document.getElementById('land-user-info').style.display = 'none';
+}
+
+function openModal(mode) {
+  modalMode = mode;
+  updateModal();
+  document.getElementById('auth-modal').style.display = 'flex';
+  document.getElementById('auth-email').focus();
+}
+
+function closeModal() { document.getElementById('auth-modal').style.display = 'none'; }
+function closeModalOutside(e) { if(e.target === e.currentTarget) closeModal(); }
+
+function toggleModal() {
+  modalMode = modalMode === 'signin' ? 'signup' : 'signin';
+  updateModal();
+}
+
+function updateModal() {
+  const t = T[S.lang];
+  const isSignin = modalMode === 'signin';
+  document.getElementById('modal-title').textContent = isSignin ? t.signinTitle : t.signupTitle;
+  document.getElementById('modal-sub').textContent = isSignin ? t.signinSub : t.signupSub;
+  document.getElementById('modal-submit-btn').textContent = isSignin ? t.signin : t.signup;
+  document.getElementById('modal-switch-text').textContent = isSignin ? t.switchSignin : t.switchSignup;
+  document.getElementById('modal-switch-link').textContent = isSignin ? t.switchLinkSignin : t.switchLinkSignup;
+  document.getElementById('google-btn-text').textContent = t.googleBtn;
+  document.getElementById('email-label').textContent = t.emailLabel;
+  document.getElementById('pass-label').textContent = t.passLabel;
+  document.getElementById('modal-err').style.display = 'none';
+}
+
+async function submitAuth() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  const btn = document.getElementById('modal-submit-btn');
+  const errEl = document.getElementById('modal-err');
+  if (!email || !pass) return;
+  btn.disabled = true;
+  btn.textContent = '...';
+  errEl.style.display = 'none';
+  try {
+    let result;
+    if (modalMode === 'signin') {
+      result = await sb.auth.signInWithPassword({ email, password: pass });
+    } else {
+      result = await sb.auth.signUp({ email, password: pass });
     }
-  };
-
-  function setLang(lang, btn) {
-    S.lang = lang;
-    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.lang-btn').forEach(b => { if(b.textContent === btn.textContent) b.classList.add('active'); });
-    const t = T[lang];
-    const set = (id, val) => { const el = document.getElementById(id); if(el) el.innerHTML = val; };
-    const setph = (id, val) => { const el = document.getElementById(id); if(el) el.placeholder = val; };
-    set('land-badge', t.badge); set('l-eyebrow', t.eyebrow); set('l-title', t.title);
-    set('l-sub', t.sub); set('l-cta', t.cta); set('l-f1', t.f1); set('l-f2', t.f2);
-    set('l-f3', t.f3); set('l-f4', t.f4); set('land-footer-text', t.footer);
-    set('c0', t.c0); set('c1', t.c1); set('c2', t.c2); set('c3', t.c3); set('c4', t.c4); set('c5', t.c5);
-    set('topic-label', t.topicLabel); setph('topic', t.topicPlaceholder);
-    set('a-step1', t.step1); set('a-t0', t.t0); set('a-s0', t.s0);
-    set('btn0', t.btnContinue); set('back-btn', t.btnBack);
-    set('a-step2', t.step2); set('a-t1', t.t1); set('a-s1', t.s1); setph('dec', t.decPlaceholder);
-    set('a-step3', t.step3); set('a-t2', t.t2); set('a-s2', t.s2);
-    set('q-thinking', t.thinking1); set('clarity-asks-label', t.clarityAsks); setph('ans', t.ansPH);
-    set('a-step4', t.step4); set('a-t3', t.t3); set('a-s3', t.s3);
-    set('f-thinking', t.thinking2); set('f-label', t.frameworkLabel);
-    set('a-t4', t.t4); set('r-thinking', t.thinking3);
-    set('btn-analyze', t.btnAnalyze); set('btn-frameworks', t.btnFrameworks); set('btn-rec', t.btnRec);
-    set('btn-restart', t.btnRestart); set('btn-home', t.btnHome);
-    set('a-summary-eyebrow', t.summaryEyebrow);
-    t.ps.forEach((l,i) => set('ps'+i, l));
+    if (result.error) throw result.error;
+    closeModal();
+  } catch(e) {
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
   }
+  btn.disabled = false;
+  updateModal();
+}
 
-  function startApp() {
-    document.getElementById('landing').style.display = 'none';
-    document.getElementById('app').classList.add('visible');
-    go(0);
+async function signInWithGoogle() {
+  await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin }
+  });
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  clearUser();
+}
+
+// ── LANGUAGE ──────────────────────────────────────────────
+function setLang(lang, btn) {
+  S.lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.lang-btn').forEach(b => { if(b.textContent === btn.textContent) b.classList.add('active'); });
+  const t = T[lang];
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.innerHTML = val; };
+  const setph = (id, val) => { const el = document.getElementById(id); if(el) el.placeholder = val; };
+  set('land-badge', t.badge); set('l-eyebrow', t.eyebrow); set('l-title', t.title); set('l-sub', t.sub);
+  set('l-cta', t.cta); set('l-f1', t.f1); set('l-f2', t.f2); set('l-f3', t.f3); set('l-f4', t.f4);
+  set('land-footer-text', t.footer);
+  set('l-signin-btn', t.signin); set('l-signup-btn', t.signup); set('l-signout-btn', t.signout);
+  set('c0', t.c0); set('c1', t.c1); set('c2', t.c2); set('c3', t.c3); set('c4', t.c4); set('c5', t.c5);
+  set('topic-label', t.topicLabel); setph('topic', t.topicPH);
+  set('a-step1', t.step1); set('a-t0', t.t0); set('a-s0', t.s0); set('btn0', t.btnContinue);
+  set('back-btn', t.btnBack);
+  set('a-step2', t.step2); set('a-t1', t.t1); set('a-s1', t.s1); setph('dec', t.decPH);
+  set('a-step3', t.step3); set('a-t2', t.t2); set('a-s2', t.s2);
+  set('q-thinking', t.thinking1); set('clarity-asks-label', t.clarityAsks); setph('ans', t.ansPH);
+  set('a-step4', t.step4); set('a-t3', t.t3); set('a-s3', t.s3);
+  set('f-thinking', t.thinking2); set('f-label', t.frameworkLabel);
+  set('a-t4', t.t4); set('r-thinking', t.thinking3); set('a-summary-eyebrow', t.summaryEyebrow);
+  set('btn-analyze', t.btnAnalyze); set('btn-frameworks', t.btnFrameworks); set('btn-rec', t.btnRec);
+  set('btn-restart', t.btnRestart); set('btn-journal', t.btnJournal); set('btn-home', t.btnHome);
+  set('save-msg', t.saveBanner); set('j-title', t.jTitle); set('j-sub', t.jSub);
+  t.ps.forEach((l,i) => set('ps'+i, l));
+  if(modalMode) updateModal();
+}
+
+// ── NAVIGATION ────────────────────────────────────────────
+function startApp() {
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('journal').classList.remove('visible');
+  document.getElementById('app').classList.add('visible');
+  go(0);
+}
+
+function goLanding() {
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('journal').classList.remove('visible');
+  document.getElementById('landing').style.display = 'flex';
+  restart();
+}
+
+function goJournal() {
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('journal').classList.add('visible');
+  loadJournal();
+}
+
+function go(n) {
+  for(let i=0;i<5;i++){
+    const p = document.getElementById('p'+i);
+    if(p) p.style.display = i===n ? 'block' : 'none';
+    const ps = document.getElementById('ps'+i);
+    if(ps) ps.className = 'ps' + (i<n?' done':i===n?' active':'');
   }
+  document.getElementById('progress').style.width = (n*25)+'%';
+  const t = T[S.lang];
+  document.getElementById('nav-step').textContent = `${t.navStep} ${n+1} / 5`;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-  function goLanding() {
-    document.getElementById('app').classList.remove('visible');
-    document.getElementById('landing').style.display = 'flex';
-    restart();
-  }
+function pick(el, cat) {
+  S.cat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn0').disabled = false;
+  document.getElementById('topic-wrap').style.display = 'block';
+}
 
-  function go(n) {
-    for(let i=0;i<5;i++){
-      const p = document.getElementById('p'+i);
-      if(p) p.style.display = i===n ? 'block' : 'none';
-      const ps = document.getElementById('ps'+i);
-      if(ps) ps.className = 'ps' + (i<n?' done':i===n?' active':'');
+// ── AI ENGINE ─────────────────────────────────────────────
+async function fetchOnce(prompt, system) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 25000);
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system, messages: [{ role: 'user', content: prompt }] }),
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+    if (!res.ok) {
+      const data = await res.json().catch(()=>({}));
+      throw new Error(data.message || `API error ${res.status}`);
     }
-    document.getElementById('progress').style.width = (n*25)+'%';
-    const t = T[S.lang];
-    document.getElementById('nav-step').textContent = `${t.navStep} ${n+1} / 5`;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+    const data = await res.json();
+    return data.content?.[0]?.text || '';
+  } catch(e) { clearTimeout(timeout); throw e; }
+}
 
-  function pick(el, cat) {
-    S.cat = cat;
-    document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
-    el.classList.add('selected');
-    document.getElementById('btn0').disabled = false;
-    document.getElementById('topic-wrap').style.display = 'block';
+async function callClaude(prompt, system, thinkingId) {
+  try { return await fetchOnce(prompt, system); }
+  catch(e) {
+    if (thinkingId) { const el = document.getElementById(thinkingId); if(el) el.textContent = S.lang === 'es' ? 'Reintentando...' : 'Retrying...'; }
+    await new Promise(r => setTimeout(r, 1500));
+    return await fetchOnce(prompt, system);
   }
+}
 
-  async function fetchOnce(prompt, system) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 25000);
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system, messages: [{ role: 'user', content: prompt }] }),
-        signal: controller.signal
-      });
-      clearTimeout(timeout);
-      if (!res.ok) {
-        const data = await res.json().catch(()=>({}));
-        throw new Error(data.message || `API error ${res.status}`);
-      }
-      const data = await res.json();
-      return data.content?.[0]?.text || '';
-    } catch(e) {
-      clearTimeout(timeout);
-      throw e;
+function showErr(id, msg) { document.getElementById(id).innerHTML = `<div class="error-box">${msg}</div>`; }
+function langSuffix() { return S.lang === 'es' ? ' Respond entirely in Spanish.' : ''; }
+
+async function analyze() {
+  S.dec = document.getElementById('dec').value.trim();
+  S.topic = document.getElementById('topic').value.trim();
+  if (!S.dec) return;
+  const t = T[S.lang];
+  go(2);
+  document.getElementById('q-load').style.display='flex';
+  document.getElementById('q-body').style.display='none';
+  document.getElementById('q-row').style.display='none';
+  document.getElementById('q-err').innerHTML='';
+  try {
+    const sys = `You are Clarity, an empathetic and sharp decision-thinking partner. Ask ONE powerful clarifying question that surfaces what the person hasn't fully examined yet. Be direct and warm. Keep it under 3 sentences: one observational sentence, then the question. No multiple questions. No advice yet.${langSuffix()}`;
+    const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
+    S.q = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\n\nAsk your one most important clarifying question.`, sys, 'q-thinking');
+    document.getElementById('q-text').textContent = S.q;
+    document.getElementById('q-load').style.display='none';
+    document.getElementById('q-body').style.display='block';
+    document.getElementById('q-row').style.display='flex';
+  } catch(e) {
+    document.getElementById('q-load').style.display='none';
+    showErr('q-err', e.message.includes('429') ? (S.lang==='es'?'Has alcanzado el límite por hora. Intenta en unos minutos.':'You\'ve reached the hourly limit. Try again in a few minutes.') : t.errConn);
+  }
+}
+
+async function frameworks() {
+  S.ans = document.getElementById('ans').value.trim();
+  const t = T[S.lang];
+  go(3);
+  document.getElementById('f-load').style.display='flex';
+  document.getElementById('f-body').style.display='none';
+  document.getElementById('f-row').style.display='none';
+  document.getElementById('f-err').innerHTML='';
+  try {
+    const sys = `You are Clarity, a decision-thinking partner trained in behavioral economics and mental models. Apply 2-3 relevant decision frameworks (Expected Value, Second-Order Thinking, Pre-mortem, Reversibility Test, 10/10/10 rule, or others that fit). Be concrete and specific — not generic. Short paragraphs, no bullet points. Under 200 words.${langSuffix()}`;
+    const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
+    S.fw = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\nClarification asked: ${S.q}\nTheir answer: ${S.ans}\n\nApply your frameworks.`, sys, 'f-thinking');
+    document.getElementById('f-text').textContent = S.fw;
+    document.getElementById('f-load').style.display='none';
+    document.getElementById('f-body').style.display='block';
+    document.getElementById('f-row').style.display='flex';
+  } catch(e) {
+    document.getElementById('f-load').style.display='none';
+    showErr('f-err', t.errRetry);
+  }
+}
+
+async function summary() {
+  const t = T[S.lang];
+  go(4);
+  document.getElementById('r-load').style.display='flex';
+  document.getElementById('r-body').style.display='none';
+  document.getElementById('r-err').innerHTML='';
+  try {
+    const sys = `You are Clarity. Synthesize this decision. Structure: 1) Direct honest take (2-3 sentences). 2) Key tension or tradeoff (1-2 sentences). 3) Clear recommendation with one reason (2 sentences). Be specific, not a cheerleader. End with: INSIGHTS: [label1] | [label2] | [label3] (3-4 word labels each).${langSuffix()}`;
+    const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
+    const resp = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\nClarifying Q: ${S.q}\nAnswer: ${S.ans}\nFramework: ${S.fw}`, sys, 'r-thinking');
+    const match = resp.match(/INSIGHTS:\s*(.+)/);
+    S.rec = resp.replace(/INSIGHTS:.+/s,'').trim();
+    S.chips = match ? match[1].split('|').map(c=>c.trim().replace(/[\[\]]/g,'')) : [];
+    document.getElementById('r-chips').innerHTML = S.chips.map(c=>`<span class="chip">${c}</span>`).join('');
+    document.getElementById('r-text').textContent = S.rec;
+    document.getElementById('r-load').style.display='none';
+    document.getElementById('r-body').style.display='block';
+    if (currentUser) {
+      document.getElementById('btn-journal').style.display = 'inline-flex';
+      await saveDecision();
     }
+  } catch(e) {
+    document.getElementById('r-load').style.display='none';
+    showErr('r-err', t.errRetry);
   }
+}
 
-  async function callClaude(prompt, system, thinkingId) {
-    try {
-      return await fetchOnce(prompt, system);
-    } catch(e) {
-      if (thinkingId) {
-        const el = document.getElementById(thinkingId);
-        if (el) el.textContent = S.lang === 'es' ? 'Reintentando...' : 'Retrying...';
-      }
-      await new Promise(r => setTimeout(r, 1500));
-      return await fetchOnce(prompt, system);
+// ── SAVE DECISION ─────────────────────────────────────────
+async function saveDecision() {
+  if (!currentUser) return;
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    await fetch('/api/decisions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+      body: JSON.stringify({
+        category: S.cat, topic: S.topic, decision_text: S.dec,
+        clarifying_question: S.q, clarifying_answer: S.ans,
+        framework_analysis: S.fw, recommendation: S.rec,
+        insight_chips: S.chips, lang: S.lang
+      })
+    });
+    document.getElementById('save-banner').style.display = 'flex';
+  } catch(e) { console.error('Save failed:', e); }
+}
+
+// ── JOURNAL ───────────────────────────────────────────────
+async function loadJournal() {
+  const t = T[S.lang];
+  const listEl = document.getElementById('journal-list');
+  listEl.innerHTML = '<div class="thinking"><div class="dots"><span></span><span></span><span></span></div></div>';
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { listEl.innerHTML = ''; return; }
+    const res = await fetch('/api/decisions', { headers: { 'Authorization': `Bearer ${session.access_token}` } });
+    const data = await res.json();
+    const decisions = data.decisions || [];
+    if (decisions.length === 0) {
+      listEl.innerHTML = `<div class="empty-journal"><div class="empty-icon">📓</div><div class="empty-title">${t.jEmpty}</div><div class="empty-sub">${t.jEmptySub}</div></div>`;
+      return;
     }
-  }
+    listEl.innerHTML = decisions.map(d => {
+      const date = new Date(d.created_at).toLocaleDateString(S.lang === 'es' ? 'es-MX' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const daysSince = Math.floor((Date.now() - new Date(d.created_at)) / (1000*60*60*24));
+      let badges = '';
+      if (!d.checkin_30 && daysSince >= 30) badges += `<span class="checkin-badge checkin-pending">${t.checkin30}</span>`;
+      else if (d.checkin_30) badges += `<span class="checkin-badge checkin-done">${t.checkinDone} 30d</span>`;
+      if (!d.checkin_90 && daysSince >= 90) badges += `<span class="checkin-badge checkin-pending">${t.checkin90}</span>`;
+      if (!d.checkin_180 && daysSince >= 180) badges += `<span class="checkin-badge checkin-pending">${t.checkin180}</span>`;
+      return `<div class="decision-card">
+        <div class="decision-card-top">
+          <span class="decision-cat">${d.category}</span>
+          <span class="decision-date">${date}</span>
+        </div>
+        <div class="decision-text">${d.decision_text}</div>
+        <div class="decision-rec">${d.recommendation || ''}</div>
+        ${badges ? `<div class="checkin-badges">${badges}</div>` : ''}
+      </div>`;
+    }).join('');
+  } catch(e) { listEl.innerHTML = `<div class="error-box">${e.message}</div>`; }
+}
 
-  function showErr(id, msg) {
-    document.getElementById(id).innerHTML = `<div class="error-box">${msg}</div>`;
-  }
+function restart() {
+  Object.keys(S).forEach(k=>{ if(k!=='lang') S[k]=''; });
+  S.chips = [];
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
+  const btn0 = document.getElementById('btn0'); if(btn0) btn0.disabled = true;
+  const dec = document.getElementById('dec'); if(dec) dec.value='';
+  const ans = document.getElementById('ans'); if(ans) ans.value='';
+  const topic = document.getElementById('topic'); if(topic) topic.value='';
+  const tw = document.getElementById('topic-wrap'); if(tw) tw.style.display='none';
+  const sb2 = document.getElementById('save-banner'); if(sb2) sb2.style.display='none';
+  const bj = document.getElementById('btn-journal'); if(bj) bj.style.display='none';
+  go(0);
+}
 
-  function langSuffix() {
-    return S.lang === 'es' ? ' Respond entirely in Spanish.' : '';
-  }
-
-  async function analyze() {
-    S.dec = document.getElementById('dec').value.trim();
-    S.topic = document.getElementById('topic').value.trim();
-    if (!S.dec) return;
-    const t = T[S.lang];
-    go(2);
-    document.getElementById('q-load').style.display='flex';
-    document.getElementById('q-body').style.display='none';
-    document.getElementById('q-row').style.display='none';
-    document.getElementById('q-err').innerHTML='';
-    try {
-      const sys = `You are Clarity, an empathetic and sharp decision-thinking partner. Ask ONE powerful clarifying question that surfaces what the person hasn't fully examined yet. Be direct and warm. Keep it under 3 sentences: one observational sentence, then the question. No multiple questions. No advice yet.${langSuffix()}`;
-      const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
-      S.q = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\n\nAsk your one most important clarifying question.`, sys, 'q-thinking');
-      document.getElementById('q-text').textContent = S.q;
-      document.getElementById('q-load').style.display='none';
-      document.getElementById('q-body').style.display='block';
-      document.getElementById('q-row').style.display='flex';
-    } catch(e) {
-      document.getElementById('q-load').style.display='none';
-      showErr('q-err', e.message || t.errConn);
-    }
-  }
-
-  async function frameworks() {
-    S.ans = document.getElementById('ans').value.trim();
-    const t = T[S.lang];
-    go(3);
-    document.getElementById('f-load').style.display='flex';
-    document.getElementById('f-body').style.display='none';
-    document.getElementById('f-row').style.display='none';
-    document.getElementById('f-err').innerHTML='';
-    try {
-      const sys = `You are Clarity, a decision-thinking partner trained in behavioral economics and mental models. Apply 2-3 relevant decision frameworks (Expected Value, Second-Order Thinking, Pre-mortem, Reversibility Test, 10/10/10 rule, or others that fit). Be concrete and specific — not generic. Short paragraphs, no bullet points. Under 200 words.${langSuffix()}`;
-      const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
-      S.fw = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\nClarification asked: ${S.q}\nTheir answer: ${S.ans}\n\nApply your frameworks.`, sys, 'f-thinking');
-      document.getElementById('f-text').textContent = S.fw;
-      document.getElementById('f-load').style.display='none';
-      document.getElementById('f-body').style.display='block';
-      document.getElementById('f-row').style.display='flex';
-    } catch(e) {
-      document.getElementById('f-load').style.display='none';
-      showErr('f-err', e.message || t.errRetry);
-    }
-  }
-
-  async function summary() {
-    const t = T[S.lang];
-    go(4);
-    document.getElementById('r-load').style.display='flex';
-    document.getElementById('r-body').style.display='none';
-    document.getElementById('r-err').innerHTML='';
-    try {
-      const sys = `You are Clarity. Synthesize this decision. Structure: 1) Direct honest take (2-3 sentences). 2) Key tension or tradeoff (1-2 sentences). 3) Clear recommendation with one reason (2 sentences). Be specific, not a cheerleader. End with: INSIGHTS: [label1] | [label2] | [label3] (3-4 word labels each).${langSuffix()}`;
-      const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
-      const resp = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\nClarifying Q: ${S.q}\nAnswer: ${S.ans}\nFramework: ${S.fw}`, sys, 'r-thinking');
-      const match = resp.match(/INSIGHTS:\s*(.+)/);
-      const main = resp.replace(/INSIGHTS:.+/s,'').trim();
-      const chips = match ? match[1].split('|').map(c=>c.trim().replace(/[\[\]]/g,'')) : [];
-      document.getElementById('r-chips').innerHTML = chips.map(c=>`<span class="chip">${c}</span>`).join('');
-      document.getElementById('r-text').textContent = main;
-      document.getElementById('r-load').style.display='none';
-      document.getElementById('r-body').style.display='block';
-    } catch(e) {
-      document.getElementById('r-load').style.display='none';
-      showErr('r-err', e.message || t.errRetry);
-    }
-  }
-
-  function restart() {
-    Object.keys(S).forEach(k=>{ if(k!=='lang') S[k]=''; });
-    document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
-    const btn0 = document.getElementById('btn0');
-    if(btn0) btn0.disabled = true;
-    const dec = document.getElementById('dec'); if(dec) dec.value='';
-    const ans = document.getElementById('ans'); if(ans) ans.value='';
-    const topic = document.getElementById('topic'); if(topic) topic.value='';
-    const tw = document.getElementById('topic-wrap'); if(tw) tw.style.display='none';
-    go(0);
-  }
+initAuth();
 </script>
-
-
 </body>
 </html>
