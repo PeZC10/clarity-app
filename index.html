@@ -853,18 +853,40 @@
     document.getElementById('topic-wrap').style.display = 'block';
   }
 
-  async function callClaude(prompt, system) {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system, messages: [{ role: 'user', content: prompt }] })
-    });
-    if (!res.ok) {
-      const data = await res.json().catch(()=>({}));
-      throw new Error(data.message || `API error ${res.status}`);
+  async function fetchOnce(prompt, system) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25000);
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system, messages: [{ role: 'user', content: prompt }] }),
+        signal: controller.signal
+      });
+      clearTimeout(timeout);
+      if (!res.ok) {
+        const data = await res.json().catch(()=>({}));
+        throw new Error(data.message || `API error ${res.status}`);
+      }
+      const data = await res.json();
+      return data.content?.[0]?.text || '';
+    } catch(e) {
+      clearTimeout(timeout);
+      throw e;
     }
-    const data = await res.json();
-    return data.content?.[0]?.text || '';
+  }
+
+  async function callClaude(prompt, system, thinkingId) {
+    try {
+      return await fetchOnce(prompt, system);
+    } catch(e) {
+      if (thinkingId) {
+        const el = document.getElementById(thinkingId);
+        if (el) el.textContent = S.lang === 'es' ? 'Reintentando...' : 'Retrying...';
+      }
+      await new Promise(r => setTimeout(r, 1500));
+      return await fetchOnce(prompt, system);
+    }
   }
 
   function showErr(id, msg) {
@@ -888,7 +910,7 @@
     try {
       const sys = `You are Clarity, an empathetic and sharp decision-thinking partner. Ask ONE powerful clarifying question that surfaces what the person hasn't fully examined yet. Be direct and warm. Keep it under 3 sentences: one observational sentence, then the question. No multiple questions. No advice yet.${langSuffix()}`;
       const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
-      S.q = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\n\nAsk your one most important clarifying question.`, sys);
+      S.q = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\n\nAsk your one most important clarifying question.`, sys, 'q-thinking');
       document.getElementById('q-text').textContent = S.q;
       document.getElementById('q-load').style.display='none';
       document.getElementById('q-body').style.display='block';
@@ -910,7 +932,7 @@
     try {
       const sys = `You are Clarity, a decision-thinking partner trained in behavioral economics and mental models. Apply 2-3 relevant decision frameworks (Expected Value, Second-Order Thinking, Pre-mortem, Reversibility Test, 10/10/10 rule, or others that fit). Be concrete and specific — not generic. Short paragraphs, no bullet points. Under 200 words.${langSuffix()}`;
       const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
-      S.fw = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\nClarification asked: ${S.q}\nTheir answer: ${S.ans}\n\nApply your frameworks.`, sys);
+      S.fw = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\nClarification asked: ${S.q}\nTheir answer: ${S.ans}\n\nApply your frameworks.`, sys, 'f-thinking');
       document.getElementById('f-text').textContent = S.fw;
       document.getElementById('f-load').style.display='none';
       document.getElementById('f-body').style.display='block';
@@ -930,7 +952,7 @@
     try {
       const sys = `You are Clarity. Synthesize this decision. Structure: 1) Direct honest take (2-3 sentences). 2) Key tension or tradeoff (1-2 sentences). 3) Clear recommendation with one reason (2 sentences). Be specific, not a cheerleader. End with: INSIGHTS: [label1] | [label2] | [label3] (3-4 word labels each).${langSuffix()}`;
       const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
-      const resp = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\nClarifying Q: ${S.q}\nAnswer: ${S.ans}\nFramework: ${S.fw}`, sys);
+      const resp = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\nClarifying Q: ${S.q}\nAnswer: ${S.ans}\nFramework: ${S.fw}`, sys, 'r-thinking');
       const match = resp.match(/INSIGHTS:\s*(.+)/);
       const main = resp.replace(/INSIGHTS:.+/s,'').trim();
       const chips = match ? match[1].split('|').map(c=>c.trim().replace(/[\[\]]/g,'')) : [];
