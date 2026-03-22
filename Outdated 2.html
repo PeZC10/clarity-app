@@ -206,44 +206,6 @@
     .btn-plan { display: inline-flex; align-items: center; gap: 8px; background: var(--purple); color: white; font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 13px 24px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s ease; }
     .btn-plan:hover { background: var(--purple2); }
 
-    /* CHECKLIST PAGE */
-    #checklist { display: none; min-height: 100vh; flex-direction: column; align-items: center; padding-bottom: 80px; }
-    #checklist.visible { display: flex; }
-    .checklist-nav { width: 100%; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border); background: var(--cream); position: sticky; top: 0; z-index: 10; }
-    .checklist-content { width: 100%; max-width: 580px; padding: 36px 24px 0; }
-    .checklist-header { margin-bottom: 28px; }
-    .checklist-title { font-family: var(--serif); font-size: 28px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
-    .checklist-sub { font-size: 14px; color: var(--ink3); font-weight: 300; }
-    .checklist-decision-card { background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 24px; }
-    .checklist-decision-label { font-size: 11px; font-weight: 500; color: var(--ink3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
-    .checklist-decision-text { font-size: 15px; color: var(--ink); line-height: 1.55; font-weight: 400; }
-    .checklist-progress-wrap { margin-bottom: 28px; }
-    .checklist-progress-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .checklist-progress-text { font-size: 13px; color: var(--ink2); font-weight: 500; }
-    .checklist-progress-pct { font-size: 13px; color: var(--purple); font-weight: 600; }
-    .checklist-bar { height: 6px; background: var(--cream3); border-radius: 6px; overflow: hidden; }
-    .checklist-bar-fill { height: 100%; background: var(--purple); border-radius: 6px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
-    .checklist-week { margin-bottom: 24px; }
-    .checklist-week-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-    .checklist-week-badge { background: var(--purple); color: white; font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
-    .checklist-week-title { font-family: var(--serif); font-size: 15px; font-weight: 600; color: var(--ink); }
-    .checklist-week-done .checklist-week-badge { background: var(--teal); }
-    .checklist-items { list-style: none; padding: 0; }
-    .checklist-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--border); transition: opacity 0.3s; }
-    .checklist-item:last-child { border-bottom: none; }
-    .checklist-item.completed { opacity: 0.55; }
-    .checklist-checkbox { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border2); background: white; cursor: pointer; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
-    .checklist-checkbox:hover { border-color: var(--purple); background: var(--purple-soft); }
-    .checklist-checkbox.checked { background: var(--teal); border-color: var(--teal); }
-    .checklist-checkbox.checked::after { content: '✓'; color: white; font-size: 12px; font-weight: 600; }
-    .checklist-item-text { font-size: 14px; color: var(--ink2); line-height: 1.55; padding-top: 2px; }
-    .checklist-item.completed .checklist-item-text { text-decoration: line-through; color: var(--ink3); }
-    .checklist-complete-banner { background: var(--teal-soft); border: 0.5px solid rgba(13,148,136,0.3); border-radius: var(--radius-sm); padding: 16px 18px; font-size: 14px; color: var(--teal); margin-bottom: 24px; display: none; align-items: center; gap: 10px; font-weight: 500; }
-    .empty-checklist { text-align: center; padding: 60px 20px; }
-    .btn-save-checklist { display: inline-flex; align-items: center; gap: 8px; background: var(--teal); color: white; font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 13px 24px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s ease; }
-    .btn-save-checklist:hover { background: #0f766e; transform: translateY(-1px); }
-    .checklist-saved-banner { background: var(--teal-soft); border: 0.5px solid rgba(13,148,136,0.3); border-radius: var(--radius-sm); padding: 14px 18px; font-size: 13px; color: var(--teal); margin-top: 12px; display: none; align-items: center; gap: 10px; }
-
     /* ANIMATIONS */
     @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
@@ -449,11 +411,8 @@
       <div id="plan-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div><span id="plan-thinking">Building your plan...</span></div>
       <div id="plan-body" style="display:none"></div>
       <div id="plan-err"></div>
-      <div id="checklist-saved-banner" class="checklist-saved-banner"><span>✓</span><span id="cl-saved-msg">Checklist saved! View it in My Checklists.</span></div>
       <div class="btn-row" id="plan-row" style="display:none; flex-wrap:wrap; margin-top:20px;">
-        <button class="btn-save-checklist" onclick="saveChecklist()" id="btn-save-checklist" style="display:none">☑ Save as Checklist</button>
         <button class="btn-primary" onclick="restart()" id="btn-plan-restart">Make another decision</button>
-        <button class="btn-secondary" onclick="goChecklist()" id="btn-plan-checklist" style="display:none">My Checklists</button>
         <button class="btn-secondary" onclick="goJournal()" id="btn-plan-journal" style="display:none">View journal</button>
         <button class="btn-secondary" onclick="goLanding()" id="btn-plan-home">Back to home</button>
       </div>
@@ -482,27 +441,6 @@
   </div>
 </div>
 
-<!-- ── CHECKLIST ────────────────────────────────────────── -->
-<div id="checklist">
-  <nav class="checklist-nav">
-    <div class="app-logo"><em>Clarity</em></div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div class="lang-toggle">
-        <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
-        <button class="lang-btn" onclick="setLang('es',this)">ES</button>
-      </div>
-      <button class="app-back" onclick="goLanding()">← Home</button>
-    </div>
-  </nav>
-  <div class="checklist-content">
-    <div class="checklist-header">
-      <div class="checklist-title" id="cl-title">My Action Checklists</div>
-      <div class="checklist-sub" id="cl-sub">Track your 30-day plans and check off progress</div>
-    </div>
-    <div id="checklist-list"></div>
-  </div>
-</div>
-
 <script>
 const SUPABASE_URL = 'https://olqadwjnhaulcndoicrj.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_UzMP3KhdC3SqFEGWzElh4A_0kZX63jF';
@@ -510,7 +448,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let currentUser = null;
 let modalMode = 'signin';
-const S = { cat:'', topic:'', dec:'', q:'', ans:'', fw:'', rec:'', chips:[], lang:'en', planText:'', planWeeks:[] };
+const S = { cat:'', topic:'', dec:'', q:'', ans:'', fw:'', rec:'', chips:[], lang:'en' };
 
 const T = {
   en: {
@@ -548,12 +486,6 @@ const T = {
     checkin30:'30-day check-in due', checkin90:'90-day check-in due', checkin180:'180-day check-in due',
     checkinDone:'Reflected',
     btnPlan:'Build my action plan →',
-    btnChecklist:'My Checklists',
-    btnSaveChecklist:'☑ Save as Checklist',
-    clSaved:'Checklist saved! View it in My Checklists.',
-    clTitle:'My Action Checklists', clSub:'Track your 30-day plans and check off progress',
-    clEmpty:'No checklists yet', clEmptySub:'Build an action plan and save it as a checklist.',
-    clComplete:'🎉 All steps complete! Great work.',
     step5:'Your action plan', t5:'30 days to make it real', s5:'Based on your decision, here is a concrete plan to execute it over the next 30 days.',
     planThinking:'Building your plan...',
     ps:['Category','Decision','Reflect','Frameworks','Summary']
@@ -593,12 +525,6 @@ const T = {
     checkin30:'Revisión de 30 días pendiente', checkin90:'Revisión de 90 días pendiente', checkin180:'Revisión de 180 días pendiente',
     checkinDone:'Reflexionado',
     btnPlan:'Crear mi plan de acción →',
-    btnChecklist:'Mis Listas',
-    btnSaveChecklist:'☑ Guardar como Lista',
-    clSaved:'¡Lista guardada! Véla en Mis Listas.',
-    clTitle:'Mis Listas de Acción', clSub:'Haz seguimiento de tus planes de 30 días',
-    clEmpty:'Aún no hay listas', clEmptySub:'Crea un plan de acción y guárdalo como lista.',
-    clComplete:'🎉 ¡Todos los pasos completos! Excelente trabajo.',
     step5:'Tu plan de acción', t5:'30 días para hacerlo realidad', s5:'Basado en tu decisión, aquí tienes un plan concreto para ejecutarlo en los próximos 30 días.',
     planThinking:'Construyendo tu plan...',
     ps:['Categoría','Decisión','Reflexión','Marcos','Resumen']
@@ -727,9 +653,6 @@ function setLang(lang, btn) {
   set('a-step5', t.step5); set('a-t5', t.t5); set('a-s5', t.s5);
   set('plan-thinking', t.planThinking);
   set('btn-plan-restart', t.btnRestart); set('btn-plan-home', t.btnHome);
-  set('btn-save-checklist', t.btnSaveChecklist); set('btn-plan-checklist', t.btnChecklist);
-  set('cl-saved-msg', t.clSaved);
-  set('cl-title', t.clTitle); set('cl-sub', t.clSub);
   t.ps.forEach((l,i) => set('ps'+i, l));
   if(modalMode) updateModal();
 }
@@ -745,7 +668,6 @@ function startApp() {
 function goLanding() {
   document.getElementById('app').classList.remove('visible');
   document.getElementById('journal').classList.remove('visible');
-  document.getElementById('checklist').classList.remove('visible');
   document.getElementById('landing').style.display = 'flex';
   restart();
 }
@@ -753,17 +675,8 @@ function goLanding() {
 function goJournal() {
   document.getElementById('app').classList.remove('visible');
   document.getElementById('landing').style.display = 'none';
-  document.getElementById('checklist').classList.remove('visible');
   document.getElementById('journal').classList.add('visible');
   loadJournal();
-}
-
-function goChecklist() {
-  document.getElementById('app').classList.remove('visible');
-  document.getElementById('landing').style.display = 'none';
-  document.getElementById('journal').classList.remove('visible');
-  document.getElementById('checklist').classList.add('visible');
-  loadChecklists();
 }
 
 function go(n) {
@@ -950,7 +863,7 @@ function renderPlan(text) {
   }
 
   if (weeks.length === 0) {
-    return `<div class="ai-card"><div class="ai-label">Action Plan</div><div class="ai-text">${renderMarkdown(text)}</div></div>`;
+    return `<div class="ai-text">${renderMarkdown(text)}</div>`;
   }
 
   return weeks.map(w => `
@@ -995,17 +908,11 @@ For each section provide exactly 3-4 specific, actionable steps. Format each ste
       sys, 'plan-thinking'
     );
 
-    S.planText = planText;
-    S.planWeeks = parsePlanWeeks(planText);
     document.getElementById('plan-body').innerHTML = renderPlan(planText);
     document.getElementById('plan-load').style.display = 'none';
     document.getElementById('plan-body').style.display = 'block';
     document.getElementById('plan-row').style.display = 'flex';
-    if (currentUser) {
-      document.getElementById('btn-plan-journal').style.display = 'inline-flex';
-      document.getElementById('btn-plan-checklist').style.display = 'inline-flex';
-      document.getElementById('btn-save-checklist').style.display = 'inline-flex';
-    }
+    if (currentUser) document.getElementById('btn-plan-journal').style.display = 'inline-flex';
   } catch(e) {
     document.getElementById('plan-load').style.display = 'none';
     showErr('plan-err', t.errRetry);
@@ -1081,146 +988,7 @@ function restart() {
   const p5 = document.getElementById('p5'); if(p5) p5.style.display='none';
   const pb = document.getElementById('plan-body'); if(pb) { pb.innerHTML=''; pb.style.display='none'; }
   const bpj = document.getElementById('btn-plan-journal'); if(bpj) bpj.style.display='none';
-  const bpc = document.getElementById('btn-plan-checklist'); if(bpc) bpc.style.display='none';
-  const bsc = document.getElementById('btn-save-checklist'); if(bsc) { bsc.style.display='none'; bsc.disabled=false; }
-  const csb = document.getElementById('checklist-saved-banner'); if(csb) csb.style.display='none';
-  S.planText = ''; S.planWeeks = [];
   go(0);
-}
-
-// ── CHECKLIST ──────────────────────────────────────────────
-function parsePlanWeeks(text) {
-  const weeks = [];
-  const lines = text.split('\n').filter(l => l.trim());
-  let current = null;
-  let actionNum = 0;
-  for (const line of lines) {
-    const trimmed = line.trim();
-    const weekMatch = trimmed.match(/^\*?\*?(Week\s+\d[\d\s\-–]+|Semana\s+\d[\d\s\-–]+|Month\s+\d[\d\s\-–]+|Mes\s+\d[\d\s\-–]+)\*?\*?:?\s*(.*)/i);
-    if (weekMatch) {
-      actionNum = 0;
-      current = { title: weekMatch[1].trim(), subtitle: weekMatch[2].trim(), actions: [] };
-      weeks.push(current);
-    } else if (current && (trimmed.startsWith('-') || trimmed.startsWith('•') || trimmed.match(/^\d+\./))) {
-      actionNum++;
-      const t = trimmed.replace(/^[-•]\s*/, '').replace(/^\d+\.\s*/, '').replace(/\*\*([^*]+)\*\*/g, '$1');
-      current.actions.push({ id: `${weeks.length-1}-${actionNum}`, text: t, done: false });
-    } else if (current && trimmed && !trimmed.match(/^\*\*/)) {
-      if (current.actions.length === 0) current.subtitle += ' ' + trimmed;
-      else { actionNum++; current.actions.push({ id: `${weeks.length-1}-${actionNum}`, text: trimmed.replace(/\*\*([^*]+)\*\*/g,'$1'), done: false }); }
-    }
-  }
-  return weeks;
-}
-
-async function saveChecklist() {
-  if (!currentUser) return;
-  const btn = document.getElementById('btn-save-checklist');
-  btn.disabled = true;
-  btn.textContent = '...';
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    await fetch('/api/checklists', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
-      body: JSON.stringify({
-        decision_text: S.dec,
-        category: S.cat,
-        weeks: S.planWeeks,
-        lang: S.lang
-      })
-    });
-    document.getElementById('checklist-saved-banner').style.display = 'flex';
-    btn.style.display = 'none';
-  } catch(e) { console.error('Checklist save failed:', e); }
-  btn.disabled = false;
-}
-
-async function loadChecklists() {
-  const t = T[S.lang];
-  const listEl = document.getElementById('checklist-list');
-  listEl.innerHTML = '<div class="thinking"><div class="dots"><span></span><span></span><span></span></div></div>';
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    if (!session) {
-      listEl.innerHTML = `<div class="empty-checklist"><div class="empty-icon">☑️</div><div class="empty-title">${t.clEmpty}</div><div class="empty-sub">${t.clEmptySub}</div></div>`;
-      return;
-    }
-    const res = await fetch('/api/checklists', { headers: { 'Authorization': `Bearer ${session.access_token}` } });
-    const data = await res.json();
-    const checklists = data.checklists || [];
-    if (checklists.length === 0) {
-      listEl.innerHTML = `<div class="empty-checklist"><div class="empty-icon">☑️</div><div class="empty-title">${t.clEmpty}</div><div class="empty-sub">${t.clEmptySub}</div></div>`;
-      return;
-    }
-    listEl.innerHTML = checklists.map(cl => renderChecklistCard(cl, t)).join('');
-  } catch(e) { listEl.innerHTML = `<div class="error-box">${e.message}</div>`; }
-}
-
-function renderChecklistCard(cl, t) {
-  const weeks = cl.weeks || [];
-  const allActions = weeks.flatMap(w => w.actions || []);
-  const doneCount = allActions.filter(a => a.done).length;
-  const total = allActions.length;
-  const pct = total ? Math.round((doneCount / total) * 100) : 0;
-  const isComplete = total > 0 && doneCount === total;
-  const date = new Date(cl.created_at).toLocaleDateString(S.lang === 'es' ? 'es-MX' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
-  const weeksHtml = weeks.map((w, wi) => {
-    const weekDone = w.actions.every(a => a.done);
-    return `<div class="checklist-week ${weekDone ? 'checklist-week-done' : ''}">
-      <div class="checklist-week-header">
-        <span class="checklist-week-badge">${w.title}</span>
-        ${w.subtitle ? `<span class="checklist-week-title">${w.subtitle}</span>` : ''}
-      </div>
-      <ul class="checklist-items">
-        ${(w.actions || []).map(a => `
-          <li class="checklist-item ${a.done ? 'completed' : ''}" id="item-${cl.id}-${a.id}">
-            <div class="checklist-checkbox ${a.done ? 'checked' : ''}" onclick="toggleItem('${cl.id}','${a.id}',${wi})"></div>
-            <span class="checklist-item-text">${a.text}</span>
-          </li>`).join('')}
-      </ul>
-    </div>`;
-  }).join('');
-
-  return `<div class="checklist-decision-card" id="cl-card-${cl.id}">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:12px;">
-      <div>
-        <div class="checklist-decision-label">${cl.category}</div>
-        <div class="checklist-decision-text">${cl.decision_text}</div>
-        <div style="font-size:11px;color:var(--ink3);margin-top:4px;">${date}</div>
-      </div>
-    </div>
-    ${isComplete ? `<div class="checklist-complete-banner" style="display:flex;">${t.clComplete}</div>` : ''}
-    <div class="checklist-progress-wrap">
-      <div class="checklist-progress-label">
-        <span class="checklist-progress-text">${doneCount} / ${total} steps</span>
-        <span class="checklist-progress-pct">${pct}%</span>
-      </div>
-      <div class="checklist-bar"><div class="checklist-bar-fill" id="bar-${cl.id}" style="width:${pct}%"></div></div>
-    </div>
-    ${weeksHtml}
-  </div>`;
-}
-
-async function toggleItem(clId, actionId, weekIdx) {
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    const res = await fetch(`/api/checklists?id=${clId}`, { headers: { 'Authorization': `Bearer ${session.access_token}` } });
-    const data = await res.json();
-    const cl = data.checklist;
-    const action = cl.weeks[weekIdx]?.actions?.find(a => a.id === actionId);
-    if (action) action.done = !action.done;
-    await fetch('/api/checklists', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
-      body: JSON.stringify({ id: clId, weeks: cl.weeks })
-    });
-    // Re-render just this card
-    const t = T[S.lang];
-    const cardEl = document.getElementById(`cl-card-${clId}`);
-    if (cardEl) cardEl.outerHTML = renderChecklistCard(cl, t);
-  } catch(e) { console.error('Toggle failed:', e); }
 }
 
 initAuth();
