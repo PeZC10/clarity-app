@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Clarity — Think better. Decide well.</title>
+  <title>Navrielle — Achieve anything.</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -267,7 +267,7 @@
 <!-- ── LANDING ─────────────────────────────────────────── -->
 <div id="landing">
   <nav class="land-nav">
-    <div class="land-logo"><em>Clarity</em></div>
+    <div class="land-logo"><em>Navrielle</em></div>
     <div class="nav-right">
       <div class="lang-toggle">
         <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
@@ -338,7 +338,7 @@
 <!-- ── APP ────────────────────────────────────────────── -->
 <div id="app">
   <nav class="app-nav">
-    <div class="app-logo"><em>Clarity</em></div>
+    <div class="app-logo"><em>Navrielle</em></div>
     <span class="app-step" id="nav-step">Step 1 of 5</span>
     <div style="display:flex;align-items:center;gap:8px;">
       <div class="lang-toggle">
@@ -464,7 +464,7 @@
 <!-- ── JOURNAL ─────────────────────────────────────────── -->
 <div id="journal">
   <nav class="journal-nav">
-    <div class="app-logo"><em>Clarity</em></div>
+    <div class="app-logo"><em>Navrielle</em></div>
     <div style="display:flex;align-items:center;gap:8px;">
       <div class="lang-toggle">
         <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
@@ -485,7 +485,7 @@
 <!-- ── CHECKLIST ────────────────────────────────────────── -->
 <div id="checklist">
   <nav class="checklist-nav">
-    <div class="app-logo"><em>Clarity</em></div>
+    <div class="app-logo"><em>Navrielle</em></div>
     <div style="display:flex;align-items:center;gap:8px;">
       <div class="lang-toggle">
         <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
@@ -514,37 +514,37 @@ const S = { cat:'', topic:'', dec:'', q:'', ans:'', fw:'', rec:'', chips:[], lan
 
 const T = {
   en: {
-    badge:'Free Beta', eyebrow:'Your personal decision engine',
-    title:'Stop overthinking.<br>Start deciding <em>well.</em>',
-    sub:'Clarity uses AI and behavioral science to help you work through any decision — with honesty, structure, and a concrete recommendation.',
-    cta:'Make a decision', f1:'Free to use', f2:'No sign-up required', f3:'Powered by Claude AI', f4:'Takes 3 minutes',
+    badge:'Free Beta', eyebrow:'Your personal achievement coach',
+    title:'Set your goal.<br>Make it <em>real.</em>',
+    sub:'Navrielle uses AI to help you define, plan, and achieve any goal — with honest guidance, a concrete action plan, and check-ins that keep you on track.',
+    cta:'Start a goal', f1:'Free to use', f2:'No sign-up required', f3:'Powered by Claude AI', f4:'Takes 3 minutes',
     footer:'Built by Pedro — Powered by Anthropic Claude',
     signin:'Sign in', signup:'Sign up free', signout:'Sign out',
     googleBtn:'Continue with Google', emailLabel:'Email', passLabel:'Password',
-    signinTitle:'Sign in', signinSub:'Welcome back to Clarity',
-    signupTitle:'Create account', signupSub:'Start your decision journal today',
+    signinTitle:'Sign in', signinSub:'Welcome back to Navrielle',
+    signupTitle:'Create account', signupSub:'Start achieving your goals today',
     switchSignin:"Don't have an account?", switchSignup:'Already have an account?',
     switchLinkSignin:'Sign up', switchLinkSignup:'Sign in',
-    step1:'Step 1', t0:'What are you deciding?', s0:'Choose a category so Clarity can select the right thinking frameworks.',
+    step1:'Step 1', t0:'What do you want to achieve?', s0:'Choose a category so Navrielle can apply the right approach to your goal.',
     topicLabel:'Want to be more specific? Describe your situation briefly (optional)',
-    topicPH:'e.g. Deciding whether to accept a job offer in another city...',
+    topicPH:'e.g. I want to save $5,000 in the next 6 months...',
     btnContinue:'Continue →', btnBack:'← Home', navStep:'Step',
-    c0:'Career & Work', c1:'Finance & Money', c2:'Relationships', c3:'Health & Lifestyle', c4:'Education', c5:'Big Life Change',
-    step2:'Step 2', t1:'Describe your decision', s1:'Be as specific and honest as you can.',
-    decPH:'I\'m trying to decide whether to...',
-    step3:'Step 3', t2:'One question first', s2:'Before applying frameworks, Clarity needs to understand something you may not have fully considered.',
-    thinking1:'Thinking through your situation...', clarityAsks:'Clarity asks', ansPH:'Take your time with this one...',
-    step4:'Step 4', t3:'Applying decision frameworks', s3:'Clarity is analyzing your situation through multiple lenses.',
-    thinking2:'Running analysis...', frameworkLabel:'Framework analysis',
+    c0:'Career & Work', c1:'Finance & Money', c2:'Relationships', c3:'Health & Lifestyle', c4:'Education', c5:'Big Life Goal',
+    step2:'Step 2', t1:'Describe your goal', s1:'Be as specific and honest as you can.',
+    decPH:'My goal is to...',
+    step3:'Step 3', t2:'One question first', s2:'Before building your plan, Navrielle needs to understand something you may not have fully considered.',
+    thinking1:'Thinking through your situation...', clarityAsks:'Navrielle asks', ansPH:'Take your time with this one...',
+    step4:'Step 4', t3:'Honest assessment', s3:'Navrielle is analyzing your goal and situation to give you an honest, structured perspective.',
+    thinking2:'Running analysis...', frameworkLabel:'Honest assessment',
     t4:'Here is what I see', thinking3:'Synthesizing everything...',
-    btnAnalyze:'Analyze this →', btnFrameworks:'Continue →', btnRec:'Get my recommendation →',
-    btnRestart:'Make another decision', btnJournal:'View journal', btnHome:'Back to home',
-    summaryEyebrow:'Your clarity summary',
-    saveBanner:'Decision saved to your journal',
+    btnAnalyze:'Analyze this →', btnFrameworks:'Continue →', btnRec:'Get my action plan →',
+    btnRestart:'Start a new goal', btnJournal:'View journal', btnHome:'Back to home',
+    summaryEyebrow:'Your Navrielle summary',
+    saveBanner:'Goal saved to your journal',
     errConn:'Could not reach the AI engine. Please check your connection and try again.',
     errRetry:'Could not reach the AI engine. Please try again.',
-    jTitle:'Decision Journal', jSub:'Your full history of decisions and reflections',
-    jEmpty:'No decisions yet', jEmptySub:'Make your first decision and it will appear here.',
+    jTitle:'Goal Journal', jSub:'Your full history of goals and reflections',
+    jEmpty:'No goals yet', jEmptySub:'Start your first goal and it will appear here.',
     checkin30:'30-day check-in due', checkin90:'90-day check-in due', checkin180:'180-day check-in due',
     checkinDone:'Reflected',
     btnPlan:'Build my action plan →',
@@ -554,42 +554,42 @@ const T = {
     clTitle:'My Action Checklists', clSub:'Track your 30-day plans and check off progress',
     clEmpty:'No checklists yet', clEmptySub:'Build an action plan and save it as a checklist.',
     clComplete:'🎉 All steps complete! Great work.',
-    step5:'Your action plan', t5:'30 days to make it real', s5:'Based on your decision, here is a concrete plan to execute it over the next 30 days.',
+    step5:'Your action plan', t5:'30 days to make it real', s5:'Based on your goal, here is a concrete plan to execute it over the next 30 days.',
     planThinking:'Building your plan...',
-    ps:['Category','Decision','Reflect','Frameworks','Summary']
+    ps:['Category','Goal','Reflect','Assessment','Summary']
   },
   es: {
-    badge:'Beta Gratuita', eyebrow:'Tu motor personal de decisiones',
-    title:'Deja de dudar.<br>Empieza a decidir <em>bien.</em>',
-    sub:'Clarity usa inteligencia artificial y ciencia del comportamiento para ayudarte a tomar cualquier decisión — con honestidad, estructura y una recomendación concreta.',
-    cta:'Tomar una decisión', f1:'Gratis', f2:'Sin registro', f3:'Impulsado por Claude AI', f4:'Solo 3 minutos',
+    badge:'Beta Gratuita', eyebrow:'Tu coach personal de metas',
+    title:'Define tu meta.<br>Hazla <em>realidad.</em>',
+    sub:'Navrielle usa inteligencia artificial para ayudarte a definir, planear y alcanzar cualquier meta — con orientación honesta, un plan de acción concreto y seguimiento constante.',
+    cta:'Empezar una meta', f1:'Gratis', f2:'Sin registro', f3:'Impulsado por Claude AI', f4:'Solo 3 minutos',
     footer:'Creado por Pedro — Impulsado por Anthropic Claude',
     signin:'Iniciar sesión', signup:'Crear cuenta gratis', signout:'Cerrar sesión',
     googleBtn:'Continuar con Google', emailLabel:'Correo electrónico', passLabel:'Contraseña',
-    signinTitle:'Iniciar sesión', signinSub:'Bienvenido de vuelta a Clarity',
-    signupTitle:'Crear cuenta', signupSub:'Empieza tu diario de decisiones hoy',
+    signinTitle:'Iniciar sesión', signinSub:'Bienvenido de vuelta a Navrielle',
+    signupTitle:'Crear cuenta', signupSub:'Empieza a alcanzar tus metas hoy',
     switchSignin:'¿No tienes cuenta?', switchSignup:'¿Ya tienes cuenta?',
     switchLinkSignin:'Crear cuenta', switchLinkSignup:'Iniciar sesión',
-    step1:'Paso 1', t0:'¿Qué estás decidiendo?', s0:'Elige una categoría para que Clarity seleccione los marcos adecuados.',
+    step1:'Paso 1', t0:'¿Qué quieres lograr?', s0:'Elige una categoría para que Navrielle aplique el enfoque correcto a tu meta.',
     topicLabel:'¿Quieres ser más específico? Describe tu situación brevemente (opcional)',
-    topicPH:'Ej. Estoy decidiendo si aceptar una oferta de trabajo en otra ciudad...',
+    topicPH:'Ej. Quiero ahorrar $5,000 en los próximos 6 meses...',
     btnContinue:'Continuar →', btnBack:'← Inicio', navStep:'Paso',
-    c0:'Carrera & Trabajo', c1:'Finanzas & Dinero', c2:'Relaciones', c3:'Salud & Estilo de vida', c4:'Educación', c5:'Gran Cambio de Vida',
-    step2:'Paso 2', t1:'Describe tu decisión', s1:'Sé lo más específico y honesto posible.',
-    decPH:'Estoy tratando de decidir si...',
-    step3:'Paso 3', t2:'Una pregunta primero', s2:'Antes de aplicar los marcos, Clarity necesita entender algo que quizás no hayas considerado del todo.',
-    thinking1:'Pensando en tu situación...', clarityAsks:'Clarity pregunta', ansPH:'Tómate tu tiempo con esta...',
-    step4:'Paso 4', t3:'Aplicando marcos de decisión', s3:'Clarity analiza tu situación a través de múltiples perspectivas.',
-    thinking2:'Ejecutando análisis...', frameworkLabel:'Análisis de marcos',
+    c0:'Carrera & Trabajo', c1:'Finanzas & Dinero', c2:'Relaciones', c3:'Salud & Estilo de vida', c4:'Educación', c5:'Gran Meta de Vida',
+    step2:'Paso 2', t1:'Describe tu meta', s1:'Sé lo más específico y honesto posible.',
+    decPH:'Mi meta es...',
+    step3:'Paso 3', t2:'Una pregunta primero', s2:'Antes de construir tu plan, Navrielle necesita entender algo que quizás no hayas considerado del todo.',
+    thinking1:'Pensando en tu situación...', clarityAsks:'Navrielle pregunta', ansPH:'Tómate tu tiempo con esta...',
+    step4:'Paso 4', t3:'Evaluación honesta', s3:'Navrielle analiza tu meta y situación para darte una perspectiva honesta y estructurada.',
+    thinking2:'Ejecutando análisis...', frameworkLabel:'Evaluación honesta',
     t4:'Esto es lo que veo', thinking3:'Sintetizando todo...',
-    btnAnalyze:'Analizar →', btnFrameworks:'Continuar →', btnRec:'Ver mi recomendación →',
-    btnRestart:'Tomar otra decisión', btnJournal:'Ver diario', btnHome:'Volver al inicio',
-    summaryEyebrow:'Tu resumen de claridad',
-    saveBanner:'Decisión guardada en tu diario',
+    btnAnalyze:'Analizar →', btnFrameworks:'Continuar →', btnRec:'Ver mi plan de acción →',
+    btnRestart:'Empezar nueva meta', btnJournal:'Ver diario', btnHome:'Volver al inicio',
+    summaryEyebrow:'Tu resumen de Navrielle',
+    saveBanner:'Meta guardada en tu diario',
     errConn:'No se pudo conectar al motor de IA. Por favor verifica tu conexión.',
     errRetry:'No se pudo conectar al motor de IA. Por favor intenta de nuevo.',
-    jTitle:'Diario de Decisiones', jSub:'Tu historial completo de decisiones y reflexiones',
-    jEmpty:'Aún no hay decisiones', jEmptySub:'Toma tu primera decisión y aparecerá aquí.',
+    jTitle:'Diario de Metas', jSub:'Tu historial completo de metas y reflexiones',
+    jEmpty:'Aún no hay metas', jEmptySub:'Empieza tu primera meta y aparecerá aquí.',
     checkin30:'Revisión de 30 días pendiente', checkin90:'Revisión de 90 días pendiente', checkin180:'Revisión de 180 días pendiente',
     checkinDone:'Reflexionado',
     btnPlan:'Crear mi plan de acción →',
@@ -599,9 +599,9 @@ const T = {
     clTitle:'Mis Listas de Acción', clSub:'Haz seguimiento de tus planes de 30 días',
     clEmpty:'Aún no hay listas', clEmptySub:'Crea un plan de acción y guárdalo como lista.',
     clComplete:'🎉 ¡Todos los pasos completos! Excelente trabajo.',
-    step5:'Tu plan de acción', t5:'30 días para hacerlo realidad', s5:'Basado en tu decisión, aquí tienes un plan concreto para ejecutarlo en los próximos 30 días.',
+    step5:'Tu plan de acción', t5:'30 días para hacerlo realidad', s5:'Basado en tu meta, aquí tienes un plan concreto para ejecutarlo en los próximos 30 días.',
     planThinking:'Construyendo tu plan...',
-    ps:['Categoría','Decisión','Reflexión','Marcos','Resumen']
+    ps:['Categoría','Meta','Reflexión','Evaluación','Resumen']
   }
 };
 
@@ -850,9 +850,12 @@ async function analyze() {
   document.getElementById('q-row').style.display='none';
   document.getElementById('q-err').innerHTML='';
   try {
-    const sys = `You are Clarity, an empathetic and sharp decision-thinking partner. Ask ONE powerful clarifying question that surfaces what the person hasn't fully examined yet. Be direct and warm. Keep it under 3 sentences: one observational sentence, then the question. No multiple questions. No advice yet.${langSuffix()}`;
+    const sys = `You are Navrielle, an empathetic and sharp personal achievement coach. Ask ONE powerful clarifying question that surfaces what the person hasn't fully examined yet about their goal. Be direct and warm. Keep it under 3 sentences: one observational sentence, then the question. No multiple questions. No advice yet.${langSuffix()}`;
     const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
-    S.q = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\n\nAsk your one most important clarifying question.`, sys, 'q-thinking');
+    S.q = await callClaude(`Category: ${S.cat}${topicCtx}
+Goal: ${S.dec}
+
+Ask your one most important clarifying question.`, sys, 'q-thinking');
     document.getElementById('q-text').innerHTML = renderMarkdown(S.q);
     document.getElementById('q-load').style.display='none';
     document.getElementById('q-body').style.display='block';
@@ -872,9 +875,14 @@ async function frameworks() {
   document.getElementById('f-row').style.display='none';
   document.getElementById('f-err').innerHTML='';
   try {
-    const sys = `You are Clarity, a decision-thinking partner trained in behavioral economics and mental models. Apply 2-3 relevant decision frameworks (Expected Value, Second-Order Thinking, Pre-mortem, Reversibility Test, 10/10/10 rule, or others that fit). Format each framework as: **Framework Name:** followed by your analysis. Be concrete and specific — not generic. Keep each framework to 2-3 sentences. Under 200 words total.${langSuffix()}`;
+    const sys = `You are Navrielle, a personal achievement coach. Give an honest, structured assessment of this goal using 2-3 lenses (Feasibility, Hidden Obstacles, What They May Be Avoiding, Realistic Timeline, or others that fit). Format each as: **Assessment Area:** followed by your honest take. Be concrete and direct — not a cheerleader. Keep each to 2-3 sentences. Under 200 words total.${langSuffix()}`;
     const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
-    S.fw = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\nClarification asked: ${S.q}\nTheir answer: ${S.ans}\n\nApply your frameworks.`, sys, 'f-thinking');
+    S.fw = await callClaude(`Category: ${S.cat}${topicCtx}
+Goal: ${S.dec}
+Clarifying Q: ${S.q}
+Answer: ${S.ans}
+
+Give your honest assessment.`, sys, 'f-thinking');
     document.getElementById('f-text').innerHTML = renderMarkdown(S.fw);
     document.getElementById('f-load').style.display='none';
     document.getElementById('f-body').style.display='block';
@@ -892,17 +900,17 @@ async function summary() {
   document.getElementById('r-body').style.display='none';
   document.getElementById('r-err').innerHTML='';
   try {
-    const sys = `You are Clarity. Synthesize this decision using this exact format:
+    const sys = `You are Navrielle. Synthesize this goal assessment using this exact format:
 
-**Direct Honest Take:** [2-3 sentences with your honest assessment]
+**Honest Take:** [2-3 sentences with your honest assessment of this goal and their situation]
 
-**Key Tension:** [1-2 sentences on the core tradeoff]
+**The Real Challenge:** [1-2 sentences on the core obstacle or tension they need to face]
 
-**Recommendation:** [2 sentences with a clear recommendation and one reason why]
+**Recommendation:** [2 sentences with a clear, direct recommendation and one reason why]
 
 Be specific, not a cheerleader. End with: INSIGHTS: [label1] | [label2] | [label3] (3-4 word labels each).${langSuffix()}`;
     const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
-    const resp = await callClaude(`Category: ${S.cat}${topicCtx}\nDecision: ${S.dec}\nClarifying Q: ${S.q}\nAnswer: ${S.ans}\nFramework: ${S.fw}`, sys, 'r-thinking');
+    const resp = await callClaude(`Category: ${S.cat}${topicCtx}\nGoal: ${S.dec}\nClarifying Q: ${S.q}\nAnswer: ${S.ans}\nAssessment: ${S.fw}`, sys, 'r-thinking');
     const match = resp.match(/INSIGHTS:\s*(.+)/);
     S.rec = resp.replace(/INSIGHTS:.+/s,'').trim();
     S.chips = match ? match[1].split('|').map(c=>c.trim().replace(/[\[\]]/g,'')) : [];
@@ -981,7 +989,7 @@ async function generatePlan() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   try {
-    const sys = `You are Clarity, a practical action-planning partner. Based on this decision, create a concrete 30-day action plan divided into exactly 3 sections. You MUST use this exact format with no variations:
+    const sys = `You are Navrielle, a practical action-planning coach. Based on this goal, create a concrete 30-day action plan divided into exactly 3 sections. You MUST use this exact format with no variations:
 
 Week 1-2: [subtitle here]
 - [action step]
@@ -998,11 +1006,11 @@ Month 2-3: [subtitle here]
 - [action step]
 - [action step]
 
-Rules: Start each section header with "Week 1-2:", "Week 3-4:", or "Month 2-3:" exactly. Each action step must start with a dash (-). Do NOT use ## markdown headers. Do NOT use bold (**) for section headers. Keep each step to 1-2 sentences. Be specific to their situation. Total response under 300 words.${langSuffix()}`;
+Rules: Start each section header with "Week 1-2:", "Week 3-4:", or "Month 2-3:" exactly. Each action step must start with a dash (-). Do NOT use ## markdown headers. Do NOT use bold (**) for section headers. Keep each step to 1-2 sentences. Be specific to their goal and situation. Total response under 300 words.${langSuffix()}`;
 
     const topicCtx = S.topic ? `\nContext: ${S.topic}` : '';
     const planText = await callClaude(
-      `Category: ${S.cat}${topicCtx}\nDecision made: ${S.dec}\nRecommendation: ${S.rec}\n\nCreate a 30-day action plan.`,
+      `Category: ${S.cat}${topicCtx}\nGoal: ${S.dec}\nRecommendation: ${S.rec}\n\nCreate a 30-day action plan.`,
       sys, 'plan-thinking'
     );
 
