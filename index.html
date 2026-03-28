@@ -981,13 +981,24 @@ async function generatePlan() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   try {
-    const sys = `You are Clarity, a practical action-planning partner. Based on this decision, create a concrete 30-day action plan divided into 3 sections:
+    const sys = `You are Clarity, a practical action-planning partner. Based on this decision, create a concrete 30-day action plan divided into exactly 3 sections. You MUST use this exact format with no variations:
 
-Week 1-2: Foundation (title this section with a relevant subtitle)
-Week 3-4: Building Momentum (title this section with a relevant subtitle)  
-Month 2-3: Sustaining Progress (title this section with a relevant subtitle)
+Week 1-2: [subtitle here]
+- [action step]
+- [action step]
+- [action step]
 
-For each section provide exactly 3-4 specific, actionable steps. Format each step starting with a dash (-). Keep each step to 1-2 sentences. Be specific to their situation — not generic advice. Total response under 300 words.${langSuffix()}`;
+Week 3-4: [subtitle here]
+- [action step]
+- [action step]
+- [action step]
+
+Month 2-3: [subtitle here]
+- [action step]
+- [action step]
+- [action step]
+
+Rules: Start each section header with "Week 1-2:", "Week 3-4:", or "Month 2-3:" exactly. Each action step must start with a dash (-). Do NOT use ## markdown headers. Do NOT use bold (**) for section headers. Keep each step to 1-2 sentences. Be specific to their situation. Total response under 300 words.${langSuffix()}`;
 
     const topicCtx = S.topic ? `\nContext: ${S.topic}` : '';
     const planText = await callClaude(
