@@ -22,7 +22,7 @@
     body { font-family: var(--sans); background: var(--cream); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
     /* NAV */
-    .land-nav { padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; animation: fadeDown 0.6s ease both; }
+    .land-nav { padding: 20px 48px; display: flex; align-items: center; justify-content: space-between; animation: fadeDown 0.6s ease both; position: sticky; top: 0; z-index: 50; background: rgba(250,248,244,0.92); backdrop-filter: blur(12px); border-bottom: 0.5px solid var(--border); }
     .land-logo { font-family: var(--serif); font-size: 22px; font-weight: 600; color: var(--ink); letter-spacing: -0.3px; }
     .land-logo em { color: var(--purple); font-style: italic; }
     .land-badge { font-size: 11px; font-weight: 500; color: var(--purple); background: var(--purple-soft); padding: 5px 12px; border-radius: 20px; }
@@ -46,19 +46,81 @@
 
     /* LANDING */
     #landing { min-height: 100vh; display: flex; flex-direction: column; }
-    .land-hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px 24px 60px; }
-    .hero-eyebrow { font-size: 12px; font-weight: 500; color: var(--ink3); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 24px; animation: fadeUp 0.7s 0.1s ease both; }
-    .hero-title { font-family: var(--serif); font-size: clamp(38px, 7vw, 72px); font-weight: 600; color: var(--ink); line-height: 1.15; letter-spacing: -1px; max-width: 700px; margin-bottom: 24px; animation: fadeUp 0.7s 0.2s ease both; }
+
+    /* HERO */
+    .land-hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 24px 80px; position: relative; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; pointer-events: none; }
+    .hero-bg-circle { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.12; }
+    .hero-bg-circle-1 { width: 600px; height: 600px; background: var(--purple); top: -200px; left: 50%; transform: translateX(-50%); }
+    .hero-bg-circle-2 { width: 300px; height: 300px; background: var(--teal); bottom: 0; right: 10%; }
+    .hero-eyebrow { font-size: 11px; font-weight: 600; color: var(--teal); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 24px; animation: fadeUp 0.7s 0.1s ease both; display: flex; align-items: center; gap: 8px; }
+    .hero-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); display: inline-block; }
+    .hero-title { font-family: var(--serif); font-size: clamp(42px, 7vw, 78px); font-weight: 600; color: var(--ink); line-height: 1.1; letter-spacing: -2px; max-width: 760px; margin-bottom: 28px; animation: fadeUp 0.7s 0.2s ease both; }
     .hero-title em { color: var(--purple); font-style: italic; }
-    .hero-sub { font-size: 17px; color: var(--ink2); line-height: 1.7; max-width: 480px; margin-bottom: 48px; font-weight: 300; animation: fadeUp 0.7s 0.3s ease both; }
-    .hero-cta { display: inline-flex; align-items: center; gap: 10px; background: var(--ink); color: var(--cream); font-family: var(--sans); font-size: 15px; font-weight: 500; padding: 16px 32px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s ease; animation: fadeUp 0.7s 0.4s ease both; }
-    .hero-cta:hover { background: var(--purple); transform: translateY(-2px); }
-    .hero-cta .arrow { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 11px; transition: transform 0.2s; }
+    .hero-sub { font-size: 18px; color: var(--ink2); line-height: 1.7; max-width: 500px; margin-bottom: 48px; font-weight: 300; animation: fadeUp 0.7s 0.3s ease both; }
+    .hero-cta-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.7s 0.4s ease both; margin-bottom: 64px; }
+    .hero-cta { display: inline-flex; align-items: center; gap: 10px; background: var(--ink); color: var(--cream); font-family: var(--sans); font-size: 15px; font-weight: 500; padding: 16px 32px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s ease; }
+    .hero-cta:hover { background: var(--purple); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(67,56,202,0.25); }
+    .hero-cta .arrow { width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 11px; transition: transform 0.2s; }
     .hero-cta:hover .arrow { transform: translateX(3px); }
-    .hero-features { display: flex; gap: 32px; margin-top: 64px; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.7s 0.5s ease both; }
-    .feat { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink3); }
-    .feat-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--purple); }
-    .land-footer { padding: 20px 32px; text-align: center; font-size: 12px; color: var(--ink3); border-top: 0.5px solid var(--border); animation: fadeUp 0.7s 0.6s ease both; }
+    .hero-cta-secondary { font-size: 14px; color: var(--ink3); font-family: var(--sans); cursor: pointer; background: none; border: none; text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+    .hero-cta-secondary:hover { color: var(--ink); }
+    .hero-social-proof { display: flex; align-items: center; gap: 12px; animation: fadeUp 0.7s 0.5s ease both; }
+    .hero-avatars { display: flex; }
+    .hero-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--cream); margin-left: -8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: white; }
+    .hero-avatar:first-child { margin-left: 0; }
+    .hero-social-text { font-size: 13px; color: var(--ink3); font-weight: 300; }
+    .hero-social-text strong { color: var(--ink2); font-weight: 500; }
+
+    /* HOW IT WORKS */
+    .land-section { padding: 100px 48px; max-width: 1100px; margin: 0 auto; width: 100%; }
+    .land-section-eyebrow { font-size: 11px; font-weight: 600; color: var(--purple); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; text-align: center; }
+    .land-section-title { font-family: var(--serif); font-size: clamp(28px, 4vw, 44px); font-weight: 600; color: var(--ink); line-height: 1.2; letter-spacing: -0.5px; text-align: center; margin-bottom: 16px; }
+    .land-section-sub { font-size: 16px; color: var(--ink3); line-height: 1.7; font-weight: 300; text-align: center; max-width: 480px; margin: 0 auto 64px; }
+
+    /* STEPS */
+    .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); border-radius: var(--radius); overflow: hidden; }
+    .step-card { background: var(--cream); padding: 36px 32px; position: relative; transition: background 0.2s; }
+    .step-card:hover { background: white; }
+    .step-num { font-family: var(--serif); font-size: 48px; font-weight: 600; color: var(--cream3); line-height: 1; margin-bottom: 20px; }
+    .step-icon-wrap { width: 44px; height: 44px; border-radius: 12px; background: var(--purple-soft); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; }
+    .step-title { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
+    .step-desc { font-size: 14px; color: var(--ink2); line-height: 1.65; font-weight: 300; }
+
+    /* FEATURES */
+    .features-section { background: var(--ink); padding: 100px 48px; }
+    .features-inner { max-width: 1100px; margin: 0 auto; }
+    .features-section .land-section-eyebrow { color: var(--teal); }
+    .features-section .land-section-title { color: white; }
+    .features-section .land-section-sub { color: rgba(255,255,255,0.4); }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .feature-card { background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 28px 24px; transition: all 0.2s; }
+    .feature-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+    .feature-icon { font-size: 24px; margin-bottom: 16px; }
+    .feature-title { font-size: 15px; font-weight: 600; color: white; margin-bottom: 8px; font-family: var(--sans); }
+    .feature-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.65; font-weight: 300; }
+
+    /* TESTIMONIALS */
+    .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .testimonial-card { background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 28px 24px; }
+    .testimonial-stars { color: #F59E0B; font-size: 13px; margin-bottom: 14px; letter-spacing: 2px; }
+    .testimonial-text { font-size: 14px; color: var(--ink); line-height: 1.75; font-weight: 300; margin-bottom: 20px; font-style: italic; }
+    .testimonial-author { display: flex; align-items: center; gap: 10px; }
+    .testimonial-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: white; flex-shrink: 0; }
+    .testimonial-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+    .testimonial-role { font-size: 12px; color: var(--ink3); }
+
+    /* BOTTOM CTA */
+    .land-cta-section { padding: 100px 48px; text-align: center; background: var(--cream2); border-top: 0.5px solid var(--border); }
+    .land-cta-title { font-family: var(--serif); font-size: clamp(30px, 4vw, 52px); font-weight: 600; color: var(--ink); line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .land-cta-title em { color: var(--purple); font-style: italic; }
+    .land-cta-sub { font-size: 16px; color: var(--ink3); margin-bottom: 40px; font-weight: 300; }
+
+    /* FOOTER */
+    .land-footer { padding: 24px 48px; text-align: center; font-size: 12px; color: var(--ink3); border-top: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .land-footer-links { display: flex; gap: 24px; }
+    .land-footer-link { font-size: 12px; color: var(--ink3); cursor: pointer; transition: color 0.15s; }
+    .land-footer-link:hover { color: var(--ink); }
 
     /* AUTH MODAL */
     .modal-overlay { position: fixed; inset: 0; background: rgba(28,25,23,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; animation: fadeIn 0.2s ease; }
@@ -116,14 +178,6 @@
     .cat-btn:hover .cat-icon { background: var(--purple-soft); }
     .cat-btn.selected { border-color: var(--purple); border-width: 1.5px; color: var(--ink); background: white; }
     .cat-btn.selected .cat-icon { background: var(--purple-soft); }
-
-    /* SUBTOPICS */
-    .subtopic-wrap { margin-top: 16px; animation: fadeUp 0.3s ease forwards; }
-    .subtopic-label { font-size: 12px; font-weight: 500; color: var(--ink3); margin-bottom: 10px; display: block; letter-spacing: 0.5px; text-transform: uppercase; }
-    .subtopic-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
-    .subtopic-btn { padding: 12px 14px; border-radius: var(--radius-sm); border: 0.5px solid var(--border); background: white; font-size: 13px; font-weight: 400; color: var(--ink2); cursor: pointer; text-align: left; font-family: var(--sans); transition: all 0.2s ease; line-height: 1.4; }
-    .subtopic-btn:hover { border-color: var(--purple); color: var(--ink); background: var(--purple-soft); }
-    .subtopic-btn.selected { border-color: var(--purple); border-width: 1.5px; color: var(--purple); background: var(--purple-soft); font-weight: 500; }
 
     /* TOPIC */
     .topic-wrap { margin-top: 4px; padding-top: 16px; border-top: 0.5px solid var(--border); animation: fadeUp 0.3s ease forwards; }
@@ -259,15 +313,27 @@
     @keyframes pulse { 0%, 80%, 100% { opacity: 0.2; transform: scale(0.7); } 40% { opacity: 1; transform: scale(1); } }
 
     /* MOBILE */
+    @media (max-width: 768px) {
+      .steps-grid { grid-template-columns: 1fr 1fr; }
+      .steps-grid .step-card[style*="span 3"] { grid-column: span 2; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+    }
     @media (max-width: 480px) {
       .land-nav { padding: 16px 20px; }
-      .hero-features { gap: 16px; }
       .cat-grid { grid-template-columns: 1fr; }
       .subtopic-grid { grid-template-columns: 1fr; }
-      .app-nav, .journal-nav { padding: 12px 20px; }
-      main, .journal-content { padding: 24px 20px 0; }
+      .app-nav, .journal-nav, .checklist-nav { padding: 12px 20px; }
+      main, .journal-content, .checklist-content { padding: 24px 20px 0; }
       .progress-wrap { padding: 20px 20px 0; }
       .user-email { display: none; }
+      .steps-grid { grid-template-columns: 1fr !important; }
+      .steps-grid .step-card[style*="span 3"] { grid-column: span 1 !important; flex-direction: column; gap: 0; }
+      .features-grid { grid-template-columns: 1fr; }
+      .land-section, .features-section, .land-cta-section { padding: 60px 24px; }
+      .features-section { padding: 60px 24px; }
+      .land-footer { padding: 20px 24px; flex-direction: column; gap: 12px; text-align: center; }
+      .land-footer-links { justify-content: center; }
     }
   </style>
 </head>
@@ -296,22 +362,174 @@
     </div>
   </nav>
 
-  <div class="land-hero">
-    <div class="hero-eyebrow" id="l-eyebrow">Your personal decision engine</div>
-    <h1 class="hero-title" id="l-title">Stop overthinking.<br>Start deciding <em>well.</em></h1>
-    <p class="hero-sub" id="l-sub">Clarity uses AI and behavioral science to help you work through any decision — with honesty, structure, and a concrete recommendation.</p>
-    <button class="hero-cta" onclick="startApp()">
-      <span id="l-cta">Make a decision</span>
+  <!-- HERO -->
+  <section class="land-hero">
+    <div class="hero-bg">
+      <div class="hero-bg-circle hero-bg-circle-1"></div>
+      <div class="hero-bg-circle hero-bg-circle-2"></div>
+    </div>
+    <div class="hero-eyebrow" id="l-eyebrow"><span class="hero-eyebrow-dot"></span>Your personal achievement coach</div>
+    <h1 class="hero-title" id="l-title">Set your goal.<br>Make it <em>real.</em></h1>
+    <p class="hero-sub" id="l-sub">Navrielle uses AI to help you define, plan, and achieve any goal — with honest guidance, a concrete action plan, and check-ins that keep you on track.</p>
+    <div class="hero-cta-row">
+      <button class="hero-cta" onclick="startApp()">
+        <span id="l-cta">Start a goal</span>
+        <span class="arrow">→</span>
+      </button>
+      <button class="hero-cta-secondary" onclick="openModal('signin')" id="l-signin-link">Already have an account?</button>
+    </div>
+    <div class="hero-social-proof">
+      <div class="hero-avatars">
+        <div class="hero-avatar" style="background:var(--purple);">A</div>
+        <div class="hero-avatar" style="background:var(--teal);">M</div>
+        <div class="hero-avatar" style="background:#7C3AED;">R</div>
+        <div class="hero-avatar" style="background:#0891B2;">S</div>
+      </div>
+      <span class="hero-social-text" id="l-social-proof"><strong>Beta users</strong> already working on their goals</span>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section style="padding: 100px 48px; background: white;">
+    <div style="max-width:1100px; margin:0 auto;">
+      <div class="land-section-eyebrow" id="l-how-eyebrow">How it works</div>
+      <h2 class="land-section-title" id="l-how-title">From goal to done — in four steps</h2>
+      <p class="land-section-sub" id="l-how-sub">Navrielle doesn't just track your goals. It guides you through them.</p>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <div class="step-icon-wrap">🎯</div>
+          <div class="step-title" id="l-step1-title">Define your goal</div>
+          <p class="step-desc" id="l-step1-desc">Choose a category and focus area. Navrielle narrows in on exactly what you want to achieve.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <div class="step-icon-wrap">🔍</div>
+          <div class="step-title" id="l-step2-title">Get honest feedback</div>
+          <p class="step-desc" id="l-step2-desc">Navrielle asks the hard questions and gives you an honest assessment — not just what you want to hear.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <div class="step-icon-wrap">📋</div>
+          <div class="step-title" id="l-step3-title">Get your action plan</div>
+          <p class="step-desc" id="l-step3-desc">A personalized 30-day plan broken into concrete, weekly steps specific to your situation.</p>
+        </div>
+        <div class="step-card" style="grid-column: span 3; display:flex; gap:32px; align-items:center;">
+          <div>
+            <div class="step-num">04</div>
+            <div class="step-icon-wrap">✅</div>
+          </div>
+          <div>
+            <div class="step-title" id="l-step4-title">Track & stay accountable</div>
+            <p class="step-desc" id="l-step4-desc">Check off steps as you go, track your progress visually, and Navrielle checks in with you at the right moments to keep momentum alive.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section">
+    <div class="features-inner">
+      <div class="land-section-eyebrow" id="l-feat-eyebrow">What makes Navrielle different</div>
+      <h2 class="land-section-title" id="l-feat-title">Built to actually get you there</h2>
+      <p class="land-section-sub" id="l-feat-sub">Most apps track what you do. Navrielle helps you figure out what you should do — and holds you to it.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <div class="feature-title" id="l-fc1-t">Honest AI coach</div>
+          <p class="feature-desc" id="l-fc1-d">No cheerleading. Navrielle tells you what you need to hear — including the uncomfortable truths that could make or break your goal.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🗺️</div>
+          <div class="feature-title" id="l-fc2-t">Personalized action plan</div>
+          <p class="feature-desc" id="l-fc2-d">Not a generic template. A concrete 30-day roadmap built around your specific goal, situation, and timeline.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">☑️</div>
+          <div class="feature-title" id="l-fc3-t">Interactive checklist</div>
+          <p class="feature-desc" id="l-fc3-d">Your action plan converts into a live checklist. Check off steps, watch the progress bar move, and stay focused on what's next.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📓</div>
+          <div class="feature-title" id="l-fc4-t">Goal journal</div>
+          <p class="feature-desc" id="l-fc4-d">Every goal you work on is saved. Come back, reflect, and see how far you've come across all areas of your life.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌐</div>
+          <div class="feature-title" id="l-fc5-t">English & Spanish</div>
+          <p class="feature-desc" id="l-fc5-d">Navrielle is fully bilingual. Switch languages anytime — everything adapts instantly, including the AI responses.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-title" id="l-fc6-t">Takes 3 minutes</div>
+          <p class="feature-desc" id="l-fc6-d">No lengthy onboarding. Go from blank slate to a full action plan in a single session. Free, no credit card required.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section style="padding: 100px 48px; background: var(--cream);">
+    <div style="max-width:1100px; margin:0 auto;">
+      <div class="land-section-eyebrow" id="l-test-eyebrow">What people say</div>
+      <h2 class="land-section-title" id="l-test-title">Real goals. Real results.</h2>
+      <p class="land-section-sub" id="l-test-sub">From our beta community — people using Navrielle to achieve goals that matter to them.</p>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text" id="l-t1">"I've tried every productivity app out there. Navrielle is the first one that actually made me think differently about my goal — not just track it."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:var(--purple);">A</div>
+            <div>
+              <div class="testimonial-name" id="l-t1-name">Andrea M.</div>
+              <div class="testimonial-role" id="l-t1-role">Entrepreneur, Mexico City</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text" id="l-t2">"The honest feedback was a bit of a shock at first — but that's exactly what I needed. It pointed out the real obstacle I'd been avoiding for months."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:var(--teal);">R</div>
+            <div>
+              <div class="testimonial-name" id="l-t2-name">Roberto S.</div>
+              <div class="testimonial-role" id="l-t2-role">Finance professional, Monterrey</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text" id="l-t3">"I set a savings goal I'd failed at twice before. The action plan broke it down so specifically that I actually followed through this time."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar" style="background:#7C3AED;">S</div>
+            <div>
+              <div class="testimonial-name" id="l-t3-name">Sofia L.</div>
+              <div class="testimonial-role" id="l-t3-role">Graduate student, CDMX</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM CTA -->
+  <section class="land-cta-section">
+    <h2 class="land-cta-title" id="l-cta-title">Your goal is waiting.<br>Let's make it <em>happen.</em></h2>
+    <p class="land-cta-sub" id="l-cta-sub">Free to use. No credit card. Takes 3 minutes.</p>
+    <button class="hero-cta" onclick="startApp()" style="margin: 0 auto;">
+      <span id="l-cta2">Start a goal</span>
       <span class="arrow">→</span>
     </button>
-    <div class="hero-features">
-      <div class="feat"><div class="feat-dot"></div><span id="l-f1">Free to use</span></div>
-      <div class="feat"><div class="feat-dot"></div><span id="l-f2">No sign-up required</span></div>
-      <div class="feat"><div class="feat-dot"></div><span id="l-f3">Powered by Claude AI</span></div>
-      <div class="feat"><div class="feat-dot"></div><span id="l-f4">Takes 3 minutes</span></div>
+  </section>
+
+  <footer class="land-footer">
+    <span id="land-footer-text">Built by Pedro — Powered by Anthropic Claude</span>
+    <div class="land-footer-links">
+      <span class="land-footer-link" onclick="openModal('signin')" id="l-footer-signin">Sign in</span>
+      <span class="land-footer-link" onclick="openModal('signup')" id="l-footer-signup">Sign up free</span>
     </div>
-  </div>
-  <footer class="land-footer"><span id="land-footer-text">Built by Pedro — Powered by Anthropic Claude</span></footer>
+  </footer>
 </div>
 
 <!-- ── AUTH MODAL ──────────────────────────────────────── -->
@@ -373,23 +591,16 @@
       <h2 class="phase-title" id="a-t0">What are you deciding?</h2>
       <p class="phase-sub" id="a-s0">Choose a category so Clarity can select the right thinking frameworks.</p>
       <div class="cat-grid">
-        <div class="cat-btn" onclick="pickCat(this,'Career & Work','c0')"><div class="cat-icon">💼</div><span id="c0">Career & Work</span></div>
-        <div class="cat-btn" onclick="pickCat(this,'Finance & Money','c1')"><div class="cat-icon">💰</div><span id="c1">Finance & Money</span></div>
-        <div class="cat-btn" onclick="pickCat(this,'Relationships','c2')"><div class="cat-icon">🤝</div><span id="c2">Relationships</span></div>
-        <div class="cat-btn" onclick="pickCat(this,'Health & Lifestyle','c3')"><div class="cat-icon">🧘</div><span id="c3">Health & Lifestyle</span></div>
-        <div class="cat-btn" onclick="pickCat(this,'Education','c4')"><div class="cat-icon">📚</div><span id="c4">Education</span></div>
-        <div class="cat-btn" onclick="pickCat(this,'Big Life Goal','c5')"><div class="cat-icon">🌎</div><span id="c5">Big Life Goal</span></div>
+        <div class="cat-btn" onclick="pick(this,'Career & Work')"><div class="cat-icon">💼</div><span id="c0">Career & Work</span></div>
+        <div class="cat-btn" onclick="pick(this,'Finance & Money')"><div class="cat-icon">💰</div><span id="c1">Finance & Money</span></div>
+        <div class="cat-btn" onclick="pick(this,'Relationships')"><div class="cat-icon">🤝</div><span id="c2">Relationships</span></div>
+        <div class="cat-btn" onclick="pick(this,'Health & Lifestyle')"><div class="cat-icon">🧘</div><span id="c3">Health & Lifestyle</span></div>
+        <div class="cat-btn" onclick="pick(this,'Education')"><div class="cat-icon">📚</div><span id="c4">Education</span></div>
+        <div class="cat-btn" onclick="pick(this,'Big Life Change')"><div class="cat-icon">🌎</div><span id="c5">Big Life Change</span></div>
       </div>
-
-      <!-- SUBTOPICS -->
-      <div class="subtopic-wrap" id="subtopic-wrap" style="display:none">
-        <span class="subtopic-label" id="subtopic-label">Choose a focus area</span>
-        <div class="subtopic-grid" id="subtopic-grid"></div>
-      </div>
-
       <div class="topic-wrap" id="topic-wrap" style="display:none">
         <label class="topic-label" id="topic-label">Want to be more specific? Describe your situation briefly (optional)</label>
-        <input type="text" class="topic-input" id="topic" placeholder="e.g. I want to save $5,000 in the next 6 months...">
+        <input type="text" class="topic-input" id="topic" placeholder="e.g. Deciding whether to accept a job offer in another city...">
       </div>
       <div class="btn-row" style="margin-top:8px;">
         <button class="btn-primary" id="btn0" onclick="go(1)" disabled>Continue →</button>
@@ -526,7 +737,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let currentUser = null;
 let modalMode = 'signin';
-const S = { cat:'', subtopic:'', topic:'', dec:'', q:'', ans:'', fw:'', rec:'', chips:[], lang:'en', planText:'', planWeeks:[] };
+const S = { cat:'', topic:'', dec:'', q:'', ans:'', fw:'', rec:'', chips:[], lang:'en', planText:'', planWeeks:[] };
 
 const T = {
   en: {
@@ -722,10 +933,45 @@ function setLang(lang, btn) {
   const t = T[lang];
   const set = (id, val) => { const el = document.getElementById(id); if(el) el.innerHTML = val; };
   const setph = (id, val) => { const el = document.getElementById(id); if(el) el.placeholder = val; };
-  set('land-badge', t.badge); set('l-eyebrow', t.eyebrow); set('l-title', t.title); set('l-sub', t.sub);
-  set('l-cta', t.cta); set('l-f1', t.f1); set('l-f2', t.f2); set('l-f3', t.f3); set('l-f4', t.f4);
+  set('land-badge', t.badge);
+  set('l-eyebrow', t.eyebrow); set('l-title', t.title); set('l-sub', t.sub);
+  set('l-cta', t.cta); set('l-cta2', t.cta);
   set('land-footer-text', t.footer);
   set('l-signin-btn', t.signin); set('l-signup-btn', t.signup); set('l-signout-btn', t.signout);
+  set('l-signin-link', t.signinLink || (S.lang==='es' ? '¿Ya tienes cuenta?' : 'Already have an account?'));
+  set('l-social-proof', t.socialProof || (S.lang==='es' ? '<strong>Usuarios beta</strong> ya trabajando en sus metas' : '<strong>Beta users</strong> already working on their goals'));
+  set('l-how-eyebrow', t.howEyebrow || (S.lang==='es' ? 'CÓMO FUNCIONA' : 'HOW IT WORKS'));
+  set('l-how-title', t.howTitle || (S.lang==='es' ? 'De meta a logro — en cuatro pasos' : 'From goal to done — in four steps'));
+  set('l-how-sub', t.howSub || (S.lang==='es' ? 'Navrielle no solo rastrea tus metas. Te guía a través de ellas.' : 'Navrielle doesn\'t just track your goals. It guides you through them.'));
+  set('l-step1-title', t.step1Title || (S.lang==='es' ? 'Define tu meta' : 'Define your goal'));
+  set('l-step1-desc', t.step1Desc || (S.lang==='es' ? 'Elige una categoría y enfoque. Navrielle se centra exactamente en lo que quieres lograr.' : 'Choose a category and focus area. Navrielle narrows in on exactly what you want to achieve.'));
+  set('l-step2-title', t.step2Title || (S.lang==='es' ? 'Recibe retroalimentación honesta' : 'Get honest feedback'));
+  set('l-step2-desc', t.step2Desc || (S.lang==='es' ? 'Navrielle hace las preguntas difíciles y te da una evaluación honesta — no solo lo que quieres escuchar.' : 'Navrielle asks the hard questions and gives you an honest assessment — not just what you want to hear.'));
+  set('l-step3-title', t.step3Title || (S.lang==='es' ? 'Obtén tu plan de acción' : 'Get your action plan'));
+  set('l-step3-desc', t.step3Desc || (S.lang==='es' ? 'Un plan personalizado de 30 días con pasos concretos específicos a tu situación.' : 'A personalized 30-day plan broken into concrete, weekly steps specific to your situation.'));
+  set('l-step4-title', t.step4Title || (S.lang==='es' ? 'Rastrea y mantén el rumbo' : 'Track & stay accountable'));
+  set('l-step4-desc', t.step4Desc || (S.lang==='es' ? 'Marca pasos completados, visualiza tu progreso y Navrielle te hace seguimiento en los momentos clave.' : 'Check off steps as you go, track your progress visually, and Navrielle checks in with you at the right moments.'));
+  set('l-feat-eyebrow', S.lang==='es' ? 'LO QUE HACE A NAVRIELLE DIFERENTE' : 'WHAT MAKES NAVRIELLE DIFFERENT');
+  set('l-feat-title', S.lang==='es' ? 'Construido para llevarte ahí' : 'Built to actually get you there');
+  set('l-feat-sub', S.lang==='es' ? 'La mayoría de las apps rastrean lo que haces. Navrielle te ayuda a descubrir qué deberías hacer — y te mantiene en ello.' : 'Most apps track what you do. Navrielle helps you figure out what you should do — and holds you to it.');
+  set('l-fc1-t', S.lang==='es' ? 'Coach AI honesto' : 'Honest AI coach');
+  set('l-fc1-d', S.lang==='es' ? 'Sin motivación vacía. Navrielle te dice lo que necesitas escuchar — incluyendo las verdades incómodas.' : 'No cheerleading. Navrielle tells you what you need to hear — including the uncomfortable truths.');
+  set('l-fc2-t', S.lang==='es' ? 'Plan de acción personalizado' : 'Personalized action plan');
+  set('l-fc2-d', S.lang==='es' ? 'No una plantilla genérica. Un plan de 30 días construido alrededor de tu meta y situación específica.' : 'Not a generic template. A concrete 30-day roadmap built around your specific goal and situation.');
+  set('l-fc3-t', S.lang==='es' ? 'Lista interactiva' : 'Interactive checklist');
+  set('l-fc3-d', S.lang==='es' ? 'Tu plan se convierte en una lista en vivo. Marca pasos, ve la barra de progreso avanzar.' : 'Your action plan converts into a live checklist. Check off steps, watch the progress bar move.');
+  set('l-fc4-t', S.lang==='es' ? 'Diario de metas' : 'Goal journal');
+  set('l-fc4-d', S.lang==='es' ? 'Cada meta que trabajas se guarda. Regresa, reflexiona y ve todo el camino recorrido.' : 'Every goal you work on is saved. Come back, reflect, and see how far you\'ve come.');
+  set('l-fc5-t', S.lang==='es' ? 'Inglés y español' : 'English & Spanish');
+  set('l-fc5-d', S.lang==='es' ? 'Navrielle es completamente bilingüe. Cambia de idioma en cualquier momento.' : 'Navrielle is fully bilingual. Switch languages anytime — everything adapts instantly.');
+  set('l-fc6-t', S.lang==='es' ? 'Solo 3 minutos' : 'Takes 3 minutes');
+  set('l-fc6-d', S.lang==='es' ? 'Sin onboarding largo. De cero a plan completo en una sesión. Gratis, sin tarjeta.' : 'No lengthy onboarding. Go from blank slate to a full action plan in a single session. Free.');
+  set('l-test-eyebrow', S.lang==='es' ? 'LO QUE DICEN' : 'WHAT PEOPLE SAY');
+  set('l-test-title', S.lang==='es' ? 'Metas reales. Resultados reales.' : 'Real goals. Real results.');
+  set('l-test-sub', S.lang==='es' ? 'De nuestra comunidad beta — personas usando Navrielle para lograr metas que importan.' : 'From our beta community — people using Navrielle to achieve goals that matter to them.');
+  set('l-cta-title', S.lang==='es' ? 'Tu meta está esperando.<br>Hagámosla <em>realidad.</em>' : 'Your goal is waiting.<br>Let\'s make it <em>happen.</em>');
+  set('l-cta-sub', S.lang==='es' ? 'Gratis. Sin tarjeta. Solo 3 minutos.' : 'Free to use. No credit card. Takes 3 minutes.');
+  set('l-footer-signin', t.signin); set('l-footer-signup', t.signup);
   set('c0', t.c0); set('c1', t.c1); set('c2', t.c2); set('c3', t.c3); set('c4', t.c4); set('c5', t.c5);
   set('topic-label', t.topicLabel); setph('topic', t.topicPH);
   set('a-step1', t.step1); set('a-t0', t.t0); set('a-s0', t.s0); set('btn0', t.btnContinue);
@@ -795,56 +1041,12 @@ function go(n) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-const SUBTOPICS = {
-  en: {
-    'Career & Work': ['Get a promotion', 'Change careers', 'Find a new job', 'Build a side hustle', 'Improve work-life balance', 'Develop a key skill'],
-    'Finance & Money': ['Save a specific amount', 'Pay off debt', 'Build an emergency fund', 'Invest for the first time', 'Increase my income', 'Create a budget'],
-    'Relationships': ['Strengthen a relationship', 'Meet new people', 'Improve communication', 'Set healthy boundaries', 'Rebuild trust', 'Find a partner'],
-    'Health & Lifestyle': ['Lose weight', 'Build muscle', 'Run a race', 'Build a fitness habit', 'Improve nutrition', 'Improve mental health'],
-    'Education': ['Learn a new skill', 'Complete a course', 'Get a certification', 'Learn a language', 'Start a creative project', 'Build a reading habit'],
-    'Big Life Goal': ['Move to a new city', 'Buy a home', 'Travel somewhere significant', 'Launch a business', 'Define my life direction', 'Make a major life change'],
-  },
-  es: {
-    'Career & Work': ['Conseguir un ascenso', 'Cambiar de carrera', 'Encontrar nuevo empleo', 'Construir un negocio paralelo', 'Mejorar balance vida-trabajo', 'Desarrollar una habilidad clave'],
-    'Finance & Money': ['Ahorrar una cantidad específica', 'Pagar deudas', 'Crear un fondo de emergencia', 'Invertir por primera vez', 'Aumentar mis ingresos', 'Crear un presupuesto'],
-    'Relationships': ['Fortalecer una relación', 'Conocer nuevas personas', 'Mejorar la comunicación', 'Establecer límites sanos', 'Reconstruir confianza', 'Encontrar pareja'],
-    'Health & Lifestyle': ['Bajar de peso', 'Ganar músculo', 'Correr una carrera', 'Crear un hábito fitness', 'Mejorar nutrición', 'Mejorar salud mental'],
-    'Education': ['Aprender una habilidad nueva', 'Completar un curso', 'Obtener una certificación', 'Aprender un idioma', 'Iniciar un proyecto creativo', 'Crear hábito de lectura'],
-    'Big Life Goal': ['Mudarse a otra ciudad', 'Comprar una casa', 'Viajar a un lugar especial', 'Lanzar un negocio', 'Definir mi dirección de vida', 'Hacer un gran cambio de vida'],
-  }
-};
-
-function pickCat(el, cat, key) {
+function pick(el, cat) {
   S.cat = cat;
-  S.subtopic = '';
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
-  el.classList.add('selected');
-  document.getElementById('btn0').disabled = true;
-
-  // Show subtopics
-  const lang = S.lang || 'en';
-  const subs = SUBTOPICS[lang][cat] || SUBTOPICS['en'][cat] || [];
-  const grid = document.getElementById('subtopic-grid');
-  grid.innerHTML = subs.map(s =>
-    `<button class="subtopic-btn" onclick="pickSubtopic(this,'${s.replace(/'/g, "\\'")}')">${s}</button>`
-  ).join('');
-
-  const wrap = document.getElementById('subtopic-wrap');
-  wrap.style.display = 'block';
-  document.getElementById('topic-wrap').style.display = 'none';
-  document.getElementById('subtopic-label').textContent = lang === 'es' ? 'Elige un enfoque específico' : 'Choose a focus area';
-}
-
-function pickSubtopic(el, sub) {
-  S.subtopic = sub;
-  document.querySelectorAll('.subtopic-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
   el.classList.add('selected');
   document.getElementById('btn0').disabled = false;
   document.getElementById('topic-wrap').style.display = 'block';
-}
-
-function pick(el, cat) {
-  pickCat(el, cat, '');
 }
 
 // ── AI ENGINE ─────────────────────────────────────────────
@@ -911,7 +1113,7 @@ async function analyze() {
   document.getElementById('q-err').innerHTML='';
   try {
     const sys = `You are Navrielle, an empathetic and sharp personal achievement coach. Ask ONE powerful clarifying question that surfaces what the person hasn't fully examined yet about their goal. Be direct and warm. Keep it under 3 sentences: one observational sentence, then the question. No multiple questions. No advice yet.${langSuffix()}`;
-    const topicCtx = S.subtopic ? `\nFocus area: ${S.subtopic}${S.topic ? '\nAdditional context: '+S.topic : ''}` : (S.topic ? `\nSpecific context: ${S.topic}` : '');
+    const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
     S.q = await callClaude(`Category: ${S.cat}${topicCtx}
 Goal: ${S.dec}
 
@@ -936,7 +1138,7 @@ async function frameworks() {
   document.getElementById('f-err').innerHTML='';
   try {
     const sys = `You are Navrielle, a personal achievement coach. Give an honest, structured assessment of this goal using 2-3 lenses (Feasibility, Hidden Obstacles, What They May Be Avoiding, Realistic Timeline, or others that fit). Format each as: **Assessment Area:** followed by your honest take. Be concrete and direct — not a cheerleader. Keep each to 2-3 sentences. Under 200 words total.${langSuffix()}`;
-    const topicCtx = S.subtopic ? `\nFocus area: ${S.subtopic}${S.topic ? '\nAdditional context: '+S.topic : ''}` : (S.topic ? `\nSpecific context: ${S.topic}` : '');
+    const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
     S.fw = await callClaude(`Category: ${S.cat}${topicCtx}
 Goal: ${S.dec}
 Clarifying Q: ${S.q}
@@ -969,7 +1171,7 @@ async function summary() {
 **Recommendation:** [2 sentences with a clear, direct recommendation and one reason why]
 
 Be specific, not a cheerleader. End with: INSIGHTS: [label1] | [label2] | [label3] (3-4 word labels each).${langSuffix()}`;
-    const topicCtx = S.subtopic ? `\nFocus area: ${S.subtopic}${S.topic ? '\nAdditional context: '+S.topic : ''}` : (S.topic ? `\nSpecific context: ${S.topic}` : '');
+    const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
     const resp = await callClaude(`Category: ${S.cat}${topicCtx}\nGoal: ${S.dec}\nClarifying Q: ${S.q}\nAnswer: ${S.ans}\nAssessment: ${S.fw}`, sys, 'r-thinking');
     const match = resp.match(/INSIGHTS:\s*(.+)/);
     S.rec = resp.replace(/INSIGHTS:.+/s,'').trim();
@@ -1068,7 +1270,7 @@ Month 2-3: [subtitle here]
 
 Rules: Start each section header with "Week 1-2:", "Week 3-4:", or "Month 2-3:" exactly. Each action step must start with a dash (-). Do NOT use ## markdown headers. Do NOT use bold (**) for section headers. Keep each step to 1-2 sentences. Be specific to their goal and situation. Total response under 300 words.${langSuffix()}`;
 
-    const topicCtx = S.subtopic ? `\nFocus area: ${S.subtopic}${S.topic ? '\nAdditional context: '+S.topic : ''}` : (S.topic ? `\nContext: ${S.topic}` : '');
+    const topicCtx = S.topic ? `\nContext: ${S.topic}` : '';
     const planText = await callClaude(
       `Category: ${S.cat}${topicCtx}\nGoal: ${S.dec}\nRecommendation: ${S.rec}\n\nCreate a 30-day action plan.`,
       sys, 'plan-thinking'
@@ -1150,9 +1352,6 @@ function restart() {
   Object.keys(S).forEach(k=>{ if(k!=='lang') S[k]=''; });
   S.chips = [];
   document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
-  document.querySelectorAll('.subtopic-btn').forEach(b=>b.classList.remove('selected'));
-  S.subtopic = '';
-  const stw = document.getElementById('subtopic-wrap'); if(stw) stw.style.display='none';
   const btn0 = document.getElementById('btn0'); if(btn0) btn0.disabled = true;
   const dec = document.getElementById('dec'); if(dec) dec.value='';
   const ans = document.getElementById('ans'); if(ans) ans.value='';
