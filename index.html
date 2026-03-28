@@ -178,6 +178,12 @@
     .cat-btn:hover .cat-icon { background: var(--purple-soft); }
     .cat-btn.selected { border-color: var(--purple); border-width: 1.5px; color: var(--ink); background: white; }
     .cat-btn.selected .cat-icon { background: var(--purple-soft); }
+    .subtopic-wrap { margin-top: 16px; animation: fadeUp 0.3s ease forwards; }
+    .subtopic-label { font-size: 12px; font-weight: 500; color: var(--ink3); margin-bottom: 10px; display: block; letter-spacing: 0.5px; text-transform: uppercase; }
+    .subtopic-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
+    .subtopic-btn { padding: 12px 14px; border-radius: var(--radius-sm); border: 0.5px solid var(--border); background: white; font-size: 13px; font-weight: 400; color: var(--ink2); cursor: pointer; text-align: left; font-family: var(--sans); transition: all 0.2s ease; line-height: 1.4; }
+    .subtopic-btn:hover { border-color: var(--purple); color: var(--ink); background: var(--purple-soft); }
+    .subtopic-btn.selected { border-color: var(--purple); border-width: 1.5px; color: var(--purple); background: var(--purple-soft); font-weight: 500; }
 
     /* TOPIC */
     .topic-wrap { margin-top: 4px; padding-top: 16px; border-top: 0.5px solid var(--border); animation: fadeUp 0.3s ease forwards; }
@@ -591,16 +597,16 @@
       <h2 class="phase-title" id="a-t0">What are you deciding?</h2>
       <p class="phase-sub" id="a-s0">Choose a category so Clarity can select the right thinking frameworks.</p>
       <div class="cat-grid">
-        <div class="cat-btn" onclick="pick(this,'Career & Work')"><div class="cat-icon">💼</div><span id="c0">Career & Work</span></div>
-        <div class="cat-btn" onclick="pick(this,'Finance & Money')"><div class="cat-icon">💰</div><span id="c1">Finance & Money</span></div>
-        <div class="cat-btn" onclick="pick(this,'Relationships')"><div class="cat-icon">🤝</div><span id="c2">Relationships</span></div>
-        <div class="cat-btn" onclick="pick(this,'Health & Lifestyle')"><div class="cat-icon">🧘</div><span id="c3">Health & Lifestyle</span></div>
-        <div class="cat-btn" onclick="pick(this,'Education')"><div class="cat-icon">📚</div><span id="c4">Education</span></div>
-        <div class="cat-btn" onclick="pick(this,'Big Life Change')"><div class="cat-icon">🌎</div><span id="c5">Big Life Change</span></div>
+        <div class="cat-btn" onclick="pickCat(this,'Career & Work','c0')"><div class="cat-icon">💼</div><span id="c0">Career & Work</span></div>
+        <div class="cat-btn" onclick="pickCat(this,'Finance & Money','c1')"><div class="cat-icon">💰</div><span id="c1">Finance & Money</span></div>
+        <div class="cat-btn" onclick="pickCat(this,'Relationships','c2')"><div class="cat-icon">🤝</div><span id="c2">Relationships</span></div>
+        <div class="cat-btn" onclick="pickCat(this,'Health & Lifestyle','c3')"><div class="cat-icon">🧘</div><span id="c3">Health & Lifestyle</span></div>
+        <div class="cat-btn" onclick="pickCat(this,'Education','c4')"><div class="cat-icon">📚</div><span id="c4">Education</span></div>
+        <div class="cat-btn" onclick="pickCat(this,'Big Life Goal','c5')"><div class="cat-icon">🌎</div><span id="c5">Big Life Goal</span></div>
       </div>
-      <div class="topic-wrap" id="topic-wrap" style="display:none">
-        <label class="topic-label" id="topic-label">Want to be more specific? Describe your situation briefly (optional)</label>
-        <input type="text" class="topic-input" id="topic" placeholder="e.g. Deciding whether to accept a job offer in another city...">
+      <div class="subtopic-wrap" id="subtopic-wrap" style="display:none">
+        <span class="subtopic-label" id="subtopic-label">Choose a focus area</span>
+        <div class="subtopic-grid" id="subtopic-grid"></div>
       </div>
       <div class="btn-row" style="margin-top:8px;">
         <button class="btn-primary" id="btn0" onclick="go(1)" disabled>Continue →</button>
@@ -737,7 +743,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let currentUser = null;
 let modalMode = 'signin';
-const S = { cat:'', topic:'', dec:'', q:'', ans:'', fw:'', rec:'', chips:[], lang:'en', planText:'', planWeeks:[] };
+const S = { cat:'', subtopic:'', topic:'', dec:'', q:'', ans:'', fw:'', rec:'', chips:[], lang:'en', planText:'', planWeeks:[] };
 
 const T = {
   en: {
@@ -1041,13 +1047,99 @@ function go(n) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function pick(el, cat) {
+const SUBTOPICS = {
+  en: {
+    'Career & Work': ['Get a promotion', 'Change careers', 'Find a new job', 'Build a side hustle', 'Improve work-life balance', 'Develop a key skill'],
+    'Finance & Money': ['Save a specific amount', 'Pay off debt', 'Build an emergency fund', 'Invest for the first time', 'Increase my income', 'Create a budget'],
+    'Relationships': ['Strengthen a relationship', 'Meet new people', 'Improve communication', 'Set healthy boundaries', 'Rebuild trust', 'Find a partner'],
+    'Health & Lifestyle': ['Lose weight', 'Build muscle', 'Run a race', 'Build a fitness habit', 'Improve nutrition', 'Improve mental health'],
+    'Education': ['Learn a new skill', 'Complete a course', 'Get a certification', 'Learn a language', 'Start a creative project', 'Build a reading habit'],
+    'Big Life Goal': ['Move to a new city', 'Buy a home', 'Travel somewhere significant', 'Launch a business', 'Define my life direction', 'Make a major life change'],
+  },
+  es: {
+    'Career & Work': ['Conseguir un ascenso', 'Cambiar de carrera', 'Encontrar nuevo empleo', 'Construir un negocio paralelo', 'Mejorar balance vida-trabajo', 'Desarrollar una habilidad clave'],
+    'Finance & Money': ['Ahorrar una cantidad específica', 'Pagar deudas', 'Crear un fondo de emergencia', 'Invertir por primera vez', 'Aumentar mis ingresos', 'Crear un presupuesto'],
+    'Relationships': ['Fortalecer una relación', 'Conocer nuevas personas', 'Mejorar la comunicación', 'Establecer límites sanos', 'Reconstruir confianza', 'Encontrar pareja'],
+    'Health & Lifestyle': ['Bajar de peso', 'Ganar músculo', 'Correr una carrera', 'Crear un hábito fitness', 'Mejorar nutrición', 'Mejorar salud mental'],
+    'Education': ['Aprender una habilidad nueva', 'Completar un curso', 'Obtener una certificación', 'Aprender un idioma', 'Iniciar un proyecto creativo', 'Crear hábito de lectura'],
+    'Big Life Goal': ['Mudarse a otra ciudad', 'Comprar una casa', 'Viajar a un lugar especial', 'Lanzar un negocio', 'Definir mi dirección de vida', 'Hacer un gran cambio de vida'],
+  }
+};
+
+const DEC_PLACEHOLDERS = {
+  en: {
+    'Get a promotion': 'I want to get promoted to senior level. I\'ve been in my current role for 2 years and...',
+    'Change careers': 'I want to transition from my current field into...',
+    'Find a new job': 'I\'m looking for a new job because...',
+    'Build a side hustle': 'I want to start a side business around...',
+    'Improve work-life balance': 'I\'ve been working too much and want to...',
+    'Develop a key skill': 'I want to learn or improve my skills in...',
+    'Save a specific amount': 'My goal is to save $_____ by _____ because...',
+    'Pay off debt': 'I have $_____ in debt and want to pay it off by...',
+    'Build an emergency fund': 'I want to build an emergency fund of...',
+    'Invest for the first time': 'I want to start investing. I have $_____ and...',
+    'Increase my income': 'I currently earn $_____ and want to increase it to...',
+    'Create a budget': 'I want to create a budget that helps me...',
+    'Strengthen a relationship': 'I want to improve my relationship with...',
+    'Meet new people': 'I want to expand my social circle by...',
+    'Improve communication': 'I struggle with communication in...',
+    'Set healthy boundaries': 'I need to set better boundaries with...',
+    'Rebuild trust': 'I want to rebuild trust in my relationship with...',
+    'Find a partner': 'I want to find a partner who...',
+    'Lose weight': 'My goal is to lose _____ lbs/kg by...',
+    'Build muscle': 'I want to build muscle. Currently I...',
+    'Run a race': 'I want to run a _____. My current fitness level is...',
+    'Build a fitness habit': 'I want to exercise consistently. My main obstacle is...',
+    'Improve nutrition': 'I want to eat healthier, specifically...',
+    'Improve mental health': 'I want to improve my mental health by...',
+    'Learn a new skill': 'I want to learn _____ because...',
+    'Complete a course': 'I want to complete a course on...',
+    'Get a certification': 'I want to get certified in...',
+    'Learn a language': 'I want to learn _____ to a level where I can...',
+    'Start a creative project': 'I want to start a project around...',
+    'Build a reading habit': 'I want to read _____ books per month about...',
+    'Move to a new city': 'I want to move to _____ because...',
+    'Buy a home': 'I want to buy a home. My timeline is...',
+    'Travel somewhere significant': 'I want to travel to _____ and...',
+    'Launch a business': 'I want to launch a business that...',
+    'Define my life direction': 'I feel lost and want to figure out...',
+    'Make a major life change': 'I want to make a big change in my life: ...',
+  },
+  es: {
+    default: 'Mi meta es...'
+  }
+};
+
+function pickCat(el, cat) {
   S.cat = cat;
-  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
+  S.subtopic = '';
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn0').disabled = true;
+  const lang = S.lang || 'en';
+  const subs = SUBTOPICS[lang][cat] || SUBTOPICS['en'][cat] || [];
+  const grid = document.getElementById('subtopic-grid');
+  grid.innerHTML = subs.map(s =>
+    `<button class="subtopic-btn" onclick="pickSubtopic(this,'${s.replace(/'/g, "\\'")}')">${s}</button>`
+  ).join('');
+  document.getElementById('subtopic-wrap').style.display = 'block';
+  document.getElementById('subtopic-label').textContent = lang === 'es' ? 'Elige un enfoque específico' : 'Choose a focus area';
+}
+
+function pickSubtopic(el, sub) {
+  S.subtopic = sub;
+  document.querySelectorAll('.subtopic-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
   document.getElementById('btn0').disabled = false;
-  document.getElementById('topic-wrap').style.display = 'block';
+  // Update Step 2 textarea placeholder dynamically
+  const dec = document.getElementById('dec');
+  if (dec) {
+    const ph = DEC_PLACEHOLDERS['en'][sub] || DEC_PLACEHOLDERS['en'][sub] || (S.lang === 'es' ? 'Mi meta es...' : 'My goal is to...');
+    dec.placeholder = ph;
+  }
 }
+
+function pick(el, cat) { pickCat(el, cat); }
 
 // ── AI ENGINE ─────────────────────────────────────────────
 async function fetchOnce(prompt, system) {
@@ -1103,7 +1195,7 @@ function langSuffix() { return S.lang === 'es' ? ' Respond entirely in Spanish.'
 
 async function analyze() {
   S.dec = document.getElementById('dec').value.trim();
-  S.topic = document.getElementById('topic').value.trim();
+  S.topic = ''; // topic field removed
   if (!S.dec) return;
   const t = T[S.lang];
   go(2);
@@ -1113,7 +1205,8 @@ async function analyze() {
   document.getElementById('q-err').innerHTML='';
   try {
     const sys = `You are Navrielle, an empathetic and sharp personal achievement coach. Ask ONE powerful clarifying question that surfaces what the person hasn't fully examined yet about their goal. Be direct and warm. Keep it under 3 sentences: one observational sentence, then the question. No multiple questions. No advice yet.${langSuffix()}`;
-    const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
+    const topicCtx = S.subtopic ? `
+Focus: ${S.subtopic}` : '';
     S.q = await callClaude(`Category: ${S.cat}${topicCtx}
 Goal: ${S.dec}
 
@@ -1138,7 +1231,8 @@ async function frameworks() {
   document.getElementById('f-err').innerHTML='';
   try {
     const sys = `You are Navrielle, a personal achievement coach. Give an honest, structured assessment of this goal using 2-3 lenses (Feasibility, Hidden Obstacles, What They May Be Avoiding, Realistic Timeline, or others that fit). Format each as: **Assessment Area:** followed by your honest take. Be concrete and direct — not a cheerleader. Keep each to 2-3 sentences. Under 200 words total.${langSuffix()}`;
-    const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
+    const topicCtx = S.subtopic ? `
+Focus: ${S.subtopic}` : '';
     S.fw = await callClaude(`Category: ${S.cat}${topicCtx}
 Goal: ${S.dec}
 Clarifying Q: ${S.q}
@@ -1171,7 +1265,8 @@ async function summary() {
 **Recommendation:** [2 sentences with a clear, direct recommendation and one reason why]
 
 Be specific, not a cheerleader. End with: INSIGHTS: [label1] | [label2] | [label3] (3-4 word labels each).${langSuffix()}`;
-    const topicCtx = S.topic ? `\nSpecific context: ${S.topic}` : '';
+    const topicCtx = S.subtopic ? `
+Focus: ${S.subtopic}` : '';
     const resp = await callClaude(`Category: ${S.cat}${topicCtx}\nGoal: ${S.dec}\nClarifying Q: ${S.q}\nAnswer: ${S.ans}\nAssessment: ${S.fw}`, sys, 'r-thinking');
     const match = resp.match(/INSIGHTS:\s*(.+)/);
     S.rec = resp.replace(/INSIGHTS:.+/s,'').trim();
@@ -1270,7 +1365,8 @@ Month 2-3: [subtitle here]
 
 Rules: Start each section header with "Week 1-2:", "Week 3-4:", or "Month 2-3:" exactly. Each action step must start with a dash (-). Do NOT use ## markdown headers. Do NOT use bold (**) for section headers. Keep each step to 1-2 sentences. Be specific to their goal and situation. Total response under 300 words.${langSuffix()}`;
 
-    const topicCtx = S.topic ? `\nContext: ${S.topic}` : '';
+    const topicCtx = S.subtopic ? `
+Focus: ${S.subtopic}` : '';
     const planText = await callClaude(
       `Category: ${S.cat}${topicCtx}\nGoal: ${S.dec}\nRecommendation: ${S.rec}\n\nCreate a 30-day action plan.`,
       sys, 'plan-thinking'
@@ -1352,11 +1448,12 @@ function restart() {
   Object.keys(S).forEach(k=>{ if(k!=='lang') S[k]=''; });
   S.chips = [];
   document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('.subtopic-btn').forEach(b=>b.classList.remove('selected'));
+  S.subtopic = '';
+  const stw = document.getElementById('subtopic-wrap'); if(stw) stw.style.display='none';
   const btn0 = document.getElementById('btn0'); if(btn0) btn0.disabled = true;
-  const dec = document.getElementById('dec'); if(dec) dec.value='';
+  const dec = document.getElementById('dec'); if(dec) { dec.value=''; dec.placeholder = S.lang === 'es' ? 'Mi meta es...' : 'My goal is to...'; }
   const ans = document.getElementById('ans'); if(ans) ans.value='';
-  const topic = document.getElementById('topic'); if(topic) topic.value='';
-  const tw = document.getElementById('topic-wrap'); if(tw) tw.style.display='none';
   const sb2 = document.getElementById('save-banner'); if(sb2) sb2.style.display='none';
   const bj = document.getElementById('btn-journal'); if(bj) bj.style.display='none';
   const p5 = document.getElementById('p5'); if(p5) p5.style.display='none';
