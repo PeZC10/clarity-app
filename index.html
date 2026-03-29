@@ -282,6 +282,21 @@
     .btn-plan { display: inline-flex; align-items: center; gap: 8px; background: var(--purple); color: white; font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 13px 24px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s ease; }
     .btn-plan:hover { background: var(--purple2); }
 
+    /* TIMELINE SLIDER */
+    .timeline-card { background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 28px 24px; margin-bottom: 24px; }
+    .timeline-suggestion { display: flex; align-items: center; gap: 10px; background: var(--purple-soft); border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 28px; font-size: 13px; color: var(--purple); line-height: 1.5; }
+    .timeline-suggestion-icon { font-size: 16px; flex-shrink: 0; }
+    .timeline-display { text-align: center; margin-bottom: 28px; }
+    .timeline-value { font-family: var(--serif); font-size: 52px; font-weight: 600; color: var(--ink); line-height: 1; margin-bottom: 6px; }
+    .timeline-unit { font-size: 16px; color: var(--ink3); font-weight: 300; }
+    .slider-wrap { padding: 0 8px; }
+    .timeline-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; background: var(--cream3); border-radius: 4px; outline: none; cursor: pointer; }
+    .timeline-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--purple); cursor: pointer; box-shadow: 0 2px 8px rgba(67,56,202,0.3); transition: transform 0.15s; }
+    .timeline-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+    .timeline-slider::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: var(--purple); cursor: pointer; border: none; box-shadow: 0 2px 8px rgba(67,56,202,0.3); }
+    .timeline-marks { display: flex; justify-content: space-between; margin-top: 10px; padding: 0 4px; }
+    .timeline-mark { font-size: 11px; color: var(--ink3); text-align: center; }
+
     /* CHECKLIST PAGE */
     #checklist { display: none; min-height: 100vh; flex-direction: column; align-items: center; padding-bottom: 80px; }
     #checklist.visible { display: flex; }
@@ -681,13 +696,45 @@
         <div class="ai-card"><div class="summary-rule"></div><div class="ai-text" id="r-text"></div></div>
         <div class="section-divider"></div>
         <div class="btn-row" style="flex-wrap:wrap;">
-          <button class="btn-plan" onclick="generatePlan()" id="btn-plan">Build my action plan →</button>
+          <button class="btn-plan" onclick="showTimeline()" id="btn-plan">Build my action plan →</button>
           <button class="btn-primary" onclick="restart()" id="btn-restart">Make another decision</button>
           <button class="btn-secondary" onclick="goJournal()" id="btn-journal" style="display:none">View journal</button>
           <button class="btn-secondary" onclick="goLanding()" id="btn-home">Back to home</button>
         </div>
       </div>
       <div id="r-err"></div>
+    </div>
+
+    <!-- Phase 4b: Timeline -->
+    <div id="p4b" class="phase" style="display:none">
+      <div class="eyebrow" id="a-step-tl">One more thing</div>
+      <h2 class="phase-title" id="a-t-tl">How long do you want to work on this?</h2>
+      <p class="phase-sub" id="a-s-tl">Set a realistic timeline for your goal. We'll build your action plan around it.</p>
+      <div class="timeline-card">
+        <div class="timeline-suggestion" id="tl-suggestion">
+          <span class="timeline-suggestion-icon">💡</span>
+          <span id="tl-suggestion-text">Based on your goal, we think 90 days is a realistic timeline to see meaningful progress.</span>
+        </div>
+        <div class="timeline-display">
+          <div class="timeline-value" id="tl-value">90</div>
+          <div class="timeline-unit" id="tl-unit">days</div>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" class="timeline-slider" id="tl-slider" min="1" max="12" value="3" oninput="onSliderChange(this.value)">
+          <div class="timeline-marks">
+            <span class="timeline-mark" id="tl-m1">2w</span>
+            <span class="timeline-mark" id="tl-m2">1mo</span>
+            <span class="timeline-mark" id="tl-m3">2mo</span>
+            <span class="timeline-mark" id="tl-m4">3mo</span>
+            <span class="timeline-mark" id="tl-m5">6mo</span>
+            <span class="timeline-mark" id="tl-m6">1yr</span>
+          </div>
+        </div>
+      </div>
+      <div class="btn-row" style="flex-wrap:wrap;">
+        <button class="btn-plan" onclick="generatePlan()" id="btn-gen-plan">Create my plan →</button>
+        <button class="btn-secondary" onclick="goPhase4()">← Back</button>
+      </div>
     </div>
 
     <!-- Phase 5: Action Plan -->
@@ -759,7 +806,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let currentUser = null;
 let modalMode = 'signin';
-const S = { cat:'', subtopic:'', topic:'', dec:'', q:'', ans:'', fw:'', rec:'', chips:[], lang:'en', planText:'', planWeeks:[] };
+const S = { cat:'', subtopic:'', topic:'', dec:'', q:'', ans:'', fw:'', rec:'', chips:[], lang:'en', planText:'', planWeeks:[], timeline:'90 days' };
 
 const T = {
   en: {
@@ -1381,8 +1428,18 @@ async function generatePlan() {
     const p = document.getElementById('p' + i);
     if (p) p.style.display = 'none';
   }
+  const p4b = document.getElementById('p4b'); if (p4b) p4b.style.display = 'none';
   const p5 = document.getElementById('p5');
   if (p5) p5.style.display = 'block';
+
+  // Update plan title with timeline
+  const titleEl = document.getElementById('a-t5');
+  const subEl = document.getElementById('a-s5');
+  if (titleEl) titleEl.textContent = S.lang === 'es' ? `Tu plan para ${S.timeline}` : `Your ${S.timeline} plan`;
+  if (subEl) subEl.textContent = S.lang === 'es'
+    ? `Un plan concreto y personalizado para alcanzar tu meta en ${S.timeline}.`
+    : `A concrete, personalized plan to achieve your goal in ${S.timeline}.`;
+
   document.getElementById('plan-load').style.display = 'flex';
   document.getElementById('plan-body').style.display = 'none';
   document.getElementById('plan-row').style.display = 'none';
@@ -1390,29 +1447,16 @@ async function generatePlan() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   try {
-    const sys = `You are Navrielle, a practical action-planning coach. Based on this goal, create a concrete 30-day action plan divided into exactly 3 sections. You MUST use this exact format with no variations:
+    const timelineSteps = getTimelineSteps(S.timeline);
+    const sys = `You are Navrielle, a practical action-planning coach. Based on this goal and the user's chosen timeline of ${S.timeline}, create a concrete action plan divided into exactly 3 phases. Adapt the phase names and durations to fit the timeline (e.g. for 2 weeks use "Week 1" and "Week 2"; for 6 months use "Month 1-2", "Month 3-4", "Month 5-6"). You MUST use this exact format:
 
-Week 1-2: [subtitle here]
-- [action step]
-- [action step]
-- [action step]
+${timelineSteps}
 
-Week 3-4: [subtitle here]
-- [action step]
-- [action step]
-- [action step]
+Rules: Start each section header exactly as shown above. Each action step must start with a dash (-). Do NOT use ## markdown headers. Do NOT use bold (**) for section headers. Keep each step to 1-2 sentences. Be specific to their goal, situation, and timeline. Total response under 300 words.${langSuffix()}`;
 
-Month 2-3: [subtitle here]
-- [action step]
-- [action step]
-- [action step]
-
-Rules: Start each section header with "Week 1-2:", "Week 3-4:", or "Month 2-3:" exactly. Each action step must start with a dash (-). Do NOT use ## markdown headers. Do NOT use bold (**) for section headers. Keep each step to 1-2 sentences. Be specific to their goal and situation. Total response under 300 words.${langSuffix()}`;
-
-    const topicCtx = S.subtopic ? `
-Focus: ${S.subtopic}` : '';
+    const topicCtx = S.subtopic ? `\nFocus: ${S.subtopic}` : '';
     const planText = await callClaude(
-      `Category: ${S.cat}${topicCtx}\nGoal: ${S.dec}\nRecommendation: ${S.rec}\n\nCreate a 30-day action plan.`,
+      `Category: ${S.cat}${topicCtx}\nGoal: ${S.dec}\nTimeline: ${S.timeline}\nRecommendation: ${S.rec}\n\nCreate an action plan for this timeline.`,
       sys, 'plan-thinking'
     );
 
@@ -1508,7 +1552,7 @@ function restart() {
   const bpc = document.getElementById('btn-plan-checklist'); if(bpc) bpc.style.display='none';
   const bsc = document.getElementById('btn-save-checklist'); if(bsc) { bsc.style.display='none'; bsc.disabled=false; }
   const csb = document.getElementById('checklist-saved-banner'); if(csb) csb.style.display='none';
-  S.planText = ''; S.planWeeks = [];
+  S.planText = ''; S.planWeeks = []; S.timeline = '90 days';
   go(0);
 }
 
@@ -1645,6 +1689,115 @@ async function toggleItem(clId, actionId, weekIdx) {
     const cardEl = document.getElementById(`cl-card-${clId}`);
     if (cardEl) cardEl.outerHTML = renderChecklistCard(cl, t);
   } catch(e) { console.error('Toggle failed:', e); }
+}
+
+// ── TIMELINE ──────────────────────────────────────────────
+function getTimelineSteps(timeline) {
+  const t = timeline.toLowerCase();
+  if (t.includes('week') || t === '2 weeks' || t === '14') {
+    return `Week 1: [subtitle]\n- [step]\n- [step]\n- [step]\n\nWeek 2: [subtitle]\n- [step]\n- [step]\n- [step]\n\nAfter 2 Weeks: [subtitle]\n- [step]\n- [step]\n- [step]`;
+  } else if (t.includes('1 month') || t.includes('30')) {
+    return `Week 1-2: [subtitle]\n- [step]\n- [step]\n- [step]\n\nWeek 3-4: [subtitle]\n- [step]\n- [step]\n- [step]\n\nEnd of Month: [subtitle]\n- [step]\n- [step]\n- [step]`;
+  } else if (t.includes('2 month') || t.includes('60')) {
+    return `Month 1: [subtitle]\n- [step]\n- [step]\n- [step]\n\nMonth 2 Early: [subtitle]\n- [step]\n- [step]\n- [step]\n\nMonth 2 Late: [subtitle]\n- [step]\n- [step]\n- [step]`;
+  } else if (t.includes('year') || t.includes('año') || t.includes('12')) {
+    return `Months 1-3: [subtitle]\n- [step]\n- [step]\n- [step]\n\nMonths 4-8: [subtitle]\n- [step]\n- [step]\n- [step]\n\nMonths 9-12: [subtitle]\n- [step]\n- [step]\n- [step]`;
+  } else {
+    // Default: split into 3 roughly equal phases based on months
+    const months = parseInt(t) || 3;
+    const third = Math.round(months / 3);
+    return `Month 1-${third}: [subtitle]\n- [step]\n- [step]\n- [step]\n\nMonth ${third+1}-${third*2}: [subtitle]\n- [step]\n- [step]\n- [step]\n\nMonth ${third*2+1}-${months}: [subtitle]\n- [step]\n- [step]\n- [step]`;
+  }
+}
+
+const SLIDER_STEPS = [
+  { value: 14,  label: '2 weeks',  labelEs: '2 semanas' },
+  { value: 30,  label: '1 month',  labelEs: '1 mes' },
+  { value: 60,  label: '2 months', labelEs: '2 meses' },
+  { value: 90,  label: '3 months', labelEs: '3 meses' },
+  { value: 120, label: '4 months', labelEs: '4 meses' },
+  { value: 150, label: '5 months', labelEs: '5 meses' },
+  { value: 180, label: '6 months', labelEs: '6 meses' },
+  { value: 240, label: '8 months', labelEs: '8 meses' },
+  { value: 270, label: '9 months', labelEs: '9 meses' },
+  { value: 300, label: '10 months',labelEs: '10 meses' },
+  { value: 330, label: '11 months',labelEs: '11 meses' },
+  { value: 365, label: '1 year',   labelEs: '1 año' },
+];
+
+const TIMELINE_SUGGESTIONS = {
+  'Save a specific amount': { idx: 3, reason: 'Saving goals typically need 3–6 months to build real momentum.' },
+  'Pay off debt': { idx: 5, reason: 'Debt payoff usually requires 5–6 months of consistent effort.' },
+  'Build an emergency fund': { idx: 3, reason: '3 months is a solid runway to build an emergency fund.' },
+  'Invest for the first time': { idx: 1, reason: 'You can research and make your first investment within a month.' },
+  'Increase my income': { idx: 5, reason: 'Income growth usually takes 5–6 months of sustained action.' },
+  'Create a budget': { idx: 0, reason: 'Two weeks is enough to design and test a solid budget.' },
+  'Lose weight': { idx: 3, reason: 'Sustainable weight loss takes 3 months to show real results.' },
+  'Build muscle': { idx: 5, reason: 'Visible muscle gains typically take 5–6 months of consistent training.' },
+  'Run a race': { idx: 3, reason: 'A solid race training plan runs 12–16 weeks.' },
+  'Build a fitness habit': { idx: 1, reason: 'Habits form in 30–60 days with consistent practice.' },
+  'Learn a new skill': { idx: 3, reason: '3 months of focused practice creates real competency.' },
+  'Learn a language': { idx: 11, reason: 'Language learning is a long game — a year builds real conversational ability.' },
+  'Launch a business': { idx: 5, reason: 'Most business launches need 5–6 months of solid groundwork.' },
+  'default': { idx: 3, reason: 'Based on your goal, 3 months gives you enough time to see meaningful progress.' },
+};
+
+function showTimeline() {
+  // Hide all phases
+  for (let i = 0; i <= 5; i++) {
+    const p = document.getElementById('p' + i);
+    if (p) p.style.display = 'none';
+  }
+  document.getElementById('p4b').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Get suggestion based on subtopic
+  const key = S.subtopic || 'default';
+  const sugg = TIMELINE_SUGGESTIONS[key] || TIMELINE_SUGGESTIONS['default'];
+  const lang = S.lang;
+  const step = SLIDER_STEPS[sugg.idx];
+
+  // Set slider to suggested value
+  const slider = document.getElementById('tl-slider');
+  slider.value = sugg.idx + 1;
+  onSliderChange(sugg.idx + 1);
+
+  // Set suggestion text
+  const suggText = lang === 'es'
+    ? `Basado en tu meta, creemos que <strong>${step.labelEs}</strong> es un tiempo realista para ver progreso significativo.`
+    : `Based on your goal, we think <strong>${step.label}</strong> is a realistic timeline to see meaningful progress.`;
+  document.getElementById('tl-suggestion-text').innerHTML = suggText;
+
+  // Update labels
+  const marks = lang === 'es'
+    ? ['2sem', '1mes', '2mes', '3mes', '6mes', '1año']
+    : ['2w', '1mo', '2mo', '3mo', '6mo', '1yr'];
+  marks.forEach((m, i) => {
+    const el = document.getElementById('tl-m' + (i + 1));
+    if (el) el.textContent = m;
+  });
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.innerHTML = val; };
+  set('a-step-tl', lang === 'es' ? 'Un paso más' : 'One more thing');
+  set('a-t-tl', lang === 'es' ? '¿Cuánto tiempo quieres dedicarle?' : 'How long do you want to work on this?');
+  set('a-s-tl', lang === 'es' ? 'Define un timeline realista. Construiremos tu plan alrededor de él.' : 'Set a realistic timeline for your goal. We\'ll build your action plan around it.');
+  set('btn-gen-plan', lang === 'es' ? 'Crear mi plan →' : 'Create my plan →');
+}
+
+function onSliderChange(val) {
+  const idx = parseInt(val) - 1;
+  const step = SLIDER_STEPS[Math.min(idx, SLIDER_STEPS.length - 1)];
+  const lang = S.lang;
+  const label = lang === 'es' ? step.labelEs : step.label;
+  const parts = label.split(' ');
+  document.getElementById('tl-value').textContent = parts[0];
+  document.getElementById('tl-unit').textContent = parts.slice(1).join(' ');
+  S.timeline = label;
+}
+
+function goPhase4() {
+  document.getElementById('p4b').style.display = 'none';
+  document.getElementById('p4').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 initAuth();
