@@ -282,20 +282,37 @@
     .btn-plan { display: inline-flex; align-items: center; gap: 8px; background: var(--purple); color: white; font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 13px 24px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s ease; }
     .btn-plan:hover { background: var(--purple2); }
 
-    /* TIMELINE SLIDER */
-    .timeline-card { background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 28px 24px; margin-bottom: 24px; }
-    .timeline-suggestion { display: flex; align-items: center; gap: 10px; background: var(--purple-soft); border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 28px; font-size: 13px; color: var(--purple); line-height: 1.5; }
-    .timeline-suggestion-icon { font-size: 16px; flex-shrink: 0; }
-    .timeline-display { text-align: center; margin-bottom: 28px; }
-    .timeline-value { font-family: var(--serif); font-size: 52px; font-weight: 600; color: var(--ink); line-height: 1; margin-bottom: 6px; }
-    .timeline-unit { font-size: 16px; color: var(--ink3); font-weight: 300; }
-    .slider-wrap { padding: 0 8px; }
-    .timeline-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; background: var(--cream3); border-radius: 4px; outline: none; cursor: pointer; }
-    .timeline-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%; background: var(--purple); cursor: pointer; box-shadow: 0 2px 8px rgba(67,56,202,0.3); transition: transform 0.15s; }
-    .timeline-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
-    .timeline-slider::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: var(--purple); cursor: pointer; border: none; box-shadow: 0 2px 8px rgba(67,56,202,0.3); }
-    .timeline-marks { display: flex; justify-content: space-between; margin-top: 10px; padding: 0 4px; }
-    .timeline-mark { font-size: 11px; color: var(--ink3); text-align: center; }
+    /* TIMELINE ROADMAP */
+    .roadmap-loading { display: flex; align-items: center; gap: 12px; padding: 40px 0; font-size: 13px; color: var(--ink3); font-style: italic; }
+    .roadmap-wrap { margin-bottom: 24px; }
+    .roadmap-navrielle-note { display: flex; align-items: flex-start; gap: 10px; background: var(--purple-soft); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 24px; font-size: 13px; color: var(--purple); line-height: 1.6; }
+    .roadmap-navrielle-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .roadmap-scroll { overflow-x: auto; padding-bottom: 8px; }
+    .roadmap { display: flex; align-items: flex-start; gap: 0; min-width: max-content; padding: 8px 4px 24px; }
+    .roadmap-phase { display: flex; flex-direction: column; align-items: center; position: relative; }
+    .roadmap-phase-connector { display: flex; align-items: center; flex-shrink: 0; }
+    .roadmap-connector-line { width: 48px; height: 2px; background: var(--border2); margin-top: 20px; flex-shrink: 0; }
+    .roadmap-connector-line.active { background: var(--purple); }
+    .roadmap-node-wrap { display: flex; flex-direction: column; align-items: center; width: 140px; }
+    .roadmap-node { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-bottom: 10px; flex-shrink: 0; border: 2px solid transparent; transition: all 0.2s; }
+    .roadmap-node.phase-1 { background: var(--purple-soft); border-color: var(--purple); }
+    .roadmap-node.phase-2 { background: rgba(13,148,136,0.1); border-color: var(--teal); }
+    .roadmap-node.phase-3 { background: rgba(245,158,11,0.1); border-color: #F59E0B; }
+    .roadmap-node.phase-end { background: var(--teal-soft); border-color: var(--teal); }
+    .roadmap-phase-label { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--purple); margin-bottom: 4px; text-align: center; }
+    .roadmap-phase-label.teal { color: var(--teal); }
+    .roadmap-phase-label.amber { color: #D97706; }
+    .roadmap-phase-title { font-size: 13px; font-weight: 600; color: var(--ink); text-align: center; margin-bottom: 4px; line-height: 1.3; }
+    .roadmap-phase-time { font-size: 11px; color: var(--ink3); text-align: center; margin-bottom: 10px; }
+    .roadmap-milestones { display: flex; flex-direction: column; gap: 4px; width: 130px; }
+    .roadmap-milestone { font-size: 11px; color: var(--ink2); background: white; border: 0.5px solid var(--border); border-radius: 6px; padding: 5px 8px; line-height: 1.4; text-align: left; }
+    .roadmap-end-node { display: flex; flex-direction: column; align-items: center; width: 100px; }
+    .roadmap-end-label { font-size: 12px; font-weight: 600; color: var(--teal); text-align: center; margin-top: 10px; }
+    .roadmap-total { font-size: 11px; color: var(--ink3); text-align: center; margin-top: 2px; }
+    .roadmap-adjust { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .btn-adjust { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 50px; border: 0.5px solid var(--border2); background: white; font-size: 13px; font-weight: 500; font-family: var(--sans); color: var(--ink2); cursor: pointer; transition: all 0.2s; }
+    .btn-adjust:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-soft); }
+    .btn-adjust:disabled { opacity: 0.4; cursor: not-allowed; }
 
     /* CHECKLIST PAGE */
     #checklist { display: none; min-height: 100vh; flex-direction: column; align-items: center; padding-bottom: 80px; }
@@ -707,32 +724,26 @@
 
     <!-- Phase 4b: Timeline -->
     <div id="p4b" class="phase" style="display:none">
-      <div class="eyebrow" id="a-step-tl">One more thing</div>
-      <h2 class="phase-title" id="a-t-tl">How long do you want to work on this?</h2>
-      <p class="phase-sub" id="a-s-tl">Set a realistic timeline for your goal. We'll build your action plan around it.</p>
-      <div class="timeline-card">
-        <div class="timeline-suggestion" id="tl-suggestion">
-          <span class="timeline-suggestion-icon">💡</span>
-          <span id="tl-suggestion-text">Based on your goal, we think 90 days is a realistic timeline to see meaningful progress.</span>
+      <div class="eyebrow" id="a-step-tl">Your timeline</div>
+      <h2 class="phase-title" id="a-t-tl">Here's how we see your progress</h2>
+      <p class="phase-sub" id="a-s-tl">Navrielle built a personalized roadmap for your goal. Tell us if you'd like to move faster or slower.</p>
+      <div id="roadmap-loading" class="roadmap-loading"><div class="dots"><span></span><span></span><span></span></div><span id="roadmap-thinking">Building your roadmap...</span></div>
+      <div id="roadmap-body" style="display:none">
+        <div class="roadmap-navrielle-note">
+          <span class="roadmap-navrielle-icon">🧭</span>
+          <span id="roadmap-note">This is our recommended pace based on your goal. You can adjust it before we build your plan.</span>
         </div>
-        <div class="timeline-display">
-          <div class="timeline-value" id="tl-value">90</div>
-          <div class="timeline-unit" id="tl-unit">days</div>
+        <div class="roadmap-scroll">
+          <div class="roadmap" id="roadmap-visual"></div>
         </div>
-        <div class="slider-wrap">
-          <input type="range" class="timeline-slider" id="tl-slider" min="1" max="12" value="3" oninput="onSliderChange(this.value)">
-          <div class="timeline-marks">
-            <span class="timeline-mark" id="tl-m1">2w</span>
-            <span class="timeline-mark" id="tl-m2">1mo</span>
-            <span class="timeline-mark" id="tl-m3">2mo</span>
-            <span class="timeline-mark" id="tl-m4">3mo</span>
-            <span class="timeline-mark" id="tl-m5">6mo</span>
-            <span class="timeline-mark" id="tl-m6">1yr</span>
-          </div>
+        <div class="roadmap-adjust">
+          <button class="btn-adjust" onclick="adjustTimeline('faster')" id="btn-faster">⚡ Make it faster</button>
+          <button class="btn-adjust" onclick="adjustTimeline('slower')" id="btn-slower">🐢 Give me more time</button>
         </div>
       </div>
-      <div class="btn-row" style="flex-wrap:wrap;">
-        <button class="btn-plan" onclick="generatePlan()" id="btn-gen-plan">Create my plan →</button>
+      <div id="roadmap-err"></div>
+      <div class="btn-row" style="flex-wrap:wrap;" id="roadmap-btns" style="display:none">
+        <button class="btn-plan" onclick="generatePlan()" id="btn-gen-plan">This looks good →</button>
         <button class="btn-secondary" onclick="goPhase4()">← Back</button>
       </div>
     </div>
@@ -1447,16 +1458,20 @@ async function generatePlan() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   try {
-    const timelineSteps = getTimelineSteps(S.timeline);
-    const sys = `You are Navrielle, a practical action-planning coach. Based on this goal and the user's chosen timeline of ${S.timeline}, create a concrete action plan divided into exactly 3 phases. Adapt the phase names and durations to fit the timeline (e.g. for 2 weeks use "Week 1" and "Week 2"; for 6 months use "Month 1-2", "Month 3-4", "Month 5-6"). You MUST use this exact format:
+    // Build phase structure from roadmap if available
+    const phaseStructure = currentRoadmap ? currentRoadmap.phases.map(p =>
+      `${p.label} - ${p.title} (${p.duration}):\n- [action step]\n- [action step]\n- [action step]`
+    ).join('\n\n') : `Phase 1 (First third):\n- [action step]\n- [action step]\n- [action step]\n\nPhase 2 (Middle):\n- [action step]\n- [action step]\n- [action step]\n\nPhase 3 (Final):\n- [action step]\n- [action step]\n- [action step]`;
 
-${timelineSteps}
+    const sys = `You are Navrielle, a practical action-planning coach. Based on this goal and timeline of ${S.timeline}, create a concrete action plan following exactly these 3 phases:
 
-Rules: Start each section header exactly as shown above. Each action step must start with a dash (-). Do NOT use ## markdown headers. Do NOT use bold (**) for section headers. Keep each step to 1-2 sentences. Be specific to their goal, situation, and timeline. Total response under 300 words.${langSuffix()}`;
+${phaseStructure}
+
+Rules: Use the exact phase headers as shown above (e.g. "Phase 1 - Foundation (Weeks 1-4):"). Each action step must start with a dash (-). Do NOT use ## markdown headers. Do NOT use bold (**) for section headers. Keep each step to 1-2 sentences. Be specific to their goal and situation. Total response under 300 words.${langSuffix()}`;
 
     const topicCtx = S.subtopic ? `\nFocus: ${S.subtopic}` : '';
     const planText = await callClaude(
-      `Category: ${S.cat}${topicCtx}\nGoal: ${S.dec}\nTimeline: ${S.timeline}\nRecommendation: ${S.rec}\n\nCreate an action plan for this timeline.`,
+      `Category: ${S.cat}${topicCtx}\nGoal: ${S.dec}\nTimeline: ${S.timeline}\nRecommendation: ${S.rec}\n\nCreate an action plan following the phases provided.`,
       sys, 'plan-thinking'
     );
 
@@ -1691,107 +1706,119 @@ async function toggleItem(clId, actionId, weekIdx) {
   } catch(e) { console.error('Toggle failed:', e); }
 }
 
-// ── TIMELINE ──────────────────────────────────────────────
-function getTimelineSteps(timeline) {
-  const t = timeline.toLowerCase();
-  if (t.includes('week') || t === '2 weeks' || t === '14') {
-    return `Week 1: [subtitle]\n- [step]\n- [step]\n- [step]\n\nWeek 2: [subtitle]\n- [step]\n- [step]\n- [step]\n\nAfter 2 Weeks: [subtitle]\n- [step]\n- [step]\n- [step]`;
-  } else if (t.includes('1 month') || t.includes('30')) {
-    return `Week 1-2: [subtitle]\n- [step]\n- [step]\n- [step]\n\nWeek 3-4: [subtitle]\n- [step]\n- [step]\n- [step]\n\nEnd of Month: [subtitle]\n- [step]\n- [step]\n- [step]`;
-  } else if (t.includes('2 month') || t.includes('60')) {
-    return `Month 1: [subtitle]\n- [step]\n- [step]\n- [step]\n\nMonth 2 Early: [subtitle]\n- [step]\n- [step]\n- [step]\n\nMonth 2 Late: [subtitle]\n- [step]\n- [step]\n- [step]`;
-  } else if (t.includes('year') || t.includes('año') || t.includes('12')) {
-    return `Months 1-3: [subtitle]\n- [step]\n- [step]\n- [step]\n\nMonths 4-8: [subtitle]\n- [step]\n- [step]\n- [step]\n\nMonths 9-12: [subtitle]\n- [step]\n- [step]\n- [step]`;
-  } else {
-    // Default: split into 3 roughly equal phases based on months
-    const months = parseInt(t) || 3;
-    const third = Math.round(months / 3);
-    return `Month 1-${third}: [subtitle]\n- [step]\n- [step]\n- [step]\n\nMonth ${third+1}-${third*2}: [subtitle]\n- [step]\n- [step]\n- [step]\n\nMonth ${third*2+1}-${months}: [subtitle]\n- [step]\n- [step]\n- [step]`;
-  }
-}
-
-const SLIDER_STEPS = [
-  { value: 14,  label: '2 weeks',  labelEs: '2 semanas' },
-  { value: 30,  label: '1 month',  labelEs: '1 mes' },
-  { value: 60,  label: '2 months', labelEs: '2 meses' },
-  { value: 90,  label: '3 months', labelEs: '3 meses' },
-  { value: 120, label: '4 months', labelEs: '4 meses' },
-  { value: 150, label: '5 months', labelEs: '5 meses' },
-  { value: 180, label: '6 months', labelEs: '6 meses' },
-  { value: 240, label: '8 months', labelEs: '8 meses' },
-  { value: 270, label: '9 months', labelEs: '9 meses' },
-  { value: 300, label: '10 months',labelEs: '10 meses' },
-  { value: 330, label: '11 months',labelEs: '11 meses' },
-  { value: 365, label: '1 year',   labelEs: '1 año' },
-];
-
-const TIMELINE_SUGGESTIONS = {
-  'Save a specific amount': { idx: 3, reason: 'Saving goals typically need 3–6 months to build real momentum.' },
-  'Pay off debt': { idx: 5, reason: 'Debt payoff usually requires 5–6 months of consistent effort.' },
-  'Build an emergency fund': { idx: 3, reason: '3 months is a solid runway to build an emergency fund.' },
-  'Invest for the first time': { idx: 1, reason: 'You can research and make your first investment within a month.' },
-  'Increase my income': { idx: 5, reason: 'Income growth usually takes 5–6 months of sustained action.' },
-  'Create a budget': { idx: 0, reason: 'Two weeks is enough to design and test a solid budget.' },
-  'Lose weight': { idx: 3, reason: 'Sustainable weight loss takes 3 months to show real results.' },
-  'Build muscle': { idx: 5, reason: 'Visible muscle gains typically take 5–6 months of consistent training.' },
-  'Run a race': { idx: 3, reason: 'A solid race training plan runs 12–16 weeks.' },
-  'Build a fitness habit': { idx: 1, reason: 'Habits form in 30–60 days with consistent practice.' },
-  'Learn a new skill': { idx: 3, reason: '3 months of focused practice creates real competency.' },
-  'Learn a language': { idx: 11, reason: 'Language learning is a long game — a year builds real conversational ability.' },
-  'Launch a business': { idx: 5, reason: 'Most business launches need 5–6 months of solid groundwork.' },
-  'default': { idx: 3, reason: 'Based on your goal, 3 months gives you enough time to see meaningful progress.' },
-};
+// ── TIMELINE ROADMAP ──────────────────────────────────────
+let currentRoadmap = null;
+let timelineSpeed = 0; // -2 faster to +2 slower
 
 function showTimeline() {
-  // Hide all phases
-  for (let i = 0; i <= 5; i++) {
+  for (let i = 0; i < 5; i++) {
     const p = document.getElementById('p' + i);
     if (p) p.style.display = 'none';
   }
   document.getElementById('p4b').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  // Get suggestion based on subtopic
-  const key = S.subtopic || 'default';
-  const sugg = TIMELINE_SUGGESTIONS[key] || TIMELINE_SUGGESTIONS['default'];
-  const lang = S.lang;
-  const step = SLIDER_STEPS[sugg.idx];
-
-  // Set slider to suggested value
-  const slider = document.getElementById('tl-slider');
-  slider.value = sugg.idx + 1;
-  onSliderChange(sugg.idx + 1);
-
-  // Set suggestion text
-  const suggText = lang === 'es'
-    ? `Basado en tu meta, creemos que <strong>${step.labelEs}</strong> es un tiempo realista para ver progreso significativo.`
-    : `Based on your goal, we think <strong>${step.label}</strong> is a realistic timeline to see meaningful progress.`;
-  document.getElementById('tl-suggestion-text').innerHTML = suggText;
-
-  // Update labels
-  const marks = lang === 'es'
-    ? ['2sem', '1mes', '2mes', '3mes', '6mes', '1año']
-    : ['2w', '1mo', '2mo', '3mo', '6mo', '1yr'];
-  marks.forEach((m, i) => {
-    const el = document.getElementById('tl-m' + (i + 1));
-    if (el) el.textContent = m;
-  });
-  const set = (id, val) => { const el = document.getElementById(id); if(el) el.innerHTML = val; };
-  set('a-step-tl', lang === 'es' ? 'Un paso más' : 'One more thing');
-  set('a-t-tl', lang === 'es' ? '¿Cuánto tiempo quieres dedicarle?' : 'How long do you want to work on this?');
-  set('a-s-tl', lang === 'es' ? 'Define un timeline realista. Construiremos tu plan alrededor de él.' : 'Set a realistic timeline for your goal. We\'ll build your action plan around it.');
-  set('btn-gen-plan', lang === 'es' ? 'Crear mi plan →' : 'Create my plan →');
+  timelineSpeed = 0;
+  generateRoadmap();
 }
 
-function onSliderChange(val) {
-  const idx = parseInt(val) - 1;
-  const step = SLIDER_STEPS[Math.min(idx, SLIDER_STEPS.length - 1)];
+async function generateRoadmap() {
+  document.getElementById('roadmap-loading').style.display = 'flex';
+  document.getElementById('roadmap-body').style.display = 'none';
+  document.getElementById('roadmap-btns').style.display = 'none';
+  document.getElementById('roadmap-err').innerHTML = '';
+
+  const speedNote = timelineSpeed < 0
+    ? ' Make the timeline faster/more compressed than you normally would.'
+    : timelineSpeed > 0
+    ? ' Make the timeline longer/more gradual than you normally would.'
+    : '';
+
   const lang = S.lang;
-  const label = lang === 'es' ? step.labelEs : step.label;
-  const parts = label.split(' ');
-  document.getElementById('tl-value').textContent = parts[0];
-  document.getElementById('tl-unit').textContent = parts.slice(1).join(' ');
-  S.timeline = label;
+  const sys = `You are Navrielle. Generate a realistic progress roadmap for this goal as JSON only. No other text, no markdown backticks.
+
+Return exactly this structure:
+{
+  "total": "X months" or "X weeks",
+  "note": "One sentence explaining why this pace makes sense",
+  "phases": [
+    { "label": "Phase 1", "title": "Short phase name", "duration": "e.g. Weeks 1-4", "emoji": "🎯", "milestones": ["milestone 1", "milestone 2"] },
+    { "label": "Phase 2", "title": "Short phase name", "duration": "e.g. Weeks 5-8", "emoji": "📈", "milestones": ["milestone 1", "milestone 2"] },
+    { "label": "Phase 3", "title": "Short phase name", "duration": "e.g. Weeks 9-12", "emoji": "🏆", "milestones": ["milestone 1", "milestone 2"] }
+  ],
+  "endLabel": "Goal achieved",
+  "endEmoji": "✅"
+}
+
+Rules: Exactly 3 phases. Each phase max 2 milestones (short, 4-6 words each). Durations must be specific and add up to the total. Be realistic and specific to their goal.${speedNote}${langSuffix()}`;
+
+  const topicCtx = S.subtopic ? `\nFocus: ${S.subtopic}` : '';
+  try {
+    const raw = await callClaude(
+      `Category: ${S.cat}${topicCtx}\nGoal: ${S.dec}\nRecommendation: ${S.rec}\n\nGenerate the roadmap JSON.`,
+      sys, 'roadmap-thinking'
+    );
+    const clean = raw.replace(/```json|```/g, '').trim();
+    currentRoadmap = JSON.parse(clean);
+    S.timeline = currentRoadmap.total;
+    renderRoadmap(currentRoadmap, lang);
+    document.getElementById('roadmap-loading').style.display = 'none';
+    document.getElementById('roadmap-body').style.display = 'block';
+    document.getElementById('roadmap-btns').style.display = 'flex';
+    // Update note
+    const noteEl = document.getElementById('roadmap-note');
+    if (noteEl) noteEl.textContent = currentRoadmap.note || '';
+    // Update labels
+    const set = (id, v) => { const el = document.getElementById(id); if(el) el.innerHTML = v; };
+    set('a-step-tl', lang === 'es' ? 'Tu timeline' : 'Your timeline');
+    set('a-t-tl', lang === 'es' ? 'Así vemos tu progreso' : 'Here\'s how we see your progress');
+    set('a-s-tl', lang === 'es' ? 'Navrielle construyó un roadmap personalizado. Dinos si quieres ir más rápido o más despacio.' : 'Navrielle built a personalized roadmap for your goal. Tell us if you\'d like to move faster or slower.');
+    set('btn-faster', lang === 'es' ? '⚡ Más rápido' : '⚡ Make it faster');
+    set('btn-slower', lang === 'es' ? '🐢 Más tiempo' : '🐢 Give me more time');
+    set('btn-gen-plan', lang === 'es' ? 'Se ve bien →' : 'This looks good →');
+  } catch(e) {
+    document.getElementById('roadmap-loading').style.display = 'none';
+    document.getElementById('roadmap-err').innerHTML = `<div class="error-box">${T[S.lang].errRetry}</div>`;
+    document.getElementById('roadmap-btns').style.display = 'flex';
+  }
+}
+
+function renderRoadmap(data, lang) {
+  const phaseColors = ['phase-1', 'phase-2', 'phase-3'];
+  const labelColors = ['', 'teal', 'amber'];
+
+  let html = '';
+  data.phases.forEach((phase, i) => {
+    if (i > 0) {
+      html += `<div class="roadmap-connector-line active"></div>`;
+    }
+    html += `
+      <div class="roadmap-node-wrap">
+        <div class="roadmap-node ${phaseColors[i]}">${phase.emoji}</div>
+        <div class="roadmap-phase-label ${labelColors[i]}">${phase.label}</div>
+        <div class="roadmap-phase-title">${phase.title}</div>
+        <div class="roadmap-phase-time">${phase.duration}</div>
+        <div class="roadmap-milestones">
+          ${(phase.milestones || []).map(m => `<div class="roadmap-milestone">→ ${m}</div>`).join('')}
+        </div>
+      </div>`;
+  });
+
+  // End node
+  html += `<div class="roadmap-connector-line active"></div>`;
+  html += `
+    <div class="roadmap-end-node">
+      <div class="roadmap-node phase-end" style="width:44px;height:44px;font-size:20px;">${data.endEmoji}</div>
+      <div class="roadmap-end-label">${data.endLabel}</div>
+      <div class="roadmap-total">${data.total}</div>
+    </div>`;
+
+  document.getElementById('roadmap-visual').innerHTML = html;
+}
+
+function adjustTimeline(direction) {
+  if (direction === 'faster') timelineSpeed = Math.max(-2, timelineSpeed - 1);
+  if (direction === 'slower') timelineSpeed = Math.min(2, timelineSpeed + 1);
+  generateRoadmap();
 }
 
 function goPhase4() {
