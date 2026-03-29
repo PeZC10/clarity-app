@@ -184,6 +184,14 @@
     .subtopic-btn { padding: 12px 14px; border-radius: var(--radius-sm); border: 0.5px solid var(--border); background: white; font-size: 13px; font-weight: 400; color: var(--ink2); cursor: pointer; text-align: left; font-family: var(--sans); transition: all 0.2s ease; line-height: 1.4; }
     .subtopic-btn:hover { border-color: var(--purple); color: var(--ink); background: var(--purple-soft); }
     .subtopic-btn.selected { border-color: var(--purple); border-width: 1.5px; color: var(--purple); background: var(--purple-soft); font-weight: 500; }
+    .custom-input-wrap { margin-top: 16px; animation: fadeUp 0.3s ease forwards; }
+    .custom-input-row { display: flex; align-items: center; gap: 10px; }
+    .custom-input { flex: 1; border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 14px; font-family: var(--sans); font-weight: 300; color: var(--ink); background: white; transition: border-color 0.2s; }
+    .custom-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(67,56,202,0.08); }
+    .custom-input::placeholder { color: var(--ink3); font-style: italic; }
+    .custom-char-count { font-size: 12px; color: var(--ink3); white-space: nowrap; min-width: 40px; text-align: right; }
+    .custom-char-count.near-limit { color: #F59E0B; }
+    .custom-char-count.at-limit { color: #EF4444; }
 
     /* TOPIC */
     .topic-wrap { margin-top: 4px; padding-top: 16px; border-top: 0.5px solid var(--border); animation: fadeUp 0.3s ease forwards; }
@@ -603,10 +611,18 @@
         <div class="cat-btn" onclick="pickCat(this,'Health & Lifestyle','c3')"><div class="cat-icon">🧘</div><span id="c3">Health & Lifestyle</span></div>
         <div class="cat-btn" onclick="pickCat(this,'Education','c4')"><div class="cat-icon">📚</div><span id="c4">Education</span></div>
         <div class="cat-btn" onclick="pickCat(this,'Big Life Goal','c5')"><div class="cat-icon">🌎</div><span id="c5">Big Life Goal</span></div>
+        <div class="cat-btn" onclick="pickCat(this,'Custom','c6')" style="grid-column: span 2;"><div class="cat-icon">✏️</div><span id="c6">Something else</span></div>
       </div>
       <div class="subtopic-wrap" id="subtopic-wrap" style="display:none">
         <span class="subtopic-label" id="subtopic-label">Choose a focus area</span>
         <div class="subtopic-grid" id="subtopic-grid"></div>
+      </div>
+      <div class="custom-input-wrap" id="custom-input-wrap" style="display:none">
+        <span class="subtopic-label" id="custom-label">What do you want to work on?</span>
+        <div class="custom-input-row">
+          <input type="text" class="custom-input" id="custom-topic" maxlength="50" placeholder="e.g. Start a podcast, learn to cook..." oninput="onCustomInput(this)">
+          <span class="custom-char-count" id="custom-count">50</span>
+        </div>
       </div>
       <div class="btn-row" style="margin-top:8px;">
         <button class="btn-primary" id="btn0" onclick="go(1)" disabled>Continue →</button>
@@ -762,7 +778,7 @@ const T = {
     topicLabel:'Want to be more specific? Describe your situation briefly (optional)',
     topicPH:'e.g. I want to save $5,000 in the next 6 months...',
     btnContinue:'Continue →', btnBack:'← Home', navStep:'Step',
-    c0:'Career & Work', c1:'Finance & Money', c2:'Relationships', c3:'Health & Lifestyle', c4:'Education', c5:'Big Life Goal',
+    c0:'Career & Work', c1:'Finance & Money', c2:'Relationships', c3:'Health & Lifestyle', c4:'Education', c5:'Big Life Goal', c6:'Something else',
     step2:'Step 2', t1:'Describe your goal', s1:'Be as specific and honest as you can.',
     decPH:'My goal is to...',
     step3:'Step 3', t2:'One question first', s2:'Before building your plan, Navrielle needs to understand something you may not have fully considered.',
@@ -807,7 +823,7 @@ const T = {
     topicLabel:'¿Quieres ser más específico? Describe tu situación brevemente (opcional)',
     topicPH:'Ej. Quiero ahorrar $5,000 en los próximos 6 meses...',
     btnContinue:'Continuar →', btnBack:'← Inicio', navStep:'Paso',
-    c0:'Carrera & Trabajo', c1:'Finanzas & Dinero', c2:'Relaciones', c3:'Salud & Estilo de vida', c4:'Educación', c5:'Gran Meta de Vida',
+    c0:'Carrera & Trabajo', c1:'Finanzas & Dinero', c2:'Relaciones', c3:'Salud & Estilo de vida', c4:'Educación', c5:'Gran Meta de Vida', c6:'Algo diferente',
     step2:'Paso 2', t1:'Describe tu meta', s1:'Sé lo más específico y honesto posible.',
     decPH:'Mi meta es...',
     step3:'Paso 3', t2:'Una pregunta primero', s2:'Antes de construir tu plan, Navrielle necesita entender algo que quizás no hayas considerado del todo.',
@@ -978,7 +994,7 @@ function setLang(lang, btn) {
   set('l-cta-title', S.lang==='es' ? 'Tu meta está esperando.<br>Hagámosla <em>realidad.</em>' : 'Your goal is waiting.<br>Let\'s make it <em>happen.</em>');
   set('l-cta-sub', S.lang==='es' ? 'Gratis. Sin tarjeta. Solo 3 minutos.' : 'Free to use. No credit card. Takes 3 minutes.');
   set('l-footer-signin', t.signin); set('l-footer-signup', t.signup);
-  set('c0', t.c0); set('c1', t.c1); set('c2', t.c2); set('c3', t.c3); set('c4', t.c4); set('c5', t.c5);
+  set('c0', t.c0); set('c1', t.c1); set('c2', t.c2); set('c3', t.c3); set('c4', t.c4); set('c5', t.c5); set('c6', t.c6);
   set('topic-label', t.topicLabel); setph('topic', t.topicPH);
   set('a-step1', t.step1); set('a-t0', t.t0); set('a-s0', t.s0); set('btn0', t.btnContinue);
   set('back-btn', t.btnBack);
@@ -1116,14 +1132,42 @@ function pickCat(el, cat) {
   document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
   document.getElementById('btn0').disabled = true;
-  const lang = S.lang || 'en';
-  const subs = SUBTOPICS[lang][cat] || SUBTOPICS['en'][cat] || [];
-  const grid = document.getElementById('subtopic-grid');
-  grid.innerHTML = subs.map(s =>
-    `<button class="subtopic-btn" onclick="pickSubtopic(this,'${s.replace(/'/g, "\\'")}')">${s}</button>`
-  ).join('');
-  document.getElementById('subtopic-wrap').style.display = 'block';
-  document.getElementById('subtopic-label').textContent = lang === 'es' ? 'Elige un enfoque específico' : 'Choose a focus area';
+  document.getElementById('subtopic-wrap').style.display = 'none';
+  document.getElementById('custom-input-wrap').style.display = 'none';
+
+  if (cat === 'Custom') {
+    const lang = S.lang || 'en';
+    document.getElementById('custom-label').textContent = lang === 'es' ? '¿En qué quieres trabajar?' : 'What do you want to work on?';
+    const input = document.getElementById('custom-topic');
+    input.placeholder = lang === 'es' ? 'Ej. Aprender a cocinar, iniciar un podcast...' : 'e.g. Start a podcast, learn to cook...';
+    input.value = '';
+    document.getElementById('custom-count').textContent = '50';
+    document.getElementById('custom-count').className = 'custom-char-count';
+    document.getElementById('custom-input-wrap').style.display = 'block';
+    setTimeout(() => input.focus(), 100);
+  } else {
+    const lang = S.lang || 'en';
+    const subs = SUBTOPICS[lang][cat] || SUBTOPICS['en'][cat] || [];
+    const grid = document.getElementById('subtopic-grid');
+    grid.innerHTML = subs.map(s =>
+      `<button class="subtopic-btn" onclick="pickSubtopic(this,'${s.replace(/'/g, "\\'")}')">${s}</button>`
+    ).join('');
+    document.getElementById('subtopic-wrap').style.display = 'block';
+    document.getElementById('subtopic-label').textContent = lang === 'es' ? 'Elige un enfoque específico' : 'Choose a focus area';
+  }
+}
+
+function onCustomInput(input) {
+  const val = input.value.trim();
+  const remaining = 50 - input.value.length;
+  const countEl = document.getElementById('custom-count');
+  countEl.textContent = remaining;
+  countEl.className = 'custom-char-count' + (remaining <= 5 ? ' at-limit' : remaining <= 15 ? ' near-limit' : '');
+  S.subtopic = val;
+  document.getElementById('btn0').disabled = val.length === 0;
+  // Update Step 2 placeholder
+  const dec = document.getElementById('dec');
+  if (dec && val) dec.placeholder = S.lang === 'es' ? `Mi meta es ${val.toLowerCase()}...` : `My goal is to ${val.toLowerCase()}...`;
 }
 
 function pickSubtopic(el, sub) {
@@ -1451,6 +1495,8 @@ function restart() {
   document.querySelectorAll('.subtopic-btn').forEach(b=>b.classList.remove('selected'));
   S.subtopic = '';
   const stw = document.getElementById('subtopic-wrap'); if(stw) stw.style.display='none';
+  const ciw = document.getElementById('custom-input-wrap'); if(ciw) ciw.style.display='none';
+  const ci = document.getElementById('custom-topic'); if(ci) ci.value='';
   const btn0 = document.getElementById('btn0'); if(btn0) btn0.disabled = true;
   const dec = document.getElementById('dec'); if(dec) { dec.value=''; dec.placeholder = S.lang === 'es' ? 'Mi meta es...' : 'My goal is to...'; }
   const ans = document.getElementById('ans'); if(ans) ans.value='';
