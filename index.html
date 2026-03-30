@@ -352,7 +352,89 @@
     .btn-save-checklist:hover { background: #0f766e; transform: translateY(-1px); }
     .checklist-saved-banner { background: var(--teal-soft); border: 0.5px solid rgba(13,148,136,0.3); border-radius: var(--radius-sm); padding: 14px 18px; font-size: 13px; color: var(--teal); margin-top: 12px; display: none; align-items: center; gap: 10px; }
 
-    /* ANIMATIONS */
+    /* DASHBOARD */
+    #dashboard { display: none; min-height: 100vh; flex-direction: column; align-items: center; padding-bottom: 80px; background: var(--cream); }
+    #dashboard.visible { display: flex; }
+    .dash-nav { width: 100%; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border); background: var(--cream); position: sticky; top: 0; z-index: 10; }
+    .dash-content { width: 100%; max-width: 580px; padding: 28px 24px 0; }
+
+    /* GREETING */
+    .dash-greeting { margin-bottom: 24px; }
+    .dash-greeting-eyebrow { font-size: 11px; font-weight: 500; color: var(--ink3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .dash-greeting-title { font-family: var(--serif); font-size: 26px; font-weight: 600; color: var(--ink); }
+
+    /* STAT CARDS */
+    .dash-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 28px; }
+    .dash-stat { background: white; border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 16px 14px; text-align: center; }
+    .dash-stat-value { font-family: var(--serif); font-size: 28px; font-weight: 600; color: var(--ink); line-height: 1; margin-bottom: 4px; }
+    .dash-stat-value.purple { color: var(--purple); }
+    .dash-stat-value.teal { color: var(--teal); }
+    .dash-stat-label { font-size: 11px; color: var(--ink3); font-weight: 400; line-height: 1.3; }
+    .dash-stat-icon { font-size: 14px; margin-bottom: 8px; }
+
+    /* SECTION HEADERS */
+    .dash-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .dash-section-title { font-family: var(--serif); font-size: 17px; font-weight: 600; color: var(--ink); }
+    .dash-section-link { font-size: 12px; color: var(--purple); cursor: pointer; font-weight: 500; }
+    .dash-section-link:hover { text-decoration: underline; }
+
+    /* ACTIVE GOAL CARDS */
+    .dash-goal-card { background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; }
+    .dash-goal-card:hover { border-color: var(--purple); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(67,56,202,0.08); }
+    .dash-goal-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+    .dash-goal-cat { display: flex; align-items: center; gap: 8px; }
+    .dash-goal-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--purple-soft); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .dash-goal-name { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+    .dash-goal-category { font-size: 11px; color: var(--ink3); margin-top: 2px; }
+    .dash-goal-pct { font-size: 13px; font-weight: 600; color: var(--purple); }
+    .dash-progress-bar { height: 6px; background: var(--cream3); border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+    .dash-progress-fill { height: 100%; background: var(--purple); border-radius: 6px; transition: width 0.5s ease; }
+    .dash-progress-fill.teal { background: var(--teal); }
+    .dash-goal-meta { display: flex; align-items: center; justify-content: space-between; }
+    .dash-goal-phase { font-size: 12px; color: var(--teal); font-weight: 500; }
+    .dash-goal-days { font-size: 11px; color: var(--ink3); }
+
+    /* MINI ROADMAP in detail */
+    .detail-roadmap { display: flex; align-items: center; margin-bottom: 24px; overflow-x: auto; padding-bottom: 4px; }
+    .detail-phase-node { display: flex; flex-direction: column; align-items: center; min-width: 80px; }
+    .detail-phase-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; border: 2px solid var(--border2); background: white; color: var(--ink3); margin-bottom: 6px; transition: all 0.2s; }
+    .detail-phase-circle.active { background: var(--purple); border-color: var(--purple); color: white; }
+    .detail-phase-circle.done { background: var(--teal); border-color: var(--teal); color: white; }
+    .detail-phase-name { font-size: 10px; color: var(--ink3); text-align: center; line-height: 1.3; max-width: 72px; }
+    .detail-phase-name.active { color: var(--purple); font-weight: 600; }
+    .detail-connector { flex: 1; height: 2px; background: var(--border2); min-width: 24px; margin-bottom: 22px; }
+    .detail-connector.done { background: var(--teal); }
+
+    /* NAVRIELLE SAYS */
+    .navrielle-says { background: var(--ink); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
+    .navrielle-says-label { font-size: 11px; font-weight: 600; color: var(--teal); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+    .navrielle-says-text { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.7; font-weight: 300; }
+
+    /* PROGRESS RING */
+    .progress-ring-wrap { display: flex; align-items: center; gap: 20px; background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
+    .progress-ring-svg { flex-shrink: 0; }
+    .progress-ring-info { flex: 1; }
+    .progress-ring-pct { font-family: var(--serif); font-size: 32px; font-weight: 600; color: var(--ink); line-height: 1; margin-bottom: 4px; }
+    .progress-ring-label { font-size: 13px; color: var(--ink3); font-weight: 300; }
+
+    /* COMPLETED GOALS */
+    .dash-completed-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--border); }
+    .dash-completed-item:last-child { border-bottom: none; }
+    .dash-completed-check { width: 24px; height: 24px; border-radius: 50%; background: var(--teal-soft); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--teal); flex-shrink: 0; }
+    .dash-completed-name { font-size: 13px; color: var(--ink2); flex: 1; }
+    .dash-completed-date { font-size: 11px; color: var(--ink3); }
+
+    /* EMPTY STATE */
+    .dash-empty { text-align: center; padding: 48px 20px; }
+    .dash-empty-icon { font-size: 36px; margin-bottom: 12px; }
+    .dash-empty-title { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+    .dash-empty-sub { font-size: 14px; color: var(--ink3); font-weight: 300; margin-bottom: 20px; }
+
+    /* DETAIL VIEW */
+    .dash-detail { display: none; }
+    .dash-detail.visible { display: block; }
+    .dash-main-view { display: block; }
+    .dash-main-view.hidden { display: none; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -402,6 +484,7 @@
         <div class="user-pill">
           <div class="user-avatar" id="land-avatar">P</div>
           <span class="user-email" id="land-email"></span>
+          <button class="btn-auth" onclick="goDashboard()" style="font-size:11px;padding:4px 10px;" id="l-dashboard-btn">Dashboard</button>
           <button class="btn-signout" onclick="signOut()" id="l-signout-btn">Sign out</button>
         </div>
       </div>
@@ -515,46 +598,36 @@
     </div>
   </section>
 
-  <!-- TESTIMONIALS -->
+  <!-- BETA SECTION -->
   <section style="padding: 100px 48px; background: var(--cream);">
-    <div style="max-width:1100px; margin:0 auto;">
-      <div class="land-section-eyebrow" id="l-test-eyebrow">What people say</div>
-      <h2 class="land-section-title" id="l-test-title">Real goals. Real results.</h2>
-      <p class="land-section-sub" id="l-test-sub">From our beta community — people using Navrielle to achieve goals that matter to them.</p>
-      <div class="testimonials-grid">
-        <div class="testimonial-card">
-          <div class="testimonial-stars">★★★★★</div>
-          <p class="testimonial-text" id="l-t1">"I've tried every productivity app out there. Navrielle is the first one that actually made me think differently about my goal — not just track it."</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar" style="background:var(--purple);">A</div>
-            <div>
-              <div class="testimonial-name" id="l-t1-name">Andrea M.</div>
-              <div class="testimonial-role" id="l-t1-role">Entrepreneur, Mexico City</div>
-            </div>
-          </div>
+    <div style="max-width:860px; margin:0 auto; text-align:center;">
+      <div class="land-section-eyebrow" id="l-test-eyebrow">Early access</div>
+      <h2 class="land-section-title" id="l-test-title">Navrielle is in beta.</h2>
+      <p class="land-section-sub" id="l-test-sub">We're building this with a small group of early users — people serious about following through on their goals. If that's you, we'd love to have you.</p>
+
+      <!-- Beta perks row -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:48px 0;">
+        <div style="background:white; border:0.5px solid var(--border); border-radius:var(--radius); padding:28px 20px;">
+          <div style="font-size:28px; margin-bottom:12px;">🆓</div>
+          <div style="font-family:var(--serif); font-size:15px; font-weight:600; color:var(--ink); margin-bottom:6px;" id="l-beta1-t">Free during beta</div>
+          <p style="font-size:13px; color:var(--ink3); line-height:1.6; font-weight:300;" id="l-beta1-d">Full access, no credit card. We're focused on building something great before we charge for it.</p>
         </div>
-        <div class="testimonial-card">
-          <div class="testimonial-stars">★★★★★</div>
-          <p class="testimonial-text" id="l-t2">"The honest feedback was a bit of a shock at first — but that's exactly what I needed. It pointed out the real obstacle I'd been avoiding for months."</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar" style="background:var(--teal);">R</div>
-            <div>
-              <div class="testimonial-name" id="l-t2-name">Roberto S.</div>
-              <div class="testimonial-role" id="l-t2-role">Finance professional, Monterrey</div>
-            </div>
-          </div>
+        <div style="background:white; border:0.5px solid var(--border); border-radius:var(--radius); padding:28px 20px;">
+          <div style="font-size:28px; margin-bottom:12px;">🎯</div>
+          <div style="font-family:var(--serif); font-size:15px; font-weight:600; color:var(--ink); margin-bottom:6px;" id="l-beta2-t">Your feedback shapes it</div>
+          <p style="font-size:13px; color:var(--ink3); line-height:1.6; font-weight:300;" id="l-beta2-d">Every feature in Navrielle was built based on what real users needed. You'll have a direct line.</p>
         </div>
-        <div class="testimonial-card">
-          <div class="testimonial-stars">★★★★★</div>
-          <p class="testimonial-text" id="l-t3">"I set a savings goal I'd failed at twice before. The action plan broke it down so specifically that I actually followed through this time."</p>
-          <div class="testimonial-author">
-            <div class="testimonial-avatar" style="background:#7C3AED;">S</div>
-            <div>
-              <div class="testimonial-name" id="l-t3-name">Sofia L.</div>
-              <div class="testimonial-role" id="l-t3-role">Graduate student, CDMX</div>
-            </div>
-          </div>
+        <div style="background:white; border:0.5px solid var(--border); border-radius:var(--radius); padding:28px 20px;">
+          <div style="font-size:28px; margin-bottom:12px;">⚡</div>
+          <div style="font-family:var(--serif); font-size:15px; font-weight:600; color:var(--ink); margin-bottom:6px;" id="l-beta3-t">Ready in 3 minutes</div>
+          <p style="font-size:13px; color:var(--ink3); line-height:1.6; font-weight:300;" id="l-beta3-d">No long onboarding. Set a goal, get a roadmap, and walk away with a real action plan — today.</p>
         </div>
+      </div>
+
+      <!-- Honest note -->
+      <div style="display:inline-flex; align-items:flex-start; gap:12px; background:var(--purple-soft); border:0.5px solid rgba(67,56,202,0.15); border-radius:var(--radius); padding:20px 28px; text-align:left; max-width:600px;">
+        <span style="font-size:18px; flex-shrink:0; margin-top:1px;">🧭</span>
+        <p style="font-size:14px; color:var(--purple); line-height:1.7; font-weight:400;" id="l-beta-note">We're a small team building something we genuinely believe in. Navrielle isn't perfect yet — but it's real, it works, and we ship fast. Join us while it's early.</p>
       </div>
     </div>
   </section>
@@ -715,6 +788,7 @@
         <div class="btn-row" style="flex-wrap:wrap;">
           <button class="btn-plan" onclick="showTimeline()" id="btn-plan">Build my action plan →</button>
           <button class="btn-primary" onclick="restart()" id="btn-restart">Make another decision</button>
+          <button class="btn-secondary" onclick="goDashboard()" id="btn-dashboard" style="display:none">My Dashboard</button>
           <button class="btn-secondary" onclick="goJournal()" id="btn-journal" style="display:none">View journal</button>
           <button class="btn-secondary" onclick="goLanding()" id="btn-home">Back to home</button>
         </div>
@@ -807,6 +881,74 @@
       <div class="checklist-sub" id="cl-sub">Track your 30-day plans and check off progress</div>
     </div>
     <div id="checklist-list"></div>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ──────────────────────────────────────────── -->
+<div id="dashboard">
+  <nav class="dash-nav">
+    <div class="app-logo"><em>Navrielle</em></div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+        <button class="lang-btn" onclick="setLang('es',this)">ES</button>
+      </div>
+      <button class="app-back" onclick="goLanding()">← Home</button>
+    </div>
+  </nav>
+  <div class="dash-content">
+
+    <!-- MAIN VIEW -->
+    <div class="dash-main-view" id="dash-main">
+
+      <!-- Greeting -->
+      <div class="dash-greeting">
+        <div class="dash-greeting-eyebrow" id="dash-eyebrow">Your progress</div>
+        <div class="dash-greeting-title" id="dash-greeting">Good morning 👋</div>
+      </div>
+
+      <!-- Stats -->
+      <div class="dash-stats">
+        <div class="dash-stat">
+          <div class="dash-stat-icon">🎯</div>
+          <div class="dash-stat-value purple" id="dash-stat-goals">0</div>
+          <div class="dash-stat-label" id="dash-stat-goals-label">Active Goals</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-icon">📈</div>
+          <div class="dash-stat-value teal" id="dash-stat-progress">0%</div>
+          <div class="dash-stat-label" id="dash-stat-progress-label">Avg Progress</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-icon">🔥</div>
+          <div class="dash-stat-value" id="dash-stat-streak">0</div>
+          <div class="dash-stat-label" id="dash-stat-streak-label">Day Streak</div>
+        </div>
+      </div>
+
+      <!-- Active Goals -->
+      <div class="dash-section-header">
+        <div class="dash-section-title" id="dash-active-title">Active Goals</div>
+        <div class="dash-section-link" onclick="startApp()" id="dash-add-goal">+ New goal</div>
+      </div>
+      <div id="dash-active-goals">
+        <div class="thinking"><div class="dots"><span></span><span></span><span></span></div></div>
+      </div>
+
+      <!-- Completed Goals -->
+      <div class="dash-section-header" style="margin-top:28px;">
+        <div class="dash-section-title" id="dash-completed-title">Completed Goals</div>
+      </div>
+      <div id="dash-completed-goals" style="background:white;border:0.5px solid var(--border);border-radius:var(--radius);padding:0 20px;"></div>
+
+    </div>
+
+    <!-- DETAIL VIEW -->
+    <div class="dash-detail" id="dash-detail">
+      <button class="app-back" onclick="showDashMain()" style="margin-bottom:20px;display:inline-flex;align-items:center;gap:6px;">← <span id="dash-back-label">Back</span></button>
+      <div id="dash-detail-content"></div>
+    </div>
+
   </div>
 </div>
 
@@ -1046,9 +1188,16 @@ function setLang(lang, btn) {
   set('l-fc5-d', S.lang==='es' ? 'Navrielle es completamente bilingüe. Cambia de idioma en cualquier momento.' : 'Navrielle is fully bilingual. Switch languages anytime — everything adapts instantly.');
   set('l-fc6-t', S.lang==='es' ? 'Solo 3 minutos' : 'Takes 3 minutes');
   set('l-fc6-d', S.lang==='es' ? 'Sin onboarding largo. De cero a plan completo en una sesión. Gratis, sin tarjeta.' : 'No lengthy onboarding. Go from blank slate to a full action plan in a single session. Free.');
-  set('l-test-eyebrow', S.lang==='es' ? 'LO QUE DICEN' : 'WHAT PEOPLE SAY');
-  set('l-test-title', S.lang==='es' ? 'Metas reales. Resultados reales.' : 'Real goals. Real results.');
-  set('l-test-sub', S.lang==='es' ? 'De nuestra comunidad beta — personas usando Navrielle para lograr metas que importan.' : 'From our beta community — people using Navrielle to achieve goals that matter to them.');
+  set('l-test-eyebrow', S.lang==='es' ? 'ACCESO ANTICIPADO' : 'EARLY ACCESS');
+  set('l-test-title', S.lang==='es' ? 'Navrielle está en beta.' : 'Navrielle is in beta.');
+  set('l-test-sub', S.lang==='es' ? 'Estamos construyendo esto con un grupo pequeño de usuarios iniciales — personas serias en cumplir sus metas. Si eres tú, nos encantaría tenerte.' : 'We\'re building this with a small group of early users — people serious about following through on their goals. If that\'s you, we\'d love to have you.');
+  set('l-beta1-t', S.lang==='es' ? 'Gratis durante la beta' : 'Free during beta');
+  set('l-beta1-d', S.lang==='es' ? 'Acceso completo, sin tarjeta. Estamos enfocados en construir algo excelente antes de cobrar.' : 'Full access, no credit card. We\'re focused on building something great before we charge for it.');
+  set('l-beta2-t', S.lang==='es' ? 'Tu feedback lo moldea' : 'Your feedback shapes it');
+  set('l-beta2-d', S.lang==='es' ? 'Cada función en Navrielle se construyó basándose en lo que usuarios reales necesitaban. Tendrás línea directa.' : 'Every feature in Navrielle was built based on what real users needed. You\'ll have a direct line.');
+  set('l-beta3-t', S.lang==='es' ? 'Listo en 3 minutos' : 'Ready in 3 minutes');
+  set('l-beta3-d', S.lang==='es' ? 'Sin onboarding largo. Define una meta, obtén un roadmap y sal con un plan real — hoy.' : 'No long onboarding. Set a goal, get a roadmap, and walk away with a real action plan — today.');
+  set('l-beta-note', S.lang==='es' ? 'Somos un equipo pequeño construyendo algo en lo que genuinamente creemos. Navrielle no es perfecto aún — pero es real, funciona, y avanzamos rápido. Únete mientras es temprano.' : 'We\'re a small team building something we genuinely believe in. Navrielle isn\'t perfect yet — but it\'s real, it works, and we ship fast. Join us while it\'s early.');
   set('l-cta-title', S.lang==='es' ? 'Tu meta está esperando.<br>Hagámosla <em>realidad.</em>' : 'Your goal is waiting.<br>Let\'s make it <em>happen.</em>');
   set('l-cta-sub', S.lang==='es' ? 'Gratis. Sin tarjeta. Solo 3 minutos.' : 'Free to use. No credit card. Takes 3 minutes.');
   set('l-footer-signin', t.signin); set('l-footer-signup', t.signup);
@@ -1088,8 +1237,18 @@ function goLanding() {
   document.getElementById('app').classList.remove('visible');
   document.getElementById('journal').classList.remove('visible');
   document.getElementById('checklist').classList.remove('visible');
+  document.getElementById('dashboard').classList.remove('visible');
   document.getElementById('landing').style.display = 'flex';
   restart();
+}
+
+function goDashboard() {
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('journal').classList.remove('visible');
+  document.getElementById('checklist').classList.remove('visible');
+  document.getElementById('dashboard').classList.add('visible');
+  loadDashboard();
 }
 
 function goJournal() {
@@ -1379,6 +1538,7 @@ Focus: ${S.subtopic}` : '';
     document.getElementById('r-body').style.display='block';
     if (currentUser) {
       document.getElementById('btn-journal').style.display = 'inline-flex';
+      document.getElementById('btn-dashboard').style.display = 'inline-flex';
       await saveDecision();
     }
   } catch(e) {
@@ -1563,7 +1723,7 @@ function restart() {
   const bj = document.getElementById('btn-journal'); if(bj) bj.style.display='none';
   const p5 = document.getElementById('p5'); if(p5) p5.style.display='none';
   const pb = document.getElementById('plan-body'); if(pb) { pb.innerHTML=''; pb.style.display='none'; }
-  const bpj = document.getElementById('btn-plan-journal'); if(bpj) bpj.style.display='none';
+  const bdb = document.getElementById('btn-dashboard'); if(bdb) bdb.style.display='none';
   const bpc = document.getElementById('btn-plan-checklist'); if(bpc) bpc.style.display='none';
   const bsc = document.getElementById('btn-save-checklist'); if(bsc) { bsc.style.display='none'; bsc.disabled=false; }
   const csb = document.getElementById('checklist-saved-banner'); if(csb) csb.style.display='none';
@@ -1825,6 +1985,227 @@ function goPhase4() {
   document.getElementById('p4b').style.display = 'none';
   document.getElementById('p4').style.display = 'block';
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────
+const CAT_ICONS = {
+  'Career & Work': '💼', 'Finance & Money': '💰', 'Relationships': '🤝',
+  'Health & Lifestyle': '🧘', 'Education': '📚', 'Big Life Goal': '🌎', 'Custom': '✏️'
+};
+
+function getGreeting(lang) {
+  const h = new Date().getHours();
+  if (lang === 'es') {
+    if (h < 12) return 'Buenos días 👋';
+    if (h < 18) return 'Buenas tardes 👋';
+    return 'Buenas noches 👋';
+  }
+  if (h < 12) return 'Good morning 👋';
+  if (h < 18) return 'Good afternoon 👋';
+  return 'Good evening 👋';
+}
+
+function calcStreak(checklists) {
+  // Simple streak: count consecutive days with any checklist activity
+  // For now return days since first checklist was created if any active
+  if (!checklists || checklists.length === 0) return 0;
+  const latest = new Date(checklists[0].created_at);
+  const days = Math.floor((Date.now() - latest) / (1000 * 60 * 60 * 24));
+  return Math.max(1, 30 - days); // Simple placeholder streak
+}
+
+async function loadDashboard() {
+  const lang = S.lang;
+  // Update greeting
+  const email = currentUser?.email || '';
+  const name = email.split('@')[0] || '';
+  document.getElementById('dash-greeting').textContent = getGreeting(lang) + (name ? `, ${name}` : '');
+  document.getElementById('dash-eyebrow').textContent = lang === 'es' ? 'Tu progreso' : 'Your progress';
+  document.getElementById('dash-active-title').textContent = lang === 'es' ? 'Metas Activas' : 'Active Goals';
+  document.getElementById('dash-completed-title').textContent = lang === 'es' ? 'Metas Completadas' : 'Completed Goals';
+  document.getElementById('dash-add-goal').textContent = lang === 'es' ? '+ Nueva meta' : '+ New goal';
+  document.getElementById('dash-back-label').textContent = lang === 'es' ? 'Atrás' : 'Back';
+  document.getElementById('dash-stat-goals-label').textContent = lang === 'es' ? 'Metas Activas' : 'Active Goals';
+  document.getElementById('dash-stat-progress-label').textContent = lang === 'es' ? 'Progreso Promedio' : 'Avg Progress';
+  document.getElementById('dash-stat-streak-label').textContent = lang === 'es' ? 'Días Seguidos' : 'Day Streak';
+
+  if (!currentUser) {
+    document.getElementById('dash-active-goals').innerHTML = `<div class="dash-empty"><div class="dash-empty-icon">🔒</div><div class="dash-empty-title">${lang === 'es' ? 'Inicia sesión para ver tu dashboard' : 'Sign in to see your dashboard'}</div><button class="btn-primary" onclick="openModal('signin')" style="margin:0 auto;">${lang === 'es' ? 'Iniciar sesión' : 'Sign in'}</button></div>`;
+    return;
+  }
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch('/api/checklists', { headers: { 'Authorization': `Bearer ${session.access_token}` } });
+    const data = await res.json();
+    const checklists = data.checklists || [];
+
+    // Compute stats
+    const active = checklists;
+    const allProgress = active.map(cl => {
+      const all = (cl.weeks || []).flatMap(w => w.actions || []);
+      return all.length ? Math.round((all.filter(a => a.done).length / all.length) * 100) : 0;
+    });
+    const avgProgress = allProgress.length ? Math.round(allProgress.reduce((a, b) => a + b, 0) / allProgress.length) : 0;
+    const streak = calcStreak(checklists);
+
+    document.getElementById('dash-stat-goals').textContent = active.length;
+    document.getElementById('dash-stat-progress').textContent = avgProgress + '%';
+    document.getElementById('dash-stat-streak').textContent = streak;
+
+    // Render active goals
+    if (active.length === 0) {
+      document.getElementById('dash-active-goals').innerHTML = `<div class="dash-empty"><div class="dash-empty-icon">🎯</div><div class="dash-empty-title">${lang === 'es' ? 'Aún no hay metas' : 'No active goals yet'}</div><div class="dash-empty-sub">${lang === 'es' ? 'Empieza tu primera meta y aparecerá aquí.' : 'Start your first goal and it will appear here.'}</div><button class="btn-primary" onclick="startApp()" style="margin:0 auto;">${lang === 'es' ? 'Empezar una meta' : 'Start a goal'}</button></div>`;
+    } else {
+      document.getElementById('dash-active-goals').innerHTML = active.map(cl => renderGoalCard(cl, lang)).join('');
+    }
+
+    // Render completed (placeholder — goals with 100% completion)
+    const completed = checklists.filter(cl => {
+      const all = (cl.weeks || []).flatMap(w => w.actions || []);
+      return all.length > 0 && all.every(a => a.done);
+    });
+    const completedEl = document.getElementById('dash-completed-goals');
+    if (completed.length === 0) {
+      completedEl.innerHTML = `<div style="padding:20px;text-align:center;font-size:13px;color:var(--ink3);">${lang === 'es' ? 'Aún no has completado ninguna meta.' : 'No completed goals yet. Keep going!'}</div>`;
+    } else {
+      completedEl.innerHTML = completed.map(cl => {
+        const date = new Date(cl.created_at).toLocaleDateString(lang === 'es' ? 'es-MX' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        return `<div class="dash-completed-item">
+          <div class="dash-completed-check">✓</div>
+          <div class="dash-completed-name">${cl.decision_text}</div>
+          <div class="dash-completed-date">${date}</div>
+        </div>`;
+      }).join('');
+    }
+  } catch(e) {
+    document.getElementById('dash-active-goals').innerHTML = `<div class="error-box">${e.message}</div>`;
+  }
+}
+
+function renderGoalCard(cl, lang) {
+  const all = (cl.weeks || []).flatMap(w => w.actions || []);
+  const done = all.filter(a => a.done).length;
+  const pct = all.length ? Math.round((done / all.length) * 100) : 0;
+  const icon = CAT_ICONS[cl.category] || '🎯';
+  const weeks = cl.weeks || [];
+  const currentPhaseIdx = weeks.findIndex(w => w.actions && w.actions.some(a => !a.done));
+  const currentPhase = weeks[currentPhaseIdx] || weeks[weeks.length - 1];
+  const phaseName = currentPhase ? `Phase ${currentPhaseIdx + 1} — ${currentPhase.subtitle || currentPhase.title}` : '';
+  const daysAgo = Math.floor((Date.now() - new Date(cl.created_at)) / (1000 * 60 * 60 * 24));
+  const isGreen = pct >= 66;
+
+  return `<div class="dash-goal-card" onclick="showGoalDetail('${cl.id}')">
+    <div class="dash-goal-card-top">
+      <div class="dash-goal-cat">
+        <div class="dash-goal-icon">${icon}</div>
+        <div>
+          <div class="dash-goal-name">${cl.decision_text.length > 45 ? cl.decision_text.substring(0, 45) + '...' : cl.decision_text}</div>
+          <div class="dash-goal-category">${cl.category}</div>
+        </div>
+      </div>
+      <div class="dash-goal-pct">${pct}%</div>
+    </div>
+    <div class="dash-progress-bar">
+      <div class="dash-progress-fill ${isGreen ? 'teal' : ''}" style="width:${pct}%"></div>
+    </div>
+    <div class="dash-goal-meta">
+      <div class="dash-goal-phase">${phaseName}</div>
+      <div class="dash-goal-days">${lang === 'es' ? `Hace ${daysAgo}d` : `${daysAgo}d ago`}</div>
+    </div>
+  </div>`;
+}
+
+async function showGoalDetail(clId) {
+  document.getElementById('dash-main').classList.add('hidden');
+  document.getElementById('dash-detail').classList.add('visible');
+  document.getElementById('dash-detail-content').innerHTML = '<div class="thinking"><div class="dots"><span></span><span></span><span></span></div></div>';
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch(`/api/checklists?id=${clId}`, { headers: { 'Authorization': `Bearer ${session.access_token}` } });
+    const data = await res.json();
+    const cl = data.checklist;
+    const lang = S.lang;
+    const weeks = cl.weeks || [];
+    const all = weeks.flatMap(w => w.actions || []);
+    const done = all.filter(a => a.done).length;
+    const pct = all.length ? Math.round((done / all.length) * 100) : 0;
+    const currentPhaseIdx = weeks.findIndex(w => w.actions && w.actions.some(a => !a.done));
+
+    // Mini roadmap
+    let roadmapHtml = '<div class="detail-roadmap">';
+    weeks.forEach((w, i) => {
+      if (i > 0) roadmapHtml += `<div class="detail-connector ${i <= currentPhaseIdx ? 'done' : ''}"></div>`;
+      const isDone = i < currentPhaseIdx || (i === 0 && currentPhaseIdx === -1);
+      const isActive = i === currentPhaseIdx;
+      roadmapHtml += `<div class="detail-phase-node">
+        <div class="detail-phase-circle ${isDone ? 'done' : isActive ? 'active' : ''}">${isDone ? '✓' : i + 1}</div>
+        <div class="detail-phase-name ${isActive ? 'active' : ''}">${w.title || 'Phase ' + (i+1)}</div>
+      </div>`;
+    });
+    roadmapHtml += '</div>';
+
+    // Progress ring
+    const r = 36, circ = 2 * Math.PI * r;
+    const offset = circ - (pct / 100) * circ;
+    const ringHtml = `<div class="progress-ring-wrap">
+      <svg class="progress-ring-svg" width="90" height="90" viewBox="0 0 90 90">
+        <circle cx="45" cy="45" r="${r}" fill="none" stroke="var(--cream3)" stroke-width="7"/>
+        <circle cx="45" cy="45" r="${r}" fill="none" stroke="var(--teal)" stroke-width="7"
+          stroke-dasharray="${circ}" stroke-dashoffset="${offset}"
+          stroke-linecap="round" transform="rotate(-90 45 45)" style="transition:stroke-dashoffset 0.6s ease"/>
+      </svg>
+      <div class="progress-ring-info">
+        <div class="progress-ring-pct">${pct}%</div>
+        <div class="progress-ring-label">${lang === 'es' ? 'Progreso general' : 'Overall progress'}<br>${done} / ${all.length} ${lang === 'es' ? 'pasos completados' : 'steps complete'}</div>
+      </div>
+    </div>`;
+
+    // Checklist
+    const checklistHtml = weeks.map((w, wi) => `
+      <div style="margin-bottom:20px;">
+        <div style="font-size:12px;font-weight:600;color:var(--purple);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;">${w.title || 'Phase ' + (wi+1)} <span style="color:var(--ink3);font-weight:400;">${w.subtitle || ''}</span></div>
+        <div style="background:white;border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:0 16px;">
+          ${(w.actions || []).map(a => `
+            <div class="checklist-item ${a.done ? 'completed' : ''}" id="item-${cl.id}-${a.id}">
+              <div class="checklist-checkbox ${a.done ? 'checked' : ''}" onclick="toggleItem('${cl.id}','${a.id}',${wi})"></div>
+              <span class="checklist-item-text">${a.text}</span>
+            </div>`).join('')}
+        </div>
+      </div>`).join('');
+
+    // Navrielle says
+    const navrielleSays = pct === 0
+      ? (lang === 'es' ? 'Acabas de empezar — el primer paso es el más importante. Empieza hoy.' : 'You\'re just getting started — the first step is the most important. Start today.')
+      : pct < 33
+      ? (lang === 'es' ? 'Buen comienzo. Mantén el ritmo y construye el hábito en estas primeras semanas.' : 'Good start. Keep the momentum and build the habit in these early weeks.')
+      : pct < 66
+      ? (lang === 'es' ? 'Vas a la mitad. Esta es la fase donde la mayoría para — sigue adelante.' : 'You\'re halfway there. This is where most people stop — keep going.')
+      : pct < 100
+      ? (lang === 'es' ? 'Casi llegás. No pares ahora — el final está cerca.' : 'Almost there. Don\'t stop now — the finish line is close.')
+      : (lang === 'es' ? '¡Lo lograste! Meta completada. Empieza una nueva cuando estés listo.' : 'You did it! Goal complete. Start a new one when you\'re ready.');
+
+    document.getElementById('dash-detail-content').innerHTML = `
+      <div style="margin-bottom:6px;font-size:11px;color:var(--ink3);font-weight:500;text-transform:uppercase;letter-spacing:1px;">${cl.category}</div>
+      <h2 style="font-family:var(--serif);font-size:22px;font-weight:600;color:var(--ink);margin-bottom:20px;line-height:1.3;">${cl.decision_text}</h2>
+      ${roadmapHtml}
+      ${ringHtml}
+      <div class="navrielle-says">
+        <div class="navrielle-says-label">Navrielle says</div>
+        <div class="navrielle-says-text">${navrielleSays}</div>
+      </div>
+      <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:14px;">${lang === 'es' ? 'Lista de tareas' : 'Task checklist'}</div>
+      ${checklistHtml}`;
+  } catch(e) {
+    document.getElementById('dash-detail-content').innerHTML = `<div class="error-box">${e.message}</div>`;
+  }
+}
+
+function showDashMain() {
+  document.getElementById('dash-main').classList.remove('hidden');
+  document.getElementById('dash-detail').classList.remove('visible');
+  loadDashboard();
 }
 
 initAuth();
