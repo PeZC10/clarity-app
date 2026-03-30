@@ -1056,8 +1056,16 @@ const T = {
 
 // ── AUTH ──────────────────────────────────────────────────
 async function initAuth() {
+  const hash = window.location.hash;
+  const isOAuthRedirect = hash.includes('access_token=');
   const { data: { session } } = await sb.auth.getSession();
-  if (session?.user) setUser(session.user);
+  if (session?.user) {
+    setUser(session.user);
+    if (isOAuthRedirect) {
+      window.history.replaceState(null, '', window.location.pathname);
+      goDashboard();
+    }
+  }
   sb.auth.onAuthStateChange((_event, session) => {
     if (session?.user) setUser(session.user);
     else clearUser();
