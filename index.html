@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Navrielle — Achieve anything.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #FAF8F4; --cream2: #F3F0EA; --cream3: #EAE6DC;
+      --ink: #1C1917; --ink2: #57534E; --ink3: #A8A29E;
+      --purple: #4338CA; --purple2: #6366F1; --purple-soft: #EEF2FF;
+      --teal: #0D9488; --teal-soft: #CCFBF1;
+      --border: rgba(28,25,23,0.10); --border2: rgba(28,25,23,0.18);
+      --radius: 16px; --radius-sm: 10px;
+      --serif: 'Lora', Georgia, serif; --sans: 'DM Sans', system-ui, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--sans); background: var(--cream); color: var(--ink); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+    /* NAV */
+    .land-nav { padding: 20px 48px; display: flex; align-items: center; justify-content: space-between; animation: fadeDown 0.6s ease both; position: sticky; top: 0; z-index: 50; background: rgba(250,248,244,0.92); backdrop-filter: blur(12px); border-bottom: 0.5px solid var(--border); }
+    .land-logo { font-family: var(--serif); font-size: 22px; font-weight: 600; color: var(--ink); letter-spacing: -0.3px; }
+    .land-logo em { color: var(--purple); font-style: italic; }
+    .land-badge { font-size: 11px; font-weight: 500; color: var(--purple); background: var(--purple-soft); padding: 5px 12px; border-radius: 20px; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+
+    /* LANG TOGGLE */
+    .lang-toggle { display: flex; align-items: center; gap: 2px; background: var(--cream2); border-radius: 20px; padding: 3px; border: 0.5px solid var(--border); }
+    .lang-btn { font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 20px; border: none; background: transparent; color: var(--ink3); cursor: pointer; font-family: var(--sans); transition: all 0.2s; }
+    .lang-btn.active { background: var(--purple); color: white; }
+
+    /* AUTH BUTTONS */
+    .btn-auth { font-size: 13px; font-weight: 500; padding: 8px 16px; border-radius: 20px; border: 0.5px solid var(--border2); background: transparent; color: var(--ink2); cursor: pointer; font-family: var(--sans); transition: all 0.15s; }
+    .btn-auth:hover { background: var(--cream2); color: var(--ink); }
+    .btn-auth-primary { background: var(--purple); color: white; border-color: var(--purple); }
+    .btn-auth-primary:hover { background: var(--purple2); }
+    .user-pill { display: flex; align-items: center; gap: 8px; background: var(--cream2); border-radius: 20px; padding: 6px 14px 6px 8px; border: 0.5px solid var(--border); }
+    .user-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--purple); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; }
+    .user-email { font-size: 12px; color: var(--ink2); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .btn-signout { font-size: 11px; color: var(--ink3); background: none; border: none; cursor: pointer; font-family: var(--sans); padding: 0; }
+    .btn-signout:hover { color: var(--ink); }
+
+    /* LANDING */
+    #landing { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* HERO */
+    .land-hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 24px 80px; position: relative; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; pointer-events: none; }
+    .hero-bg-circle { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.12; }
+    .hero-bg-circle-1 { width: 600px; height: 600px; background: var(--purple); top: -200px; left: 50%; transform: translateX(-50%); }
+    .hero-bg-circle-2 { width: 300px; height: 300px; background: var(--teal); bottom: 0; right: 10%; }
+    .hero-eyebrow { font-size: 11px; font-weight: 600; color: var(--teal); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 24px; animation: fadeUp 0.7s 0.1s ease both; display: flex; align-items: center; gap: 8px; }
+    .hero-eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); display: inline-block; }
+    .hero-title { font-family: var(--serif); font-size: clamp(42px, 7vw, 78px); font-weight: 600; color: var(--ink); line-height: 1.1; letter-spacing: -2px; max-width: 760px; margin-bottom: 28px; animation: fadeUp 0.7s 0.2s ease both; }
+    .hero-title em { color: var(--purple); font-style: italic; }
+    .hero-sub { font-size: 18px; color: var(--ink2); line-height: 1.7; max-width: 500px; margin-bottom: 48px; font-weight: 300; animation: fadeUp 0.7s 0.3s ease both; }
+    .hero-cta-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.7s 0.4s ease both; margin-bottom: 64px; }
+    .hero-cta { display: inline-flex; align-items: center; gap: 10px; background: var(--ink); color: var(--cream); font-family: var(--sans); font-size: 15px; font-weight: 500; padding: 16px 32px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s ease; }
+    .hero-cta:hover { background: var(--purple); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(67,56,202,0.25); }
+    .hero-cta .arrow { width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 11px; transition: transform 0.2s; }
+    .hero-cta:hover .arrow { transform: translateX(3px); }
+    .hero-cta-secondary { font-size: 14px; color: var(--ink3); font-family: var(--sans); cursor: pointer; background: none; border: none; text-decoration: underline; text-underline-offset: 3px; transition: color 0.2s; }
+    .hero-cta-secondary:hover { color: var(--ink); }
+    .hero-social-proof { display: flex; align-items: center; gap: 12px; animation: fadeUp 0.7s 0.5s ease both; }
+    .hero-avatars { display: flex; }
+    .hero-avatar { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--cream); margin-left: -8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: white; }
+    .hero-avatar:first-child { margin-left: 0; }
+    .hero-social-text { font-size: 13px; color: var(--ink3); font-weight: 300; }
+    .hero-social-text strong { color: var(--ink2); font-weight: 500; }
+
+    /* HOW IT WORKS */
+    .land-section { padding: 100px 48px; max-width: 1100px; margin: 0 auto; width: 100%; }
+    .land-section-eyebrow { font-size: 11px; font-weight: 600; color: var(--purple); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; text-align: center; }
+    .land-section-title { font-family: var(--serif); font-size: clamp(28px, 4vw, 44px); font-weight: 600; color: var(--ink); line-height: 1.2; letter-spacing: -0.5px; text-align: center; margin-bottom: 16px; }
+    .land-section-sub { font-size: 16px; color: var(--ink3); line-height: 1.7; font-weight: 300; text-align: center; max-width: 480px; margin: 0 auto 64px; }
+
+    /* STEPS */
+    .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); border-radius: var(--radius); overflow: hidden; }
+    .step-card { background: var(--cream); padding: 36px 32px; position: relative; transition: background 0.2s; }
+    .step-card:hover { background: white; }
+    .step-num { font-family: var(--serif); font-size: 48px; font-weight: 600; color: var(--cream3); line-height: 1; margin-bottom: 20px; }
+    .step-icon-wrap { width: 44px; height: 44px; border-radius: 12px; background: var(--purple-soft); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 16px; }
+    .step-title { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
+    .step-desc { font-size: 14px; color: var(--ink2); line-height: 1.65; font-weight: 300; }
+
+    /* FEATURES */
+    .features-section { background: var(--ink); padding: 100px 48px; }
+    .features-inner { max-width: 1100px; margin: 0 auto; }
+    .features-section .land-section-eyebrow { color: var(--teal); }
+    .features-section .land-section-title { color: white; }
+    .features-section .land-section-sub { color: rgba(255,255,255,0.4); }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .feature-card { background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 28px 24px; transition: all 0.2s; }
+    .feature-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+    .feature-icon { font-size: 24px; margin-bottom: 16px; }
+    .feature-title { font-size: 15px; font-weight: 600; color: white; margin-bottom: 8px; font-family: var(--sans); }
+    .feature-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.65; font-weight: 300; }
+
+    /* TESTIMONIALS */
+    .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .testimonial-card { background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 28px 24px; }
+    .testimonial-stars { color: #F59E0B; font-size: 13px; margin-bottom: 14px; letter-spacing: 2px; }
+    .testimonial-text { font-size: 14px; color: var(--ink); line-height: 1.75; font-weight: 300; margin-bottom: 20px; font-style: italic; }
+    .testimonial-author { display: flex; align-items: center; gap: 10px; }
+    .testimonial-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: white; flex-shrink: 0; }
+    .testimonial-name { font-size: 13px; font-weight: 500; color: var(--ink); }
+    .testimonial-role { font-size: 12px; color: var(--ink3); }
+
+    /* BOTTOM CTA */
+    .land-cta-section { padding: 100px 48px; text-align: center; background: var(--cream2); border-top: 0.5px solid var(--border); }
+    .land-cta-title { font-family: var(--serif); font-size: clamp(30px, 4vw, 52px); font-weight: 600; color: var(--ink); line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .land-cta-title em { color: var(--purple); font-style: italic; }
+    .land-cta-sub { font-size: 16px; color: var(--ink3); margin-bottom: 40px; font-weight: 300; }
+
+    /* FOOTER */
+    .land-footer { padding: 24px 48px; text-align: center; font-size: 12px; color: var(--ink3); border-top: 0.5px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .land-footer-links { display: flex; gap: 24px; }
+    .land-footer-link { font-size: 12px; color: var(--ink3); cursor: pointer; transition: color 0.15s; }
+    .land-footer-link:hover { color: var(--ink); }
+
+    /* AUTH MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(28,25,23,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; animation: fadeIn 0.2s ease; }
+    .modal { background: var(--cream); border-radius: var(--radius); padding: 36px; width: 100%; max-width: 400px; position: relative; animation: fadeUp 0.25s ease; }
+    .modal-close { position: absolute; top: 16px; right: 16px; width: 28px; height: 28px; border-radius: 50%; border: none; background: var(--cream2); color: var(--ink3); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; font-family: var(--sans); }
+    .modal-title { font-family: var(--serif); font-size: 22px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .modal-sub { font-size: 13px; color: var(--ink3); margin-bottom: 24px; }
+    .form-field { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 12px; font-weight: 500; color: var(--ink2); margin-bottom: 6px; }
+    .form-input { width: 100%; border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 12px 14px; font-size: 14px; font-family: var(--sans); color: var(--ink); background: white; transition: border-color 0.2s; }
+    .form-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(67,56,202,0.08); }
+    .form-btn { width: 100%; padding: 13px; border-radius: 50px; border: none; background: var(--purple); color: white; font-size: 14px; font-weight: 500; font-family: var(--sans); cursor: pointer; margin-top: 8px; transition: all 0.2s; }
+    .form-btn:hover { background: var(--purple2); }
+    .form-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .form-divider { display: flex; align-items: center; gap: 12px; margin: 16px 0; }
+    .form-divider-line { flex: 1; height: 0.5px; background: var(--border); }
+    .form-divider-text { font-size: 12px; color: var(--ink3); }
+    .btn-google { width: 100%; padding: 12px; border-radius: 50px; border: 0.5px solid var(--border2); background: white; color: var(--ink); font-size: 14px; font-weight: 500; font-family: var(--sans); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.15s; }
+    .btn-google:hover { background: var(--cream2); }
+    .modal-switch { text-align: center; font-size: 13px; color: var(--ink3); margin-top: 16px; }
+    .modal-switch a { color: var(--purple); cursor: pointer; text-decoration: none; font-weight: 500; }
+    .modal-err { background: #FEF2F2; border: 0.5px solid #FECACA; border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13px; color: #991B1B; margin-bottom: 14px; }
+
+    /* APP */
+    #app { display: none; min-height: 100vh; flex-direction: column; align-items: center; padding-bottom: 80px; }
+    #app.visible { display: flex; }
+    .app-nav { width: 100%; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border); background: var(--cream); position: sticky; top: 0; z-index: 10; }
+    .app-logo { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--ink); }
+    .app-logo em { color: var(--purple); font-style: italic; }
+    .app-step { font-size: 12px; color: var(--ink3); }
+    .app-back { font-size: 13px; color: var(--ink3); cursor: pointer; padding: 6px 14px; border-radius: 20px; border: 0.5px solid var(--border2); background: transparent; font-family: var(--sans); transition: all 0.15s; }
+    .app-back:hover { background: var(--cream2); color: var(--ink); }
+
+    /* PROGRESS */
+    .progress-wrap { width: 100%; max-width: 580px; padding: 28px 24px 0; }
+    .progress-bar { height: 2px; background: var(--cream3); border-radius: 2px; }
+    .progress-fill { height: 100%; background: var(--purple); border-radius: 2px; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+    .progress-steps { display: flex; justify-content: space-between; margin-top: 10px; }
+    .ps { font-size: 11px; color: var(--ink3); transition: color 0.3s; }
+    .ps.active { color: var(--purple); font-weight: 500; }
+    .ps.done { color: var(--teal); }
+
+    /* MAIN */
+    main { width: 100%; max-width: 580px; padding: 36px 24px 0; }
+    .phase { animation: fadeUp 0.4s ease forwards; }
+    .eyebrow { font-size: 11px; font-weight: 500; color: var(--purple); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+    .phase-title { font-family: var(--serif); font-size: 26px; font-weight: 600; color: var(--ink); line-height: 1.3; margin-bottom: 8px; }
+    .phase-sub { font-size: 14px; color: var(--ink2); line-height: 1.65; margin-bottom: 28px; font-weight: 300; }
+
+    /* CATEGORIES */
+    .cat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+    .cat-btn { padding: 16px; border-radius: var(--radius-sm); border: 0.5px solid var(--border); background: white; font-size: 14px; font-weight: 400; color: var(--ink2); cursor: pointer; text-align: left; font-family: var(--sans); transition: all 0.2s ease; display: flex; align-items: center; gap: 10px; }
+    .cat-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--cream2); display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; transition: background 0.2s; }
+    .cat-btn:hover { border-color: var(--purple); color: var(--ink); }
+    .cat-btn:hover .cat-icon { background: var(--purple-soft); }
+    .cat-btn.selected { border-color: var(--purple); border-width: 1.5px; color: var(--ink); background: white; }
+    .cat-btn.selected .cat-icon { background: var(--purple-soft); }
+    .subtopic-wrap { margin-top: 16px; animation: fadeUp 0.3s ease forwards; }
+    .subtopic-label { font-size: 12px; font-weight: 500; color: var(--ink3); margin-bottom: 10px; display: block; letter-spacing: 0.5px; text-transform: uppercase; }
+    .subtopic-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
+    .subtopic-btn { padding: 12px 14px; border-radius: var(--radius-sm); border: 0.5px solid var(--border); background: white; font-size: 13px; font-weight: 400; color: var(--ink2); cursor: pointer; text-align: left; font-family: var(--sans); transition: all 0.2s ease; line-height: 1.4; }
+    .subtopic-btn:hover { border-color: var(--purple); color: var(--ink); background: var(--purple-soft); }
+    .subtopic-btn.selected { border-color: var(--purple); border-width: 1.5px; color: var(--purple); background: var(--purple-soft); font-weight: 500; }
+    .custom-input-wrap { margin-top: 16px; animation: fadeUp 0.3s ease forwards; }
+    .custom-input-row { display: flex; align-items: center; gap: 10px; }
+    .custom-input { flex: 1; border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 14px; font-family: var(--sans); font-weight: 300; color: var(--ink); background: white; transition: border-color 0.2s; }
+    .custom-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(67,56,202,0.08); }
+    .custom-input::placeholder { color: var(--ink3); font-style: italic; }
+    .custom-char-count { font-size: 12px; color: var(--ink3); white-space: nowrap; min-width: 40px; text-align: right; }
+    .custom-char-count.near-limit { color: #F59E0B; }
+    .custom-char-count.at-limit { color: #EF4444; }
+
+    /* TOPIC */
+    .topic-wrap { margin-top: 4px; padding-top: 16px; border-top: 0.5px solid var(--border); animation: fadeUp 0.3s ease forwards; }
+    .topic-label { font-size: 12px; font-weight: 500; color: var(--ink3); margin-bottom: 8px; display: block; }
+    .topic-input { width: 100%; border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 14px; font-family: var(--sans); font-weight: 300; color: var(--ink); background: white; transition: border-color 0.2s; margin-bottom: 16px; }
+    .topic-input:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(67,56,202,0.08); }
+    .topic-input::placeholder { color: var(--ink3); font-style: italic; }
+
+    /* TEXTAREA */
+    textarea { width: 100%; border: 0.5px solid var(--border2); border-radius: var(--radius-sm); padding: 16px 18px; font-size: 15px; font-family: var(--sans); font-weight: 300; color: var(--ink); background: white; resize: none; min-height: 130px; line-height: 1.7; margin-bottom: 20px; transition: border-color 0.2s, box-shadow 0.2s; }
+    textarea:focus { outline: none; border-color: var(--purple); box-shadow: 0 0 0 3px rgba(67,56,202,0.08); }
+    textarea::placeholder { color: var(--ink3); font-style: italic; }
+
+    /* BUTTONS */
+    .btn-row { display: flex; gap: 10px; align-items: center; }
+    .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: var(--cream); font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 13px 24px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s ease; }
+    .btn-primary:hover { background: var(--purple); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+    .btn-secondary { display: inline-flex; align-items: center; font-family: var(--sans); font-size: 14px; color: var(--ink3); background: transparent; border: 0.5px solid var(--border2); padding: 12px 20px; border-radius: 50px; cursor: pointer; transition: all 0.15s; }
+    .btn-secondary:hover { color: var(--ink); background: var(--cream2); }
+
+    /* AI CARDS */
+    .ai-card { background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
+    .ai-label { font-size: 11px; font-weight: 500; color: var(--teal); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+    .ai-text { font-size: 15px; color: var(--ink); line-height: 1.75; font-weight: 300; }
+    .ai-text p { margin-bottom: 14px; }
+    .ai-text p:last-child { margin-bottom: 0; }
+    .ai-text strong { font-weight: 500; color: var(--ink); }
+    .ai-text .section-title { font-weight: 500; color: var(--purple); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; margin-top: 18px; display: block; }
+    .ai-text .section-title:first-child { margin-top: 0; }
+
+    /* THINKING */
+    .thinking { display: flex; align-items: center; gap: 12px; padding: 20px 0; font-size: 13px; color: var(--ink3); font-style: italic; }
+    .dots { display: flex; gap: 5px; }
+    .dots span { width: 5px; height: 5px; border-radius: 50%; background: var(--purple); animation: pulse 1.4s infinite ease-in-out; }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    /* CHIPS */
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+    .chip { background: var(--purple-soft); color: var(--purple); font-size: 12px; font-weight: 500; padding: 5px 13px; border-radius: 20px; }
+
+    /* SUMMARY */
+    .summary-rule { width: 32px; height: 2px; background: var(--purple); margin-bottom: 16px; border-radius: 2px; }
+    .section-divider { height: 0.5px; background: var(--border); margin: 24px 0; }
+
+    /* SAVE BANNER */
+    .save-banner { background: var(--purple-soft); border: 0.5px solid rgba(67,56,202,0.2); border-radius: var(--radius-sm); padding: 14px 18px; font-size: 13px; color: var(--purple); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .save-banner .save-icon { font-size: 16px; }
+
+    /* ERROR */
+    .error-box { background: #FEF2F2; border: 0.5px solid #FECACA; border-radius: var(--radius-sm); padding: 14px 18px; font-size: 13px; color: #991B1B; margin-top: 12px; line-height: 1.6; }
+
+    /* JOURNAL PAGE */
+    #journal { display: none; min-height: 100vh; flex-direction: column; align-items: center; padding-bottom: 80px; }
+    #journal.visible { display: flex; }
+    .journal-nav { width: 100%; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border); background: var(--cream); position: sticky; top: 0; z-index: 10; }
+    .journal-content { width: 100%; max-width: 580px; padding: 36px 24px 0; }
+    .journal-header { margin-bottom: 28px; }
+    .journal-title { font-family: var(--serif); font-size: 28px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .journal-sub { font-size: 14px; color: var(--ink3); font-weight: 300; }
+    .decision-card { background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; }
+    .decision-card:hover { border-color: var(--purple); transform: translateY(-1px); }
+    .decision-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+    .decision-cat { font-size: 11px; font-weight: 500; color: var(--purple); background: var(--purple-soft); padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+    .decision-date { font-size: 11px; color: var(--ink3); white-space: nowrap; }
+    .decision-text { font-size: 14px; color: var(--ink); line-height: 1.5; font-weight: 400; margin-bottom: 8px; }
+    .decision-rec { font-size: 13px; color: var(--ink2); line-height: 1.5; font-weight: 300; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .checkin-badges { display: flex; gap: 6px; margin-top: 10px; }
+    .checkin-badge { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
+    .checkin-pending { background: #FEF3C7; color: #92400E; }
+    .checkin-done { background: var(--teal-soft); color: var(--teal); }
+    .empty-journal { text-align: center; padding: 60px 20px; }
+    .empty-icon { font-size: 40px; margin-bottom: 16px; }
+    .empty-title { font-family: var(--serif); font-size: 20px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+    .empty-sub { font-size: 14px; color: var(--ink3); font-weight: 300; }
+
+    /* ACTION PLAN */
+    .plan-week { margin-bottom: 20px; }
+    .plan-week-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .plan-week-badge { background: var(--purple); color: white; font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.3px; white-space: nowrap; }
+    .plan-week-title { font-family: var(--serif); font-size: 15px; font-weight: 600; color: var(--ink); }
+    .plan-actions { list-style: none; padding: 0; }
+    .plan-action { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--border); font-size: 14px; color: var(--ink2); line-height: 1.55; }
+    .plan-action:last-child { border-bottom: none; }
+    .plan-action-num { width: 22px; height: 22px; border-radius: 50%; background: var(--purple-soft); color: var(--purple); font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .plan-cta { background: var(--purple-soft); border: 0.5px solid rgba(67,56,202,0.2); border-radius: var(--radius-sm); padding: 16px 18px; margin-top: 20px; font-size: 14px; color: var(--purple); line-height: 1.6; text-align: center; }
+    .btn-plan { display: inline-flex; align-items: center; gap: 8px; background: var(--purple); color: white; font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 13px 24px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s ease; }
+    .btn-plan:hover { background: var(--purple2); }
+
+    /* TIMELINE ROADMAP */
+    .roadmap-loading { display: flex; align-items: center; gap: 12px; padding: 40px 0; font-size: 13px; color: var(--ink3); font-style: italic; }
+    .roadmap-wrap { margin-bottom: 24px; }
+    .roadmap-navrielle-note { display: flex; align-items: flex-start; gap: 10px; background: var(--purple-soft); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 24px; font-size: 13px; color: var(--purple); line-height: 1.6; }
+    .roadmap-navrielle-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .roadmap-scroll { overflow-x: auto; padding-bottom: 8px; }
+    .roadmap { display: flex; align-items: flex-start; gap: 0; min-width: max-content; padding: 8px 4px 24px; }
+    .roadmap-phase { display: flex; flex-direction: column; align-items: center; position: relative; }
+    .roadmap-phase-connector { display: flex; align-items: center; flex-shrink: 0; }
+    .roadmap-connector-line { width: 48px; height: 2px; background: var(--border2); margin-top: 20px; flex-shrink: 0; }
+    .roadmap-connector-line.active { background: var(--purple); }
+    .roadmap-node-wrap { display: flex; flex-direction: column; align-items: center; width: 140px; }
+    .roadmap-node { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; margin-bottom: 10px; flex-shrink: 0; border: 2px solid transparent; transition: all 0.2s; }
+    .roadmap-node.phase-1 { background: var(--purple-soft); border-color: var(--purple); }
+    .roadmap-node.phase-2 { background: rgba(13,148,136,0.1); border-color: var(--teal); }
+    .roadmap-node.phase-3 { background: rgba(245,158,11,0.1); border-color: #F59E0B; }
+    .roadmap-node.phase-end { background: var(--teal-soft); border-color: var(--teal); }
+    .roadmap-phase-label { font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; color: var(--purple); margin-bottom: 4px; text-align: center; }
+    .roadmap-phase-label.teal { color: var(--teal); }
+    .roadmap-phase-label.amber { color: #D97706; }
+    .roadmap-phase-title { font-size: 13px; font-weight: 600; color: var(--ink); text-align: center; margin-bottom: 4px; line-height: 1.3; }
+    .roadmap-phase-time { font-size: 11px; color: var(--ink3); text-align: center; margin-bottom: 10px; }
+    .roadmap-milestones { display: flex; flex-direction: column; gap: 4px; width: 130px; }
+    .roadmap-milestone { font-size: 11px; color: var(--ink2); background: white; border: 0.5px solid var(--border); border-radius: 6px; padding: 5px 8px; line-height: 1.4; text-align: left; }
+    .roadmap-end-node { display: flex; flex-direction: column; align-items: center; width: 100px; }
+    .roadmap-end-label { font-size: 12px; font-weight: 600; color: var(--teal); text-align: center; margin-top: 10px; }
+    .roadmap-total { font-size: 11px; color: var(--ink3); text-align: center; margin-top: 2px; }
+    .roadmap-adjust { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+    .btn-adjust { display: inline-flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 50px; border: 0.5px solid var(--border2); background: white; font-size: 13px; font-weight: 500; font-family: var(--sans); color: var(--ink2); cursor: pointer; transition: all 0.2s; }
+    .btn-adjust:hover { border-color: var(--purple); color: var(--purple); background: var(--purple-soft); }
+    .btn-adjust:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* CHECKLIST PAGE */
+    #checklist { display: none; min-height: 100vh; flex-direction: column; align-items: center; padding-bottom: 80px; }
+    #checklist.visible { display: flex; }
+    .checklist-nav { width: 100%; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border); background: var(--cream); position: sticky; top: 0; z-index: 10; }
+    .checklist-content { width: 100%; max-width: 580px; padding: 36px 24px 0; }
+    .checklist-header { margin-bottom: 28px; }
+    .checklist-title { font-family: var(--serif); font-size: 28px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .checklist-sub { font-size: 14px; color: var(--ink3); font-weight: 300; }
+    .checklist-decision-card { background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 24px; }
+    .checklist-decision-label { font-size: 11px; font-weight: 500; color: var(--ink3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+    .checklist-decision-text { font-size: 15px; color: var(--ink); line-height: 1.55; font-weight: 400; }
+    .checklist-progress-wrap { margin-bottom: 28px; }
+    .checklist-progress-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .checklist-progress-text { font-size: 13px; color: var(--ink2); font-weight: 500; }
+    .checklist-progress-pct { font-size: 13px; color: var(--purple); font-weight: 600; }
+    .checklist-bar { height: 6px; background: var(--cream3); border-radius: 6px; overflow: hidden; }
+    .checklist-bar-fill { height: 100%; background: var(--purple); border-radius: 6px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+    .checklist-week { margin-bottom: 24px; }
+    .checklist-week-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .checklist-week-badge { background: var(--purple); color: white; font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
+    .checklist-week-title { font-family: var(--serif); font-size: 15px; font-weight: 600; color: var(--ink); }
+    .checklist-week-done .checklist-week-badge { background: var(--teal); }
+    .checklist-items { list-style: none; padding: 0; }
+    .checklist-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--border); transition: opacity 0.3s; }
+    .checklist-item:last-child { border-bottom: none; }
+    .checklist-item.completed { opacity: 0.55; }
+    .checklist-checkbox { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border2); background: white; cursor: pointer; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+    .checklist-checkbox:hover { border-color: var(--purple); background: var(--purple-soft); }
+    .checklist-checkbox.checked { background: var(--teal); border-color: var(--teal); }
+    .checklist-checkbox.checked::after { content: '✓'; color: white; font-size: 12px; font-weight: 600; }
+    .checklist-item-text { font-size: 14px; color: var(--ink2); line-height: 1.55; padding-top: 2px; }
+    .checklist-item.completed .checklist-item-text { text-decoration: line-through; color: var(--ink3); }
+    .checklist-complete-banner { background: var(--teal-soft); border: 0.5px solid rgba(13,148,136,0.3); border-radius: var(--radius-sm); padding: 16px 18px; font-size: 14px; color: var(--teal); margin-bottom: 24px; display: none; align-items: center; gap: 10px; font-weight: 500; }
+    .empty-checklist { text-align: center; padding: 60px 20px; }
+    .btn-save-checklist { display: inline-flex; align-items: center; gap: 8px; background: var(--teal); color: white; font-family: var(--sans); font-size: 14px; font-weight: 500; padding: 13px 24px; border-radius: 50px; border: none; cursor: pointer; transition: all 0.2s ease; }
+    .btn-save-checklist:hover { background: #0f766e; transform: translateY(-1px); }
+    .checklist-saved-banner { background: var(--teal-soft); border: 0.5px solid rgba(13,148,136,0.3); border-radius: var(--radius-sm); padding: 14px 18px; font-size: 13px; color: var(--teal); margin-top: 12px; display: none; align-items: center; gap: 10px; }
+
+    /* DASHBOARD */
+    #dashboard { display: none; min-height: 100vh; flex-direction: column; align-items: center; padding-bottom: 80px; background: var(--cream); }
+    #dashboard.visible { display: flex; }
+    .dash-nav { width: 100%; padding: 16px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 0.5px solid var(--border); background: var(--cream); position: sticky; top: 0; z-index: 10; }
+    .dash-content { width: 100%; max-width: 580px; padding: 28px 24px 0; }
+
+    /* GREETING */
+    .dash-greeting { margin-bottom: 24px; }
+    .dash-greeting-eyebrow { font-size: 11px; font-weight: 500; color: var(--ink3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+    .dash-greeting-title { font-family: var(--serif); font-size: 26px; font-weight: 600; color: var(--ink); }
+
+    /* STAT CARDS */
+    .dash-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 28px; }
+    .dash-stat { background: white; border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 16px 14px; text-align: center; }
+    .dash-stat-value { font-family: var(--serif); font-size: 28px; font-weight: 600; color: var(--ink); line-height: 1; margin-bottom: 4px; }
+    .dash-stat-value.purple { color: var(--purple); }
+    .dash-stat-value.teal { color: var(--teal); }
+    .dash-stat-label { font-size: 11px; color: var(--ink3); font-weight: 400; line-height: 1.3; }
+    .dash-stat-icon { font-size: 14px; margin-bottom: 8px; }
+
+    /* SECTION HEADERS */
+    .dash-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .dash-section-title { font-family: var(--serif); font-size: 17px; font-weight: 600; color: var(--ink); }
+    .dash-section-link { font-size: 12px; color: var(--purple); cursor: pointer; font-weight: 500; }
+    .dash-section-link:hover { text-decoration: underline; }
+
+    /* ACTIVE GOAL CARDS */
+    .dash-goal-card { background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s; }
+    .dash-goal-card:hover { border-color: var(--purple); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(67,56,202,0.08); }
+    .dash-goal-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+    .dash-goal-cat { display: flex; align-items: center; gap: 8px; }
+    .dash-goal-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--purple-soft); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .dash-goal-name { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.3; }
+    .dash-goal-category { font-size: 11px; color: var(--ink3); margin-top: 2px; }
+    .dash-goal-pct { font-size: 13px; font-weight: 600; color: var(--purple); }
+    .dash-progress-bar { height: 6px; background: var(--cream3); border-radius: 6px; overflow: hidden; margin-bottom: 10px; }
+    .dash-progress-fill { height: 100%; background: var(--purple); border-radius: 6px; transition: width 0.5s ease; }
+    .dash-progress-fill.teal { background: var(--teal); }
+    .dash-goal-meta { display: flex; align-items: center; justify-content: space-between; }
+    .dash-goal-phase { font-size: 12px; color: var(--teal); font-weight: 500; }
+    .dash-goal-days { font-size: 11px; color: var(--ink3); }
+
+    /* MINI ROADMAP in detail */
+    .detail-roadmap { display: flex; align-items: center; margin-bottom: 24px; overflow-x: auto; padding-bottom: 4px; }
+    .detail-phase-node { display: flex; flex-direction: column; align-items: center; min-width: 80px; }
+    .detail-phase-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; border: 2px solid var(--border2); background: white; color: var(--ink3); margin-bottom: 6px; transition: all 0.2s; }
+    .detail-phase-circle.active { background: var(--purple); border-color: var(--purple); color: white; }
+    .detail-phase-circle.done { background: var(--teal); border-color: var(--teal); color: white; }
+    .detail-phase-name { font-size: 10px; color: var(--ink3); text-align: center; line-height: 1.3; max-width: 72px; }
+    .detail-phase-name.active { color: var(--purple); font-weight: 600; }
+    .detail-connector { flex: 1; height: 2px; background: var(--border2); min-width: 24px; margin-bottom: 22px; }
+    .detail-connector.done { background: var(--teal); }
+
+    /* NAVRIELLE SAYS */
+    .navrielle-says { background: var(--ink); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
+    .navrielle-says-label { font-size: 11px; font-weight: 600; color: var(--teal); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+    .navrielle-says-text { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.7; font-weight: 300; }
+
+    /* PROGRESS RING */
+    .progress-ring-wrap { display: flex; align-items: center; gap: 20px; background: white; border: 0.5px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 20px; }
+    .progress-ring-svg { flex-shrink: 0; }
+    .progress-ring-info { flex: 1; }
+    .progress-ring-pct { font-family: var(--serif); font-size: 32px; font-weight: 600; color: var(--ink); line-height: 1; margin-bottom: 4px; }
+    .progress-ring-label { font-size: 13px; color: var(--ink3); font-weight: 300; }
+
+    /* COMPLETED GOALS */
+    .dash-completed-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--border); }
+    .dash-completed-item:last-child { border-bottom: none; }
+    .dash-completed-check { width: 24px; height: 24px; border-radius: 50%; background: var(--teal-soft); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--teal); flex-shrink: 0; }
+    .dash-completed-name { font-size: 13px; color: var(--ink2); flex: 1; }
+    .dash-completed-date { font-size: 11px; color: var(--ink3); }
+
+    /* EMPTY STATE */
+    .dash-empty { text-align: center; padding: 48px 20px; }
+    .dash-empty-icon { font-size: 36px; margin-bottom: 12px; }
+    .dash-empty-title { font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+    .dash-empty-sub { font-size: 14px; color: var(--ink3); font-weight: 300; margin-bottom: 20px; }
+
+    /* DETAIL VIEW */
+    .dash-detail { display: none; }
+    .dash-detail.visible { display: block; }
+    .dash-main-view { display: block; }
+    .dash-main-view.hidden { display: none; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes pulse { 0%, 80%, 100% { opacity: 0.2; transform: scale(0.7); } 40% { opacity: 1; transform: scale(1); } }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .steps-grid { grid-template-columns: 1fr 1fr; }
+      .steps-grid .step-card[style*="span 3"] { grid-column: span 2; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .land-nav { padding: 16px 20px; }
+      .cat-grid { grid-template-columns: 1fr; }
+      .subtopic-grid { grid-template-columns: 1fr; }
+      .app-nav, .journal-nav, .checklist-nav { padding: 12px 20px; }
+      main, .journal-content, .checklist-content { padding: 24px 20px 0; }
+      .progress-wrap { padding: 20px 20px 0; }
+      .user-email { display: none; }
+      .steps-grid { grid-template-columns: 1fr !important; }
+      .steps-grid .step-card[style*="span 3"] { grid-column: span 1 !important; flex-direction: column; gap: 0; }
+      .features-grid { grid-template-columns: 1fr; }
+      .land-section, .features-section, .land-cta-section { padding: 60px 24px; }
+      .features-section { padding: 60px 24px; }
+      .land-footer { padding: 20px 24px; flex-direction: column; gap: 12px; text-align: center; }
+      .land-footer-links { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LANDING ─────────────────────────────────────────── -->
+<div id="landing">
+  <nav class="land-nav">
+    <div class="land-logo"><em>Navrielle</em></div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+        <button class="lang-btn" onclick="setLang('es',this)">ES</button>
+      </div>
+      <div id="land-auth-btns">
+        <button class="btn-auth" onclick="openModal('signin')" id="l-signin-btn">Sign in</button>
+        <button class="btn-auth btn-auth-primary" onclick="openModal('signup')" id="l-signup-btn">Sign up free</button>
+      </div>
+      <div id="land-user-info" style="display:none">
+        <div class="user-pill">
+          <div class="user-avatar" id="land-avatar">P</div>
+          <span class="user-email" id="land-email"></span>
+          <button class="btn-auth" onclick="goDashboard()" style="font-size:11px;padding:4px 10px;" id="l-dashboard-btn">Dashboard</button>
+          <button class="btn-signout" onclick="signOut()" id="l-signout-btn">Sign out</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="land-hero">
+    <div class="hero-bg">
+      <div class="hero-bg-circle hero-bg-circle-1"></div>
+      <div class="hero-bg-circle hero-bg-circle-2"></div>
+    </div>
+    <div class="hero-eyebrow" id="l-eyebrow"><span class="hero-eyebrow-dot"></span>Your personal achievement coach</div>
+    <h1 class="hero-title" id="l-title">Set your goal.<br>Make it <em>real.</em></h1>
+    <p class="hero-sub" id="l-sub">Navrielle uses AI to help you define, plan, and achieve any goal — with honest guidance, a concrete action plan, and check-ins that keep you on track.</p>
+    <div class="hero-cta-row">
+      <button class="hero-cta" onclick="startApp()">
+        <span id="l-cta">Start a goal</span>
+        <span class="arrow">→</span>
+      </button>
+      <button class="hero-cta-secondary" onclick="openModal('signin')" id="l-signin-link">Already have an account?</button>
+    </div>
+    <div class="hero-social-proof">
+      <div class="hero-avatars">
+        <div class="hero-avatar" style="background:var(--purple);">A</div>
+        <div class="hero-avatar" style="background:var(--teal);">M</div>
+        <div class="hero-avatar" style="background:#7C3AED;">R</div>
+        <div class="hero-avatar" style="background:#0891B2;">S</div>
+      </div>
+      <span class="hero-social-text" id="l-social-proof"><strong>Beta users</strong> already working on their goals</span>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section style="padding: 100px 48px; background: white;">
+    <div style="max-width:1100px; margin:0 auto;">
+      <div class="land-section-eyebrow" id="l-how-eyebrow">How it works</div>
+      <h2 class="land-section-title" id="l-how-title">From goal to done — in four steps</h2>
+      <p class="land-section-sub" id="l-how-sub">Navrielle doesn't just track your goals. It guides you through them.</p>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <div class="step-icon-wrap">🎯</div>
+          <div class="step-title" id="l-step1-title">Define your goal</div>
+          <p class="step-desc" id="l-step1-desc">Choose a category and focus area. Navrielle narrows in on exactly what you want to achieve.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <div class="step-icon-wrap">🔍</div>
+          <div class="step-title" id="l-step2-title">Get honest feedback</div>
+          <p class="step-desc" id="l-step2-desc">Navrielle asks the hard questions and gives you an honest assessment — not just what you want to hear.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <div class="step-icon-wrap">📋</div>
+          <div class="step-title" id="l-step3-title">Get your action plan</div>
+          <p class="step-desc" id="l-step3-desc">A personalized 30-day plan broken into concrete, weekly steps specific to your situation.</p>
+        </div>
+        <div class="step-card" style="grid-column: span 3; display:flex; gap:32px; align-items:center;">
+          <div>
+            <div class="step-num">04</div>
+            <div class="step-icon-wrap">✅</div>
+          </div>
+          <div>
+            <div class="step-title" id="l-step4-title">Track & stay accountable</div>
+            <p class="step-desc" id="l-step4-desc">Check off steps as you go, track your progress visually, and Navrielle checks in with you at the right moments to keep momentum alive.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section">
+    <div class="features-inner">
+      <div class="land-section-eyebrow" id="l-feat-eyebrow">What makes Navrielle different</div>
+      <h2 class="land-section-title" id="l-feat-title">Built to actually get you there</h2>
+      <p class="land-section-sub" id="l-feat-sub">Most apps track what you do. Navrielle helps you figure out what you should do — and holds you to it.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <div class="feature-title" id="l-fc1-t">Honest AI coach</div>
+          <p class="feature-desc" id="l-fc1-d">No cheerleading. Navrielle tells you what you need to hear — including the uncomfortable truths that could make or break your goal.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🗺️</div>
+          <div class="feature-title" id="l-fc2-t">Personalized action plan</div>
+          <p class="feature-desc" id="l-fc2-d">Not a generic template. A concrete 30-day roadmap built around your specific goal, situation, and timeline.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">☑️</div>
+          <div class="feature-title" id="l-fc3-t">Interactive checklist</div>
+          <p class="feature-desc" id="l-fc3-d">Your action plan converts into a live checklist. Check off steps, watch the progress bar move, and stay focused on what's next.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📓</div>
+          <div class="feature-title" id="l-fc4-t">Goal journal</div>
+          <p class="feature-desc" id="l-fc4-d">Every goal you work on is saved. Come back, reflect, and see how far you've come across all areas of your life.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌐</div>
+          <div class="feature-title" id="l-fc5-t">English & Spanish</div>
+          <p class="feature-desc" id="l-fc5-d">Navrielle is fully bilingual. Switch languages anytime — everything adapts instantly, including the AI responses.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-title" id="l-fc6-t">Takes 3 minutes</div>
+          <p class="feature-desc" id="l-fc6-d">No lengthy onboarding. Go from blank slate to a full action plan in a single session. Free, no credit card required.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BETA SECTION -->
+  <section style="padding: 100px 48px; background: var(--cream);">
+    <div style="max-width:860px; margin:0 auto; text-align:center;">
+      <div class="land-section-eyebrow" id="l-test-eyebrow">Early access</div>
+      <h2 class="land-section-title" id="l-test-title">Navrielle is in beta.</h2>
+      <p class="land-section-sub" id="l-test-sub">We're building this with a small group of early users — people serious about following through on their goals. If that's you, we'd love to have you.</p>
+
+      <!-- Beta perks row -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:48px 0;">
+        <div style="background:white; border:0.5px solid var(--border); border-radius:var(--radius); padding:28px 20px;">
+          <div style="font-size:28px; margin-bottom:12px;">🆓</div>
+          <div style="font-family:var(--serif); font-size:15px; font-weight:600; color:var(--ink); margin-bottom:6px;" id="l-beta1-t">Free during beta</div>
+          <p style="font-size:13px; color:var(--ink3); line-height:1.6; font-weight:300;" id="l-beta1-d">Full access, no credit card. We're focused on building something great before we charge for it.</p>
+        </div>
+        <div style="background:white; border:0.5px solid var(--border); border-radius:var(--radius); padding:28px 20px;">
+          <div style="font-size:28px; margin-bottom:12px;">🎯</div>
+          <div style="font-family:var(--serif); font-size:15px; font-weight:600; color:var(--ink); margin-bottom:6px;" id="l-beta2-t">Your feedback shapes it</div>
+          <p style="font-size:13px; color:var(--ink3); line-height:1.6; font-weight:300;" id="l-beta2-d">Every feature in Navrielle was built based on what real users needed. You'll have a direct line.</p>
+        </div>
+        <div style="background:white; border:0.5px solid var(--border); border-radius:var(--radius); padding:28px 20px;">
+          <div style="font-size:28px; margin-bottom:12px;">⚡</div>
+          <div style="font-family:var(--serif); font-size:15px; font-weight:600; color:var(--ink); margin-bottom:6px;" id="l-beta3-t">Ready in 3 minutes</div>
+          <p style="font-size:13px; color:var(--ink3); line-height:1.6; font-weight:300;" id="l-beta3-d">No long onboarding. Set a goal, get a roadmap, and walk away with a real action plan — today.</p>
+        </div>
+      </div>
+
+      <!-- Honest note -->
+      <div style="display:inline-flex; align-items:flex-start; gap:12px; background:var(--purple-soft); border:0.5px solid rgba(67,56,202,0.15); border-radius:var(--radius); padding:20px 28px; text-align:left; max-width:600px;">
+        <span style="font-size:18px; flex-shrink:0; margin-top:1px;">🧭</span>
+        <p style="font-size:14px; color:var(--purple); line-height:1.7; font-weight:400;" id="l-beta-note">We're a small team building something we genuinely believe in. Navrielle isn't perfect yet — but it's real, it works, and we ship fast. Join us while it's early.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOTTOM CTA -->
+  <section class="land-cta-section">
+    <h2 class="land-cta-title" id="l-cta-title">Your goal is waiting.<br>Let's make it <em>happen.</em></h2>
+    <p class="land-cta-sub" id="l-cta-sub">Free to use. No credit card. Takes 3 minutes.</p>
+    <button class="hero-cta" onclick="startApp()" style="margin: 0 auto;">
+      <span id="l-cta2">Start a goal</span>
+      <span class="arrow">→</span>
+    </button>
+  </section>
+
+  <footer class="land-footer">
+    <span id="land-footer-text">Built by Pedro — Powered by Anthropic Claude</span>
+    <div class="land-footer-links">
+      <span class="land-footer-link" onclick="openModal('signin')" id="l-footer-signin">Sign in</span>
+      <span class="land-footer-link" onclick="openModal('signup')" id="l-footer-signup">Sign up free</span>
+    </div>
+  </footer>
+</div>
+
+<!-- ── AUTH MODAL ──────────────────────────────────────── -->
+<div id="auth-modal" style="display:none">
+  <div class="modal-overlay" onclick="closeModalOutside(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div class="modal-title" id="modal-title">Sign in</div>
+      <div class="modal-sub" id="modal-sub">Welcome back to Clarity</div>
+      <div id="modal-err" style="display:none" class="modal-err"></div>
+      <button class="btn-google" onclick="signInWithGoogle()">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        <span id="google-btn-text">Continue with Google</span>
+      </button>
+      <div class="form-divider"><div class="form-divider-line"></div><div class="form-divider-text">or</div><div class="form-divider-line"></div></div>
+      <div class="form-field">
+        <label class="form-label" id="email-label">Email</label>
+        <input type="email" class="form-input" id="auth-email" placeholder="you@email.com">
+      </div>
+      <div class="form-field">
+        <label class="form-label" id="pass-label">Password</label>
+        <input type="password" class="form-input" id="auth-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')submitAuth()">
+      </div>
+      <button class="form-btn" onclick="submitAuth()" id="modal-submit-btn">Sign in</button>
+      <div class="modal-switch" id="modal-switch">
+        <span id="modal-switch-text">Don't have an account?</span>
+        <a onclick="toggleModal()" id="modal-switch-link">Sign up</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── APP ────────────────────────────────────────────── -->
+<div id="app">
+  <nav class="app-nav">
+    <div class="app-logo"><em>Navrielle</em></div>
+    <span class="app-step" id="nav-step">Step 1 of 5</span>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+        <button class="lang-btn" onclick="setLang('es',this)">ES</button>
+      </div>
+      <button class="app-back" onclick="goLanding()" id="back-btn">← Home</button>
+    </div>
+  </nav>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+    <div class="progress-steps">
+      <span class="ps active" id="ps0">Category</span>
+      <span class="ps" id="ps1">Decision</span>
+      <span class="ps" id="ps2">Reflect</span>
+      <span class="ps" id="ps3">Frameworks</span>
+      <span class="ps" id="ps4">Summary</span>
+    </div>
+  </div>
+  <main>
+    <div id="p0" class="phase">
+      <div class="eyebrow" id="a-step1">Step 1</div>
+      <h2 class="phase-title" id="a-t0">What are you deciding?</h2>
+      <p class="phase-sub" id="a-s0">Choose a category so Clarity can select the right thinking frameworks.</p>
+      <div class="cat-grid">
+        <div class="cat-btn" onclick="pickCat(this,'Career & Work','c0')"><div class="cat-icon">💼</div><span id="c0">Career & Work</span></div>
+        <div class="cat-btn" onclick="pickCat(this,'Finance & Money','c1')"><div class="cat-icon">💰</div><span id="c1">Finance & Money</span></div>
+        <div class="cat-btn" onclick="pickCat(this,'Relationships','c2')"><div class="cat-icon">🤝</div><span id="c2">Relationships</span></div>
+        <div class="cat-btn" onclick="pickCat(this,'Health & Lifestyle','c3')"><div class="cat-icon">🧘</div><span id="c3">Health & Lifestyle</span></div>
+        <div class="cat-btn" onclick="pickCat(this,'Education','c4')"><div class="cat-icon">📚</div><span id="c4">Education</span></div>
+        <div class="cat-btn" onclick="pickCat(this,'Big Life Goal','c5')"><div class="cat-icon">🌎</div><span id="c5">Big Life Goal</span></div>
+        <div class="cat-btn" onclick="pickCat(this,'Custom','c6')" style="grid-column: span 2;"><div class="cat-icon">✏️</div><span id="c6">Something else</span></div>
+      </div>
+      <div class="subtopic-wrap" id="subtopic-wrap" style="display:none">
+        <span class="subtopic-label" id="subtopic-label">Choose a focus area</span>
+        <div class="subtopic-grid" id="subtopic-grid"></div>
+      </div>
+      <div class="custom-input-wrap" id="custom-input-wrap" style="display:none">
+        <span class="subtopic-label" id="custom-label">What do you want to work on?</span>
+        <div class="custom-input-row">
+          <input type="text" class="custom-input" id="custom-topic" maxlength="50" placeholder="e.g. Start a podcast, learn to cook..." oninput="onCustomInput(this)">
+          <span class="custom-char-count" id="custom-count">50</span>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-top:8px;">
+        <button class="btn-primary" id="btn0" onclick="go(1)" disabled>Continue →</button>
+      </div>
+    </div>
+
+    <div id="p1" class="phase" style="display:none">
+      <div class="eyebrow" id="a-step2">Step 2</div>
+      <h2 class="phase-title" id="a-t1">Describe your decision</h2>
+      <p class="phase-sub" id="a-s1">Be as specific and honest as you can. The more context you give, the sharper Clarity's analysis will be.</p>
+      <textarea id="dec" placeholder="I'm trying to decide whether to..." rows="5"></textarea>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="analyze()" id="btn-analyze">Analyze this →</button>
+        <button class="btn-secondary" onclick="go(0)">Back</button>
+      </div>
+    </div>
+
+    <div id="p2" class="phase" style="display:none">
+      <div class="eyebrow" id="a-step3">Step 3</div>
+      <h2 class="phase-title" id="a-t2">One question first</h2>
+      <p class="phase-sub" id="a-s2">Before applying frameworks, Clarity needs to understand something you may not have fully considered.</p>
+      <div id="q-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div><span id="q-thinking">Thinking through your situation...</span></div>
+      <div id="q-body" style="display:none">
+        <div class="ai-card"><div class="ai-label" id="clarity-asks-label">Clarity asks</div><div class="ai-text" id="q-text"></div></div>
+        <textarea id="ans" placeholder="Take your time with this one..." rows="4"></textarea>
+      </div>
+      <div id="q-err"></div>
+      <div class="btn-row" id="q-row" style="display:none">
+        <button class="btn-primary" onclick="frameworks()" id="btn-frameworks">Continue →</button>
+        <button class="btn-secondary" onclick="go(1)">Back</button>
+      </div>
+    </div>
+
+    <div id="p3" class="phase" style="display:none">
+      <div class="eyebrow" id="a-step4">Step 4</div>
+      <h2 class="phase-title" id="a-t3">Applying decision frameworks</h2>
+      <p class="phase-sub" id="a-s3">Clarity is analyzing your situation through multiple lenses of behavioral science and decision theory.</p>
+      <div id="f-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div><span id="f-thinking">Running analysis...</span></div>
+      <div id="f-body" style="display:none">
+        <div class="ai-card"><div class="ai-label" id="f-label">Framework analysis</div><div class="ai-text" id="f-text"></div></div>
+      </div>
+      <div id="f-err"></div>
+      <div class="btn-row" id="f-row" style="display:none">
+        <button class="btn-primary" onclick="summary()" id="btn-rec">Get my recommendation →</button>
+        <button class="btn-secondary" onclick="go(2)">Back</button>
+      </div>
+    </div>
+
+    <div id="p4" class="phase" style="display:none">
+      <div class="eyebrow" id="a-summary-eyebrow">Your clarity summary</div>
+      <h2 class="phase-title" id="a-t4">Here is what I see</h2>
+      <div id="r-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div><span id="r-thinking">Synthesizing everything...</span></div>
+      <div id="r-body" style="display:none">
+        <div id="save-banner" style="display:none" class="save-banner"><span class="save-icon">✓</span><span id="save-msg">Decision saved to your journal</span></div>
+        <div class="chips" id="r-chips"></div>
+        <div class="ai-card"><div class="summary-rule"></div><div class="ai-text" id="r-text"></div></div>
+        <div class="section-divider"></div>
+        <div class="btn-row" style="flex-wrap:wrap;">
+          <button class="btn-plan" onclick="showTimeline()" id="btn-plan">Build my action plan →</button>
+          <button class="btn-primary" onclick="restart()" id="btn-restart">Make another decision</button>
+          <button class="btn-secondary" onclick="goDashboard()" id="btn-dashboard" style="display:none">My Dashboard</button>
+          <button class="btn-secondary" onclick="goJournal()" id="btn-journal" style="display:none">View journal</button>
+          <button class="btn-secondary" onclick="goLanding()" id="btn-home">Back to home</button>
+        </div>
+      </div>
+      <div id="r-err"></div>
+    </div>
+
+    <!-- Phase 4b: Timeline -->
+    <div id="p4b" class="phase" style="display:none">
+      <div class="eyebrow" id="a-step-tl">Your timeline</div>
+      <h2 class="phase-title" id="a-t-tl">Here's how we see your progress</h2>
+      <p class="phase-sub" id="a-s-tl">Navrielle built a personalized roadmap for your goal. Tell us if you'd like to move faster or slower.</p>
+      <div id="roadmap-loading" class="roadmap-loading"><div class="dots"><span></span><span></span><span></span></div><span id="roadmap-thinking">Building your roadmap...</span></div>
+      <div id="roadmap-body" style="display:none">
+        <div class="roadmap-navrielle-note">
+          <span class="roadmap-navrielle-icon">🧭</span>
+          <span id="roadmap-note">This is our recommended pace based on your goal. You can adjust it before we build your plan.</span>
+        </div>
+        <div class="roadmap-scroll">
+          <div class="roadmap" id="roadmap-visual"></div>
+        </div>
+        <div class="roadmap-adjust">
+          <button class="btn-adjust" onclick="adjustTimeline('faster')" id="btn-faster">⚡ Make it faster</button>
+          <button class="btn-adjust" onclick="adjustTimeline('slower')" id="btn-slower">🐢 Give me more time</button>
+        </div>
+      </div>
+      <div id="roadmap-err"></div>
+      <div class="btn-row" style="flex-wrap:wrap;" id="roadmap-btns" style="display:none">
+        <button class="btn-plan" onclick="generatePlan()" id="btn-gen-plan">This looks good →</button>
+        <button class="btn-secondary" onclick="goPhase4()">← Back</button>
+      </div>
+    </div>
+
+    <!-- Phase 5: Action Plan -->
+    <div id="p5" class="phase" style="display:none">
+      <div class="eyebrow" id="a-step5">Your action plan</div>
+      <h2 class="phase-title" id="a-t5">30 days to make it real</h2>
+      <p class="phase-sub" id="a-s5">Based on your decision, here is a concrete plan to execute it over the next 30 days.</p>
+      <div id="plan-load" class="thinking"><div class="dots"><span></span><span></span><span></span></div><span id="plan-thinking">Building your plan...</span></div>
+      <div id="plan-body" style="display:none"></div>
+      <div id="plan-err"></div>
+      <div id="checklist-saved-banner" class="checklist-saved-banner"><span>✓</span><span id="cl-saved-msg">Checklist saved! View it in My Checklists.</span></div>
+      <div class="btn-row" id="plan-row" style="display:none; flex-wrap:wrap; margin-top:20px;">
+        <button class="btn-save-checklist" onclick="saveChecklist()" id="btn-save-checklist" style="display:none">☑ Save as Checklist</button>
+        <button class="btn-primary" onclick="restart()" id="btn-plan-restart">Make another decision</button>
+        <button class="btn-secondary" onclick="goChecklist()" id="btn-plan-checklist" style="display:none">My Checklists</button>
+        <button class="btn-secondary" onclick="goJournal()" id="btn-plan-journal" style="display:none">View journal</button>
+        <button class="btn-secondary" onclick="goLanding()" id="btn-plan-home">Back to home</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ── JOURNAL ─────────────────────────────────────────── -->
+<div id="journal">
+  <nav class="journal-nav">
+    <div class="app-logo"><em>Navrielle</em></div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+        <button class="lang-btn" onclick="setLang('es',this)">ES</button>
+      </div>
+      <button class="app-back" onclick="goLanding()">← Home</button>
+    </div>
+  </nav>
+  <div class="journal-content">
+    <div class="journal-header">
+      <div class="journal-title" id="j-title">Decision Journal</div>
+      <div class="journal-sub" id="j-sub">Your full history of decisions and reflections</div>
+    </div>
+    <div id="journal-list"></div>
+  </div>
+</div>
+
+<!-- ── CHECKLIST ────────────────────────────────────────── -->
+<div id="checklist">
+  <nav class="checklist-nav">
+    <div class="app-logo"><em>Navrielle</em></div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+        <button class="lang-btn" onclick="setLang('es',this)">ES</button>
+      </div>
+      <button class="app-back" onclick="goLanding()">← Home</button>
+    </div>
+  </nav>
+  <div class="checklist-content">
+    <div class="checklist-header">
+      <div class="checklist-title" id="cl-title">My Action Checklists</div>
+      <div class="checklist-sub" id="cl-sub">Track your 30-day plans and check off progress</div>
+    </div>
+    <div id="checklist-list"></div>
+  </div>
+</div>
+
+<!-- ── DASHBOARD ──────────────────────────────────────────── -->
+<div id="dashboard">
+  <nav class="dash-nav">
+    <div class="app-logo"><em>Navrielle</em></div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+        <button class="lang-btn" onclick="setLang('es',this)">ES</button>
+      </div>
+      <button class="app-back" onclick="goLanding()">← Home</button>
+    </div>
+  </nav>
+  <div class="dash-content">
+
+    <!-- MAIN VIEW -->
+    <div class="dash-main-view" id="dash-main">
+
+      <!-- Greeting -->
+      <div class="dash-greeting">
+        <div class="dash-greeting-eyebrow" id="dash-eyebrow">Your progress</div>
+        <div class="dash-greeting-title" id="dash-greeting">Good morning 👋</div>
+      </div>
+
+      <!-- Stats -->
+      <div class="dash-stats">
+        <div class="dash-stat">
+          <div class="dash-stat-icon">🎯</div>
+          <div class="dash-stat-value purple" id="dash-stat-goals">0</div>
+          <div class="dash-stat-label" id="dash-stat-goals-label">Active Goals</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-icon">📈</div>
+          <div class="dash-stat-value teal" id="dash-stat-progress">0%</div>
+          <div class="dash-stat-label" id="dash-stat-progress-label">Avg Progress</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-icon">🔥</div>
+          <div class="dash-stat-value" id="dash-stat-streak">0</div>
+          <div class="dash-stat-label" id="dash-stat-streak-label">Day Streak</div>
+        </div>
+      </div>
+
+      <!-- Active Goals -->
+      <div class="dash-section-header">
+        <div class="dash-section-title" id="dash-active-title">Active Goals</div>
+        <div class="dash-section-link" onclick="startApp()" id="dash-add-goal">+ New goal</div>
+      </div>
+      <div id="dash-active-goals">
+        <div class="thinking"><div class="dots"><span></span><span></span><span></span></div></div>
+      </div>
+
+      <!-- Completed Goals -->
+      <div class="dash-section-header" style="margin-top:28px;">
+        <div class="dash-section-title" id="dash-completed-title">Completed Goals</div>
+      </div>
+      <div id="dash-completed-goals" style="background:white;border:0.5px solid var(--border);border-radius:var(--radius);padding:0 20px;"></div>
+
+    </div>
+
+    <!-- DETAIL VIEW -->
+    <div class="dash-detail" id="dash-detail">
+      <button class="app-back" onclick="showDashMain()" style="margin-bottom:20px;display:inline-flex;align-items:center;gap:6px;">← <span id="dash-back-label">Back</span></button>
+      <div id="dash-detail-content"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://olqadwjnhaulcndoicrj.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_UzMP3KhdC3SqFEGWzElh4A_0kZX63jF';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    flowType: 'pkce',
+    detectSessionInUrl: true
+  }
+});
+
+let currentUser = null;
+let modalMode = 'signin';
+const S = { cat:'', subtopic:'', topic:'', dec:'', q:'', ans:'', fw:'', rec:'', chips:[], lang:'en', planText:'', planWeeks:[], timeline:'90 days' };
+
+const T = {
+  en: {
+    badge:'Free Beta', eyebrow:'Your personal achievement coach',
+    title:'Set your goal.<br>Make it <em>real.</em>',
+    sub:'Navrielle uses AI to help you define, plan, and achieve any goal — with honest guidance, a concrete action plan, and check-ins that keep you on track.',
+    cta:'Start a goal', f1:'Free to use', f2:'No sign-up required', f3:'Powered by Claude AI', f4:'Takes 3 minutes',
+    footer:'Built by Pedro — Powered by Anthropic Claude',
+    signin:'Sign in', signup:'Sign up free', signout:'Sign out',
+    googleBtn:'Continue with Google', emailLabel:'Email', passLabel:'Password',
+    signinTitle:'Sign in', signinSub:'Welcome back to Navrielle',
+    signupTitle:'Create account', signupSub:'Start achieving your goals today',
+    switchSignin:"Don't have an account?", switchSignup:'Already have an account?',
+    switchLinkSignin:'Sign up', switchLinkSignup:'Sign in',
+    step1:'Step 1', t0:'What do you want to achieve?', s0:'Choose a category so Navrielle can apply the right approach to your goal.',
+    topicLabel:'Want to be more specific? Describe your situation briefly (optional)',
+    topicPH:'e.g. I want to save $5,000 in the next 6 months...',
+    btnContinue:'Continue →', btnBack:'← Home', navStep:'Step',
+    c0:'Career & Work', c1:'Finance & Money', c2:'Relationships', c3:'Health & Lifestyle', c4:'Education', c5:'Big Life Goal', c6:'Something else',
+    step2:'Step 2', t1:'Describe your goal', s1:'Be as specific and honest as you can.',
+    decPH:'My goal is to...',
+    step3:'Step 3', t2:'One question first', s2:'Before building your plan, Navrielle needs to understand something you may not have fully considered.',
+    thinking1:'Thinking through your situation...', clarityAsks:'Navrielle asks', ansPH:'Take your time with this one...',
+    step4:'Step 4', t3:'Honest assessment', s3:'Navrielle is analyzing your goal and situation to give you an honest, structured perspective.',
+    thinking2:'Running analysis...', frameworkLabel:'Honest assessment',
+    t4:'Here is what I see', thinking3:'Synthesizing everything...',
+    btnAnalyze:'Analyze this →', btnFrameworks:'Continue →', btnRec:'Get my action plan →',
+    btnRestart:'Start a new goal', btnJournal:'View journal', btnHome:'Back to home',
+    summaryEyebrow:'Your Navrielle summary',
+    saveBanner:'Goal saved to your journal',
+    errConn:'Could not reach the AI engine. Please check your connection and try again.',
+    errRetry:'Could not reach the AI engine. Please try again.',
+    jTitle:'Goal Journal', jSub:'Your full history of goals and reflections',
+    jEmpty:'No goals yet', jEmptySub:'Start your first goal and it will appear here.',
+    checkin30:'30-day check-in due', checkin90:'90-day check-in due', checkin180:'180-day check-in due',
+    checkinDone:'Reflected',
+    btnPlan:'Build my action plan →',
+    btnChecklist:'My Checklists',
+    btnSaveChecklist:'☑ Save as Checklist',
+    clSaved:'Checklist saved! View it in My Checklists.',
+    clTitle:'My Action Checklists', clSub:'Track your 30-day plans and check off progress',
+    clEmpty:'No checklists yet', clEmptySub:'Build an action plan and save it as a checklist.',
+    clComplete:'🎉 All steps complete! Great work.',
+    step5:'Your action plan', t5:'30 days to make it real', s5:'Based on your goal, here is a concrete plan to execute it over the next 30 days.',
+    planThinking:'Building your plan...',
+    ps:['Category','Goal','Reflect','Assessment','Summary']
+  },
+  es: {
+    badge:'Beta Gratuita', eyebrow:'Tu coach personal de metas',
+    title:'Define tu meta.<br>Hazla <em>realidad.</em>',
+    sub:'Navrielle usa inteligencia artificial para ayudarte a definir, planear y alcanzar cualquier meta — con orientación honesta, un plan de acción concreto y seguimiento constante.',
+    cta:'Empezar una meta', f1:'Gratis', f2:'Sin registro', f3:'Impulsado por Claude AI', f4:'Solo 3 minutos',
+    footer:'Creado por Pedro — Impulsado por Anthropic Claude',
+    signin:'Iniciar sesión', signup:'Crear cuenta gratis', signout:'Cerrar sesión',
+    googleBtn:'Continuar con Google', emailLabel:'Correo electrónico', passLabel:'Contraseña',
+    signinTitle:'Iniciar sesión', signinSub:'Bienvenido de vuelta a Navrielle',
+    signupTitle:'Crear cuenta', signupSub:'Empieza a alcanzar tus metas hoy',
+    switchSignin:'¿No tienes cuenta?', switchSignup:'¿Ya tienes cuenta?',
+    switchLinkSignin:'Crear cuenta', switchLinkSignup:'Iniciar sesión',
+    step1:'Paso 1', t0:'¿Qué quieres lograr?', s0:'Elige una categoría para que Navrielle aplique el enfoque correcto a tu meta.',
+    topicLabel:'¿Quieres ser más específico? Describe tu situación brevemente (opcional)',
+    topicPH:'Ej. Quiero ahorrar $5,000 en los próximos 6 meses...',
+    btnContinue:'Continuar →', btnBack:'← Inicio', navStep:'Paso',
+    c0:'Carrera & Trabajo', c1:'Finanzas & Dinero', c2:'Relaciones', c3:'Salud & Estilo de vida', c4:'Educación', c5:'Gran Meta de Vida', c6:'Algo diferente',
+    step2:'Paso 2', t1:'Describe tu meta', s1:'Sé lo más específico y honesto posible.',
+    decPH:'Mi meta es...',
+    step3:'Paso 3', t2:'Una pregunta primero', s2:'Antes de construir tu plan, Navrielle necesita entender algo que quizás no hayas considerado del todo.',
+    thinking1:'Pensando en tu situación...', clarityAsks:'Navrielle pregunta', ansPH:'Tómate tu tiempo con esta...',
+    step4:'Paso 4', t3:'Evaluación honesta', s3:'Navrielle analiza tu meta y situación para darte una perspectiva honesta y estructurada.',
+    thinking2:'Ejecutando análisis...', frameworkLabel:'Evaluación honesta',
+    t4:'Esto es lo que veo', thinking3:'Sintetizando todo...',
+    btnAnalyze:'Analizar →', btnFrameworks:'Continuar →', btnRec:'Ver mi plan de acción →',
+    btnRestart:'Empezar nueva meta', btnJournal:'Ver diario', btnHome:'Volver al inicio',
+    summaryEyebrow:'Tu resumen de Navrielle',
+    saveBanner:'Meta guardada en tu diario',
+    errConn:'No se pudo conectar al motor de IA. Por favor verifica tu conexión.',
+    errRetry:'No se pudo conectar al motor de IA. Por favor intenta de nuevo.',
+    jTitle:'Diario de Metas', jSub:'Tu historial completo de metas y reflexiones',
+    jEmpty:'Aún no hay metas', jEmptySub:'Empieza tu primera meta y aparecerá aquí.',
+    checkin30:'Revisión de 30 días pendiente', checkin90:'Revisión de 90 días pendiente', checkin180:'Revisión de 180 días pendiente',
+    checkinDone:'Reflexionado',
+    btnPlan:'Crear mi plan de acción →',
+    btnChecklist:'Mis Listas',
+    btnSaveChecklist:'☑ Guardar como Lista',
+    clSaved:'¡Lista guardada! Véla en Mis Listas.',
+    clTitle:'Mis Listas de Acción', clSub:'Haz seguimiento de tus planes de 30 días',
+    clEmpty:'Aún no hay listas', clEmptySub:'Crea un plan de acción y guárdalo como lista.',
+    clComplete:'🎉 ¡Todos los pasos completos! Excelente trabajo.',
+    step5:'Tu plan de acción', t5:'30 días para hacerlo realidad', s5:'Basado en tu meta, aquí tienes un plan concreto para ejecutarlo en los próximos 30 días.',
+    planThinking:'Construyendo tu plan...',
+    ps:['Categoría','Meta','Reflexión','Evaluación','Resumen']
+  }
+};
+
+// ── AUTH ──────────────────────────────────────────────────
+async function initAuth() {
+  // With PKCE, Google sends ?code= in the query string (not #access_token in hash).
+  // supabase-js exchanges the code automatically when detectSessionInUrl: true.
+  const isOAuthRedirect = new URLSearchParams(window.location.search).has('code');
+
+  // Register the state-change listener BEFORE getSession so we catch the
+  // SIGNED_IN event that fires when the PKCE code exchange completes.
+  sb.auth.onAuthStateChange((event, session) => {
+    if (session?.user) {
+      setUser(session.user);
+      if (event === 'SIGNED_IN' && isOAuthRedirect) {
+        window.history.replaceState(null, '', window.location.pathname);
+        goDashboard();
+      }
+    } else {
+      clearUser();
+    }
+  });
+
+  // Handles users who are already signed in (returning visits).
+  const { data: { session } } = await sb.auth.getSession();
+  if (session?.user) setUser(session.user);
+}
+
+function setUser(user) {
+  currentUser = user;
+  const email = user.email || '';
+  const initial = email.charAt(0).toUpperCase();
+  document.getElementById('land-avatar').textContent = initial;
+  document.getElementById('land-email').textContent = email;
+  document.getElementById('land-auth-btns').style.display = 'none';
+  document.getElementById('land-user-info').style.display = 'flex';
+}
+
+function clearUser() {
+  currentUser = null;
+  document.getElementById('land-auth-btns').style.display = 'flex';
+  document.getElementById('land-user-info').style.display = 'none';
+}
+
+function openModal(mode) {
+  modalMode = mode;
+  updateModal();
+  document.getElementById('auth-modal').style.display = 'flex';
+  document.getElementById('auth-email').focus();
+}
+
+function closeModal() { document.getElementById('auth-modal').style.display = 'none'; }
+function closeModalOutside(e) { if(e.target === e.currentTarget) closeModal(); }
+
+function toggleModal() {
+  modalMode = modalMode === 'signin' ? 'signup' : 'signin';
+  updateModal();
+}
+
+function updateModal() {
+  const t = T[S.lang];
+  const isSignin = modalMode === 'signin';
+  document.getElementById('modal-title').textContent = isSignin ? t.signinTitle : t.signupTitle;
+  document.getElementById('modal-sub').textContent = isSignin ? t.signinSub : t.signupSub;
+  document.getElementById('modal-submit-btn').textContent = isSignin ? t.signin : t.signup;
+  document.getElementById('modal-switch-text').textContent = isSignin ? t.switchSignin : t.switchSignup;
+  document.getElementById('modal-switch-link').textContent = isSignin ? t.switchLinkSignin : t.switchLinkSignup;
+  document.getElementById('google-btn-text').textContent = t.googleBtn;
+  document.getElementById('email-label').textContent = t.emailLabel;
+  document.getElementById('pass-label').textContent = t.passLabel;
+  document.getElementById('modal-err').style.display = 'none';
+}
+
+async function submitAuth() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  const btn = document.getElementById('modal-submit-btn');
+  const errEl = document.getElementById('modal-err');
+  if (!email || !pass) return;
+  btn.disabled = true;
+  btn.textContent = '...';
+  errEl.style.display = 'none';
+  try {
+    let result;
+    if (modalMode === 'signin') {
+      result = await sb.auth.signInWithPassword({ email, password: pass });
+    } else {
+      result = await sb.auth.signUp({ email, password: pass });
+    }
+    if (result.error) throw result.error;
+    closeModal();
+  } catch(e) {
+    errEl.textContent = e.message;
+    errEl.style.display = 'block';
+  }
+  btn.disabled = false;
+  updateModal();
+}
+
+async function signInWithGoogle() {
+  await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: 'https://clarity-app-bay.vercel.app' }
+  });
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  clearUser();
+}
+
+// ── LANGUAGE ──────────────────────────────────────────────
+function setLang(lang, btn) {
+  S.lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.lang-btn').forEach(b => { if(b.textContent === btn.textContent) b.classList.add('active'); });
+  const t = T[lang];
+  const set = (id, val) => { const el = document.getElementById(id); if(el) el.innerHTML = val; };
+  const setph = (id, val) => { const el = document.getElementById(id); if(el) el.placeholder = val; };
+  set('land-badge', t.badge);
+  set('l-eyebrow', t.eyebrow); set('l-title', t.title); set('l-sub', t.sub);
+  set('l-cta', t.cta); set('l-cta2', t.cta);
+  set('land-footer-text', t.footer);
+  set('l-signin-btn', t.signin); set('l-signup-btn', t.signup); set('l-signout-btn', t.signout);
+  set('l-signin-link', t.signinLink || (S.lang==='es' ? '¿Ya tienes cuenta?' : 'Already have an account?'));
+  set('l-social-proof', t.socialProof || (S.lang==='es' ? '<strong>Usuarios beta</strong> ya trabajando en sus metas' : '<strong>Beta users</strong> already working on their goals'));
+  set('l-how-eyebrow', t.howEyebrow || (S.lang==='es' ? 'CÓMO FUNCIONA' : 'HOW IT WORKS'));
+  set('l-how-title', t.howTitle || (S.lang==='es' ? 'De meta a logro — en cuatro pasos' : 'From goal to done — in four steps'));
+  set('l-how-sub', t.howSub || (S.lang==='es' ? 'Navrielle no solo rastrea tus metas. Te guía a través de ellas.' : 'Navrielle doesn\'t just track your goals. It guides you through them.'));
+  set('l-step1-title', t.step1Title || (S.lang==='es' ? 'Define tu meta' : 'Define your goal'));
+  set('l-step1-desc', t.step1Desc || (S.lang==='es' ? 'Elige una categoría y enfoque. Navrielle se centra exactamente en lo que quieres lograr.' : 'Choose a category and focus area. Navrielle narrows in on exactly what you want to achieve.'));
+  set('l-step2-title', t.step2Title || (S.lang==='es' ? 'Recibe retroalimentación honesta' : 'Get honest feedback'));
+  set('l-step2-desc', t.step2Desc || (S.lang==='es' ? 'Navrielle hace las preguntas difíciles y te da una evaluación honesta — no solo lo que quieres escuchar.' : 'Navrielle asks the hard questions and gives you an honest assessment — not just what you want to hear.'));
+  set('l-step3-title', t.step3Title || (S.lang==='es' ? 'Obtén tu plan de acción' : 'Get your action plan'));
+  set('l-step3-desc', t.step3Desc || (S.lang==='es' ? 'Un plan personalizado de 30 días con pasos concretos específicos a tu situación.' : 'A personalized 30-day plan broken into concrete, weekly steps specific to your situation.'));
+  set('l-step4-title', t.step4Title || (S.lang==='es' ? 'Rastrea y mantén el rumbo' : 'Track & stay accountable'));
+  set('l-step4-desc', t.step4Desc || (S.lang==='es' ? 'Marca pasos completados, visualiza tu progreso y Navrielle te hace seguimiento en los momentos clave.' : 'Check off steps as you go, track your progress visually, and Navrielle checks in with you at the right moments.'));
+  set('l-feat-eyebrow', S.lang==='es' ? 'LO QUE HACE A NAVRIELLE DIFERENTE' : 'WHAT MAKES NAVRIELLE DIFFERENT');
+  set('l-feat-title', S.lang==='es' ? 'Construido para llevarte ahí' : 'Built to actually get you there');
+  set('l-feat-sub', S.lang==='es' ? 'La mayoría de las apps rastrean lo que haces. Navrielle te ayuda a descubrir qué deberías hacer — y te mantiene en ello.' : 'Most apps track what you do. Navrielle helps you figure out what you should do — and holds you to it.');
+  set('l-fc1-t', S.lang==='es' ? 'Coach AI honesto' : 'Honest AI coach');
+  set('l-fc1-d', S.lang==='es' ? 'Sin motivación vacía. Navrielle te dice lo que necesitas escuchar — incluyendo las verdades incómodas.' : 'No cheerleading. Navrielle tells you what you need to hear — including the uncomfortable truths.');
+  set('l-fc2-t', S.lang==='es' ? 'Plan de acción personalizado' : 'Personalized action plan');
+  set('l-fc2-d', S.lang==='es' ? 'No una plantilla genérica. Un plan de 30 días construido alrededor de tu meta y situación específica.' : 'Not a generic template. A concrete 30-day roadmap built around your specific goal and situation.');
+  set('l-fc3-t', S.lang==='es' ? 'Lista interactiva' : 'Interactive checklist');
+  set('l-fc3-d', S.lang==='es' ? 'Tu plan se convierte en una lista en vivo. Marca pasos, ve la barra de progreso avanzar.' : 'Your action plan converts into a live checklist. Check off steps, watch the progress bar move.');
+  set('l-fc4-t', S.lang==='es' ? 'Diario de metas' : 'Goal journal');
+  set('l-fc4-d', S.lang==='es' ? 'Cada meta que trabajas se guarda. Regresa, reflexiona y ve todo el camino recorrido.' : 'Every goal you work on is saved. Come back, reflect, and see how far you\'ve come.');
+  set('l-fc5-t', S.lang==='es' ? 'Inglés y español' : 'English & Spanish');
+  set('l-fc5-d', S.lang==='es' ? 'Navrielle es completamente bilingüe. Cambia de idioma en cualquier momento.' : 'Navrielle is fully bilingual. Switch languages anytime — everything adapts instantly.');
+  set('l-fc6-t', S.lang==='es' ? 'Solo 3 minutos' : 'Takes 3 minutes');
+  set('l-fc6-d', S.lang==='es' ? 'Sin onboarding largo. De cero a plan completo en una sesión. Gratis, sin tarjeta.' : 'No lengthy onboarding. Go from blank slate to a full action plan in a single session. Free.');
+  set('l-test-eyebrow', S.lang==='es' ? 'ACCESO ANTICIPADO' : 'EARLY ACCESS');
+  set('l-test-title', S.lang==='es' ? 'Navrielle está en beta.' : 'Navrielle is in beta.');
+  set('l-test-sub', S.lang==='es' ? 'Estamos construyendo esto con un grupo pequeño de usuarios iniciales — personas serias en cumplir sus metas. Si eres tú, nos encantaría tenerte.' : 'We\'re building this with a small group of early users — people serious about following through on their goals. If that\'s you, we\'d love to have you.');
+  set('l-beta1-t', S.lang==='es' ? 'Gratis durante la beta' : 'Free during beta');
+  set('l-beta1-d', S.lang==='es' ? 'Acceso completo, sin tarjeta. Estamos enfocados en construir algo excelente antes de cobrar.' : 'Full access, no credit card. We\'re focused on building something great before we charge for it.');
+  set('l-beta2-t', S.lang==='es' ? 'Tu feedback lo moldea' : 'Your feedback shapes it');
+  set('l-beta2-d', S.lang==='es' ? 'Cada función en Navrielle se construyó basándose en lo que usuarios reales necesitaban. Tendrás línea directa.' : 'Every feature in Navrielle was built based on what real users needed. You\'ll have a direct line.');
+  set('l-beta3-t', S.lang==='es' ? 'Listo en 3 minutos' : 'Ready in 3 minutes');
+  set('l-beta3-d', S.lang==='es' ? 'Sin onboarding largo. Define una meta, obtén un roadmap y sal con un plan real — hoy.' : 'No long onboarding. Set a goal, get a roadmap, and walk away with a real action plan — today.');
+  set('l-beta-note', S.lang==='es' ? 'Somos un equipo pequeño construyendo algo en lo que genuinamente creemos. Navrielle no es perfecto aún — pero es real, funciona, y avanzamos rápido. Únete mientras es temprano.' : 'We\'re a small team building something we genuinely believe in. Navrielle isn\'t perfect yet — but it\'s real, it works, and we ship fast. Join us while it\'s early.');
+  set('l-cta-title', S.lang==='es' ? 'Tu meta está esperando.<br>Hagámosla <em>realidad.</em>' : 'Your goal is waiting.<br>Let\'s make it <em>happen.</em>');
+  set('l-cta-sub', S.lang==='es' ? 'Gratis. Sin tarjeta. Solo 3 minutos.' : 'Free to use. No credit card. Takes 3 minutes.');
+  set('l-footer-signin', t.signin); set('l-footer-signup', t.signup);
+  set('c0', t.c0); set('c1', t.c1); set('c2', t.c2); set('c3', t.c3); set('c4', t.c4); set('c5', t.c5); set('c6', t.c6);
+  set('topic-label', t.topicLabel); setph('topic', t.topicPH);
+  set('a-step1', t.step1); set('a-t0', t.t0); set('a-s0', t.s0); set('btn0', t.btnContinue);
+  set('back-btn', t.btnBack);
+  set('a-step2', t.step2); set('a-t1', t.t1); set('a-s1', t.s1); setph('dec', t.decPH);
+  set('a-step3', t.step3); set('a-t2', t.t2); set('a-s2', t.s2);
+  set('q-thinking', t.thinking1); set('clarity-asks-label', t.clarityAsks); setph('ans', t.ansPH);
+  set('a-step4', t.step4); set('a-t3', t.t3); set('a-s3', t.s3);
+  set('f-thinking', t.thinking2); set('f-label', t.frameworkLabel);
+  set('a-t4', t.t4); set('r-thinking', t.thinking3); set('a-summary-eyebrow', t.summaryEyebrow);
+  set('btn-analyze', t.btnAnalyze); set('btn-frameworks', t.btnFrameworks); set('btn-rec', t.btnRec);
+  set('btn-restart', t.btnRestart); set('btn-journal', t.btnJournal); set('btn-home', t.btnHome);
+  set('save-msg', t.saveBanner); set('j-title', t.jTitle); set('j-sub', t.jSub);
+  set('btn-plan', t.btnPlan);
+  set('a-step5', t.step5); set('a-t5', t.t5); set('a-s5', t.s5);
+  set('plan-thinking', t.planThinking);
+  set('btn-plan-restart', t.btnRestart); set('btn-plan-home', t.btnHome);
+  set('btn-save-checklist', t.btnSaveChecklist); set('btn-plan-checklist', t.btnChecklist);
+  set('cl-saved-msg', t.clSaved);
+  set('cl-title', t.clTitle); set('cl-sub', t.clSub);
+  t.ps.forEach((l,i) => set('ps'+i, l));
+  if(modalMode) updateModal();
+}
+
+// ── NAVIGATION ────────────────────────────────────────────
+function startApp() {
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('journal').classList.remove('visible');
+  document.getElementById('app').classList.add('visible');
+  go(0);
+}
+
+function goLanding() {
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('journal').classList.remove('visible');
+  document.getElementById('checklist').classList.remove('visible');
+  document.getElementById('dashboard').classList.remove('visible');
+  document.getElementById('landing').style.display = 'flex';
+  restart();
+}
+
+function goDashboard() {
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('journal').classList.remove('visible');
+  document.getElementById('checklist').classList.remove('visible');
+  document.getElementById('dashboard').classList.add('visible');
+  loadDashboard();
+}
+
+function goJournal() {
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('checklist').classList.remove('visible');
+  document.getElementById('journal').classList.add('visible');
+  loadJournal();
+}
+
+function goChecklist() {
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('journal').classList.remove('visible');
+  document.getElementById('checklist').classList.add('visible');
+  loadChecklists();
+}
+
+function go(n) {
+  for(let i=0;i<5;i++){
+    const p = document.getElementById('p'+i);
+    if(p) p.style.display = i===n ? 'block' : 'none';
+    const ps = document.getElementById('ps'+i);
+    if(ps) ps.className = 'ps' + (i<n?' done':i===n?' active':'');
+  }
+  document.getElementById('progress').style.width = (n*25)+'%';
+  const t = T[S.lang];
+  document.getElementById('nav-step').textContent = `${t.navStep} ${n+1} / 5`;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+const SUBTOPICS = {
+  en: {
+    'Career & Work': ['Get a promotion', 'Change careers', 'Find a new job', 'Build a side hustle', 'Improve work-life balance', 'Develop a key skill'],
+    'Finance & Money': ['Save a specific amount', 'Pay off debt', 'Build an emergency fund', 'Invest for the first time', 'Increase my income', 'Create a budget'],
+    'Relationships': ['Strengthen a relationship', 'Meet new people', 'Improve communication', 'Set healthy boundaries', 'Rebuild trust', 'Find a partner'],
+    'Health & Lifestyle': ['Lose weight', 'Build muscle', 'Run a race', 'Build a fitness habit', 'Improve nutrition', 'Improve mental health'],
+    'Education': ['Learn a new skill', 'Complete a course', 'Get a certification', 'Learn a language', 'Start a creative project', 'Build a reading habit'],
+    'Big Life Goal': ['Move to a new city', 'Buy a home', 'Travel somewhere significant', 'Launch a business', 'Define my life direction', 'Make a major life change'],
+  },
+  es: {
+    'Career & Work': ['Conseguir un ascenso', 'Cambiar de carrera', 'Encontrar nuevo empleo', 'Construir un negocio paralelo', 'Mejorar balance vida-trabajo', 'Desarrollar una habilidad clave'],
+    'Finance & Money': ['Ahorrar una cantidad específica', 'Pagar deudas', 'Crear un fondo de emergencia', 'Invertir por primera vez', 'Aumentar mis ingresos', 'Crear un presupuesto'],
+    'Relationships': ['Fortalecer una relación', 'Conocer nuevas personas', 'Mejorar la comunicación', 'Establecer límites sanos', 'Reconstruir confianza', 'Encontrar pareja'],
+    'Health & Lifestyle': ['Bajar de peso', 'Ganar músculo', 'Correr una carrera', 'Crear un hábito fitness', 'Mejorar nutrición', 'Mejorar salud mental'],
+    'Education': ['Aprender una habilidad nueva', 'Completar un curso', 'Obtener una certificación', 'Aprender un idioma', 'Iniciar un proyecto creativo', 'Crear hábito de lectura'],
+    'Big Life Goal': ['Mudarse a otra ciudad', 'Comprar una casa', 'Viajar a un lugar especial', 'Lanzar un negocio', 'Definir mi dirección de vida', 'Hacer un gran cambio de vida'],
+  }
+};
+
+const DEC_PLACEHOLDERS = {
+  en: {
+    'Get a promotion': 'I want to get promoted to senior level. I\'ve been in my current role for 2 years and...',
+    'Change careers': 'I want to transition from my current field into...',
+    'Find a new job': 'I\'m looking for a new job because...',
+    'Build a side hustle': 'I want to start a side business around...',
+    'Improve work-life balance': 'I\'ve been working too much and want to...',
+    'Develop a key skill': 'I want to learn or improve my skills in...',
+    'Save a specific amount': 'My goal is to save $_____ by _____ because...',
+    'Pay off debt': 'I have $_____ in debt and want to pay it off by...',
+    'Build an emergency fund': 'I want to build an emergency fund of...',
+    'Invest for the first time': 'I want to start investing. I have $_____ and...',
+    'Increase my income': 'I currently earn $_____ and want to increase it to...',
+    'Create a budget': 'I want to create a budget that helps me...',
+    'Strengthen a relationship': 'I want to improve my relationship with...',
+    'Meet new people': 'I want to expand my social circle by...',
+    'Improve communication': 'I struggle with communication in...',
+    'Set healthy boundaries': 'I need to set better boundaries with...',
+    'Rebuild trust': 'I want to rebuild trust in my relationship with...',
+    'Find a partner': 'I want to find a partner who...',
+    'Lose weight': 'My goal is to lose _____ lbs/kg by...',
+    'Build muscle': 'I want to build muscle. Currently I...',
+    'Run a race': 'I want to run a _____. My current fitness level is...',
+    'Build a fitness habit': 'I want to exercise consistently. My main obstacle is...',
+    'Improve nutrition': 'I want to eat healthier, specifically...',
+    'Improve mental health': 'I want to improve my mental health by...',
+    'Learn a new skill': 'I want to learn _____ because...',
+    'Complete a course': 'I want to complete a course on...',
+    'Get a certification': 'I want to get certified in...',
+    'Learn a language': 'I want to learn _____ to a level where I can...',
+    'Start a creative project': 'I want to start a project around...',
+    'Build a reading habit': 'I want to read _____ books per month about...',
+    'Move to a new city': 'I want to move to _____ because...',
+    'Buy a home': 'I want to buy a home. My timeline is...',
+    'Travel somewhere significant': 'I want to travel to _____ and...',
+    'Launch a business': 'I want to launch a business that...',
+    'Define my life direction': 'I feel lost and want to figure out...',
+    'Make a major life change': 'I want to make a big change in my life: ...',
+  },
+  es: {
+    default: 'Mi meta es...'
+  }
+};
+
+function pickCat(el, cat) {
+  S.cat = cat;
+  S.subtopic = '';
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn0').disabled = true;
+  document.getElementById('subtopic-wrap').style.display = 'none';
+  document.getElementById('custom-input-wrap').style.display = 'none';
+
+  if (cat === 'Custom') {
+    const lang = S.lang || 'en';
+    document.getElementById('custom-label').textContent = lang === 'es' ? '¿En qué quieres trabajar?' : 'What do you want to work on?';
+    const input = document.getElementById('custom-topic');
+    input.placeholder = lang === 'es' ? 'Ej. Aprender a cocinar, iniciar un podcast...' : 'e.g. Start a podcast, learn to cook...';
+    input.value = '';
+    document.getElementById('custom-count').textContent = '50';
+    document.getElementById('custom-count').className = 'custom-char-count';
+    document.getElementById('custom-input-wrap').style.display = 'block';
+    setTimeout(() => input.focus(), 100);
+  } else {
+    const lang = S.lang || 'en';
+    const subs = SUBTOPICS[lang][cat] || SUBTOPICS['en'][cat] || [];
+    const grid = document.getElementById('subtopic-grid');
+    grid.innerHTML = subs.map(s =>
+      `<button class="subtopic-btn" onclick="pickSubtopic(this,'${s.replace(/'/g, "\\'")}')">${s}</button>`
+    ).join('');
+    document.getElementById('subtopic-wrap').style.display = 'block';
+    document.getElementById('subtopic-label').textContent = lang === 'es' ? 'Elige un enfoque específico' : 'Choose a focus area';
+  }
+}
+
+function onCustomInput(input) {
+  const val = input.value.trim();
+  const remaining = 50 - input.value.length;
+  const countEl = document.getElementById('custom-count');
+  countEl.textContent = remaining;
+  countEl.className = 'custom-char-count' + (remaining <= 5 ? ' at-limit' : remaining <= 15 ? ' near-limit' : '');
+  S.subtopic = val;
+  document.getElementById('btn0').disabled = val.length === 0;
+  // Update Step 2 placeholder
+  const dec = document.getElementById('dec');
+  if (dec && val) dec.placeholder = S.lang === 'es' ? `Mi meta es ${val.toLowerCase()}...` : `My goal is to ${val.toLowerCase()}...`;
+}
+
+function pickSubtopic(el, sub) {
+  S.subtopic = sub;
+  document.querySelectorAll('.subtopic-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn0').disabled = false;
+  // Update Step 2 textarea placeholder dynamically
+  const dec = document.getElementById('dec');
+  if (dec) {
+    const ph = DEC_PLACEHOLDERS['en'][sub] || DEC_PLACEHOLDERS['en'][sub] || (S.lang === 'es' ? 'Mi meta es...' : 'My goal is to...');
+    dec.placeholder = ph;
+  }
+}
+
+function pick(el, cat) { pickCat(el, cat); }
+
+// ── AI ENGINE ─────────────────────────────────────────────
+async function fetchOnce(prompt, system) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.access_token) throw new Error('Not authenticated');
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 25000);
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, system, messages: [{ role: 'user', content: prompt }] }),
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
+    if (!res.ok) {
+      const data = await res.json().catch(()=>({}));
+      throw new Error(data.message || `API error ${res.status}`);
+    }
+    const data = await res.json();
+    return data.content?.[0]?.text || '';
+  } catch(e) { clearTimeout(timeout); throw e; }
+}
+
+async function callClaude(prompt, system, thinkingId) {
+  try { return await fetchOnce(prompt, system); }
+  catch(e) {
+    if (thinkingId) { const el = document.getElementById(thinkingId); if(el) el.textContent = S.lang === 'es' ? 'Reintentando...' : 'Retrying...'; }
+    await new Promise(r => setTimeout(r, 1500));
+    return await fetchOnce(prompt, system);
+  }
+}
+
+function renderMarkdown(text) {
+  if (!text) return '';
+  return text
+    .split(/\n{2,}/)
+    .map(para => {
+      para = para.trim();
+      if (!para) return '';
+      const boldTitle = para.match(/^\*\*([^*]+):\*\*\s*(.*)/s);
+      if (boldTitle) {
+        const title = boldTitle[1];
+        const rest = boldTitle[2].replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        return `<span class="section-title">${title}</span><p>${rest}</p>`;
+      }
+      const rendered = para.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      return `<p>${rendered}</p>`;
+    })
+    .join('');
+}
+
+
+function langSuffix() { return S.lang === 'es' ? ' Respond entirely in Spanish.' : ''; }
+
+async function analyze() {
+  S.dec = document.getElementById('dec').value.trim();
+  S.topic = ''; // topic field removed
+  if (!S.dec) return;
+  const t = T[S.lang];
+  go(2);
+  document.getElementById('q-load').style.display='flex';
+  document.getElementById('q-body').style.display='none';
+  document.getElementById('q-row').style.display='none';
+  document.getElementById('q-err').innerHTML='';
+  try {
+    const sys = `You are Navrielle, an empathetic and sharp personal achievement coach. Ask ONE powerful clarifying question that surfaces what the person hasn't fully examined yet about their goal. Be direct and warm. Keep it under 3 sentences: one observational sentence, then the question. No multiple questions. No advice yet.${langSuffix()}`;
+    const topicCtx = S.subtopic ? `
+Focus: ${S.subtopic}` : '';
+    S.q = await callClaude(`Category: ${S.cat}${topicCtx}
+Goal: ${S.dec}
+
+Ask your one most important clarifying question.`, sys, 'q-thinking');
+    document.getElementById('q-text').innerHTML = renderMarkdown(S.q);
+    document.getElementById('q-load').style.display='none';
+    document.getElementById('q-body').style.display='block';
+    document.getElementById('q-row').style.display='flex';
+  } catch(e) {
+    document.getElementById('q-load').style.display='none';
+    showErr('q-err', e.message.includes('429') ? (S.lang==='es'?'Has alcanzado el límite por hora. Intenta en unos minutos.':'You\'ve reached the hourly limit. Try again in a few minutes.') : t.errConn);
+  }
+}
+
+async function frameworks() {
+  S.ans = document.getElementById('ans').value.trim();
+  const t = T[S.lang];
+  go(3);
+  document.getElementById('f-load').style.display='flex';
+  document.getElementById('f-body').style.display='none';
+  document.getElementById('f-row').style.display='none';
+  document.getElementById('f-err').innerHTML='';
+  try {
+    const sys = `You are Navrielle, a personal achievement coach. Give an honest, structured assessment of this goal using 2-3 lenses (Feasibility, Hidden Obstacles, What They May Be Avoiding, Realistic Timeline, or others that fit). Format each as: **Assessment Area:** followed by your honest take. Be concrete and direct — not a cheerleader. Keep each to 2-3 sentences. Under 200 words total.${langSuffix()}`;
+    const topicCtx = S.subtopic ? `
+Focus: ${S.subtopic}` : '';
+    S.fw = await callClaude(`Category: ${S.cat}${topicCtx}
+Goal: ${S.dec}
+Clarifying Q: ${S.q}
+Answer: ${S.ans}
+
+Give your honest assessment.`, sys, 'f-thinking');
+    document.getElementById('f-text').innerHTML = renderMarkdown(S.fw);
+    document.getElementById('f-load').style.display='none';
+    document.getElementById('f-body').style.display='block';
+    document.getElementById('f-row').style.display='flex';
+  } catch(e) {
+    document.getElementById('f-load').style.display='none';
+    showErr('f-err', t.errRetry);
+  }
+}
+
+async function summary() {
+  const t = T[S.lang];
+  go(4);
+  document.getElementById('r-load').style.display='flex';
+  document.getElementById('r-body').style.display='none';
+  document.getElementById('r-err').innerHTML='';
+  try {
+    const sys = `You are Navrielle. Synthesize this goal assessment using this exact format:
+
+**Honest Take:** [2-3 sentences with your honest assessment of this goal and their situation]
+
+**The Real Challenge:** [1-2 sentences on the core obstacle or tension they need to face]
+
+**Recommendation:** [2 sentences with a clear, direct recommendation and one reason why]
+
+Be specific, not a cheerleader. End with: INSIGHTS: [label1] | [label2] | [label3] (3-4 word labels each).${langSuffix()}`;
+    const topicCtx = S.subtopic ? `
+Focus: ${S.subtopic}` : '';
+    const resp = await callClaude(`Category: ${S.cat}${topicCtx}\nGoal: ${S.dec}\nClarifying Q: ${S.q}\nAnswer: ${S.ans}\nAssessment: ${S.fw}`, sys, 'r-thinking');
+    const match = resp.match(/INSIGHTS:\s*(.+)/);
+    S.rec = resp.replace(/INSIGHTS:.+/s,'').trim();
+    S.chips = match ? match[1].split('|').map(c=>c.trim().replace(/[\[\]]/g,'')) : [];
+    document.getElementById('r-chips').innerHTML = S.chips.map(c=>`<span class="chip">${c}</span>`).join('');
+    document.getElementById('r-text').innerHTML = renderMarkdown(S.rec);
+    document.getElementById('r-load').style.display='none';
+    document.getElementById('r-body').style.display='block';
+    if (currentUser) {
+      document.getElementById('btn-journal').style.display = 'inline-flex';
+      document.getElementById('btn-dashboard').style.display = 'inline-flex';
+      await saveDecision();
+    }
+  } catch(e) {
+    document.getElementById('r-load').style.display='none';
+    showErr('r-err', t.errRetry);
+  }
+}
+
+function renderPlan(text) {
+  const weeks = [];
+  const lines = text.split('\n').filter(l => l.trim());
+  let current = null;
+  let actionNum = 0;
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    const weekMatch = trimmed.match(/^\*?\*?(Week\s+\d[\d\s\-–]+|Semana\s+\d[\d\s\-–]+|Month\s+\d[\d\s\-–]+|Mes\s+\d[\d\s\-–]+)\*?\*?:?\s*(.*)/i);
+    if (weekMatch) {
+      actionNum = 0;
+      current = { title: weekMatch[1].trim(), subtitle: weekMatch[2].trim(), actions: [] };
+      weeks.push(current);
+    } else if (current && (trimmed.startsWith('-') || trimmed.startsWith('•') || trimmed.match(/^\d+\./))) {
+      actionNum++;
+      const text = trimmed.replace(/^[-•]\s*/, '').replace(/^\d+\.\s*/, '');
+      const bold = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      current.actions.push({ num: actionNum, text: bold });
+    } else if (current && trimmed && !trimmed.match(/^\*\*/) ) {
+      if (current.actions.length === 0) {
+        current.subtitle += ' ' + trimmed;
+      } else {
+        actionNum++;
+        const bold = trimmed.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        current.actions.push({ num: actionNum, text: bold });
+      }
+    }
+  }
+
+  if (weeks.length === 0) {
+    return `<div class="ai-card"><div class="ai-label">Action Plan</div><div class="ai-text">${renderMarkdown(text)}</div></div>`;
+  }
+
+  return weeks.map(w => `
+    <div class="plan-week">
+      <div class="plan-week-header">
+        <span class="plan-week-badge">${w.title}</span>
+        ${w.subtitle ? `<span class="plan-week-title">${w.subtitle}</span>` : ''}
+      </div>
+      <ul class="plan-actions">
+        ${w.actions.map(a => `<li class="plan-action"><span class="plan-action-num">${a.num}</span><span>${a.text}</span></li>`).join('')}
+      </ul>
+    </div>
+  `).join('');
+}
+
+async function generatePlan() {
+  const t = T[S.lang];
+  for (let i = 0; i < 5; i++) {
+    const p = document.getElementById('p' + i);
+    if (p) p.style.display = 'none';
+  }
+  const p4b = document.getElementById('p4b'); if (p4b) p4b.style.display = 'none';
+  const p5 = document.getElementById('p5');
+  if (p5) p5.style.display = 'block';
+
+  // Update plan title with timeline
+  const titleEl = document.getElementById('a-t5');
+  const subEl = document.getElementById('a-s5');
+  if (titleEl) titleEl.textContent = S.lang === 'es' ? `Tu plan para ${S.timeline}` : `Your ${S.timeline} plan`;
+  if (subEl) subEl.textContent = S.lang === 'es'
+    ? `Un plan concreto y personalizado para alcanzar tu meta en ${S.timeline}.`
+    : `A concrete, personalized plan to achieve your goal in ${S.timeline}.`;
+
+  document.getElementById('plan-load').style.display = 'flex';
+  document.getElementById('plan-body').style.display = 'none';
+  document.getElementById('plan-row').style.display = 'none';
+  document.getElementById('plan-err').innerHTML = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  try {
+    // Build phase structure from roadmap if available
+    const phaseStructure = currentRoadmap ? currentRoadmap.phases.map(p =>
+      `${p.label} - ${p.title} (${p.duration}):\n- [action step]\n- [action step]\n- [action step]`
+    ).join('\n\n') : `Phase 1 (First third):\n- [action step]\n- [action step]\n- [action step]\n\nPhase 2 (Middle):\n- [action step]\n- [action step]\n- [action step]\n\nPhase 3 (Final):\n- [action step]\n- [action step]\n- [action step]`;
+
+    const sys = `You are Navrielle, a practical action-planning coach. Based on this goal and timeline of ${S.timeline}, create a concrete action plan following exactly these 3 phases:
+
+${phaseStructure}
+
+Rules: Use the exact phase headers as shown above (e.g. "Phase 1 - Foundation (Weeks 1-4):"). Each action step must start with a dash (-). Do NOT use ## markdown headers. Do NOT use bold (**) for section headers. Keep each step to 1-2 sentences. Be specific to their goal and situation. Total response under 300 words.${langSuffix()}`;
+
+    const topicCtx = S.subtopic ? `\nFocus: ${S.subtopic}` : '';
+    const planText = await callClaude(
+      `Category: ${S.cat}${topicCtx}\nGoal: ${S.dec}\nTimeline: ${S.timeline}\nRecommendation: ${S.rec}\n\nCreate an action plan following the phases provided.`,
+      sys, 'plan-thinking'
+    );
+
+    S.planText = planText;
+    S.planWeeks = parsePlanWeeks(planText);
+    document.getElementById('plan-body').innerHTML = renderPlan(planText);
+    document.getElementById('plan-load').style.display = 'none';
+    document.getElementById('plan-body').style.display = 'block';
+    document.getElementById('plan-row').style.display = 'flex';
+    if (currentUser) {
+      document.getElementById('btn-plan-journal').style.display = 'inline-flex';
+      document.getElementById('btn-plan-checklist').style.display = 'inline-flex';
+      document.getElementById('btn-save-checklist').style.display = 'inline-flex';
+    }
+  } catch(e) {
+    document.getElementById('plan-load').style.display = 'none';
+    showErr('plan-err', t.errRetry);
+  }
+}
+
+
+async function saveDecision() {
+  if (!currentUser) return;
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    await fetch('/api/decisions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+      body: JSON.stringify({
+        category: S.cat, topic: S.topic, decision_text: S.dec,
+        clarifying_question: S.q, clarifying_answer: S.ans,
+        framework_analysis: S.fw, recommendation: S.rec,
+        insight_chips: S.chips, lang: S.lang
+      })
+    });
+    document.getElementById('save-banner').style.display = 'flex';
+  } catch(e) { console.error('Save failed:', e); }
+}
+
+// ── JOURNAL ───────────────────────────────────────────────
+async function loadJournal() {
+  const t = T[S.lang];
+  const listEl = document.getElementById('journal-list');
+  listEl.innerHTML = '<div class="thinking"><div class="dots"><span></span><span></span><span></span></div></div>';
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { listEl.innerHTML = ''; return; }
+    const res = await fetch('/api/decisions', { headers: { 'Authorization': `Bearer ${session.access_token}` } });
+    const data = await res.json();
+    const decisions = data.decisions || [];
+    if (decisions.length === 0) {
+      listEl.innerHTML = `<div class="empty-journal"><div class="empty-icon">📓</div><div class="empty-title">${t.jEmpty}</div><div class="empty-sub">${t.jEmptySub}</div></div>`;
+      return;
+    }
+    listEl.innerHTML = decisions.map(d => {
+      const date = new Date(d.created_at).toLocaleDateString(S.lang === 'es' ? 'es-MX' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const daysSince = Math.floor((Date.now() - new Date(d.created_at)) / (1000*60*60*24));
+      let badges = '';
+      if (!d.checkin_30 && daysSince >= 30) badges += `<span class="checkin-badge checkin-pending">${t.checkin30}</span>`;
+      else if (d.checkin_30) badges += `<span class="checkin-badge checkin-done">${t.checkinDone} 30d</span>`;
+      if (!d.checkin_90 && daysSince >= 90) badges += `<span class="checkin-badge checkin-pending">${t.checkin90}</span>`;
+      if (!d.checkin_180 && daysSince >= 180) badges += `<span class="checkin-badge checkin-pending">${t.checkin180}</span>`;
+      return `<div class="decision-card">
+        <div class="decision-card-top">
+          <span class="decision-cat">${d.category}</span>
+          <span class="decision-date">${date}</span>
+        </div>
+        <div class="decision-text">${d.decision_text}</div>
+        <div class="decision-rec">${d.recommendation || ''}</div>
+        ${badges ? `<div class="checkin-badges">${badges}</div>` : ''}
+      </div>`;
+    }).join('');
+  } catch(e) { listEl.innerHTML = `<div class="error-box">${e.message}</div>`; }
+}
+
+function restart() {
+  Object.keys(S).forEach(k=>{ if(k!=='lang') S[k]=''; });
+  S.chips = [];
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('.subtopic-btn').forEach(b=>b.classList.remove('selected'));
+  S.subtopic = '';
+  const stw = document.getElementById('subtopic-wrap'); if(stw) stw.style.display='none';
+  const ciw = document.getElementById('custom-input-wrap'); if(ciw) ciw.style.display='none';
+  const ci = document.getElementById('custom-topic'); if(ci) ci.value='';
+  const btn0 = document.getElementById('btn0'); if(btn0) btn0.disabled = true;
+  const dec = document.getElementById('dec'); if(dec) { dec.value=''; dec.placeholder = S.lang === 'es' ? 'Mi meta es...' : 'My goal is to...'; }
+  const ans = document.getElementById('ans'); if(ans) ans.value='';
+  const sb2 = document.getElementById('save-banner'); if(sb2) sb2.style.display='none';
+  const bj = document.getElementById('btn-journal'); if(bj) bj.style.display='none';
+  const p5 = document.getElementById('p5'); if(p5) p5.style.display='none';
+  const pb = document.getElementById('plan-body'); if(pb) { pb.innerHTML=''; pb.style.display='none'; }
+  const bdb = document.getElementById('btn-dashboard'); if(bdb) bdb.style.display='none';
+  const bpc = document.getElementById('btn-plan-checklist'); if(bpc) bpc.style.display='none';
+  const bsc = document.getElementById('btn-save-checklist'); if(bsc) { bsc.style.display='none'; bsc.disabled=false; }
+  const csb = document.getElementById('checklist-saved-banner'); if(csb) csb.style.display='none';
+  S.planText = ''; S.planWeeks = []; S.timeline = '90 days';
+  go(0);
+}
+
+// ── CHECKLIST ──────────────────────────────────────────────
+function parsePlanWeeks(text) {
+  const weeks = [];
+  const lines = text.split('\n').filter(l => l.trim());
+  let current = null;
+  let actionNum = 0;
+  for (const line of lines) {
+    const trimmed = line.trim();
+    const weekMatch = trimmed.match(/^\*?\*?(Week\s+\d[\d\s\-–]+|Semana\s+\d[\d\s\-–]+|Month\s+\d[\d\s\-–]+|Mes\s+\d[\d\s\-–]+)\*?\*?:?\s*(.*)/i);
+    if (weekMatch) {
+      actionNum = 0;
+      current = { title: weekMatch[1].trim(), subtitle: weekMatch[2].trim(), actions: [] };
+      weeks.push(current);
+    } else if (current && (trimmed.startsWith('-') || trimmed.startsWith('•') || trimmed.match(/^\d+\./))) {
+      actionNum++;
+      const t = trimmed.replace(/^[-•]\s*/, '').replace(/^\d+\.\s*/, '').replace(/\*\*([^*]+)\*\*/g, '$1');
+      current.actions.push({ id: `${weeks.length-1}-${actionNum}`, text: t, done: false });
+    } else if (current && trimmed && !trimmed.match(/^\*\*/)) {
+      if (current.actions.length === 0) current.subtitle += ' ' + trimmed;
+      else { actionNum++; current.actions.push({ id: `${weeks.length-1}-${actionNum}`, text: trimmed.replace(/\*\*([^*]+)\*\*/g,'$1'), done: false }); }
+    }
+  }
+  return weeks;
+}
+
+async function saveChecklist() {
+  if (!currentUser) return;
+  const btn = document.getElementById('btn-save-checklist');
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    await fetch('/api/checklists', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+      body: JSON.stringify({
+        decision_text: S.dec,
+        category: S.cat,
+        weeks: S.planWeeks,
+        lang: S.lang
+      })
+    });
+    document.getElementById('checklist-saved-banner').style.display = 'flex';
+    btn.style.display = 'none';
+  } catch(e) { console.error('Checklist save failed:', e); }
+  btn.disabled = false;
+}
+
+async function loadChecklists() {
+  const t = T[S.lang];
+  const listEl = document.getElementById('checklist-list');
+  listEl.innerHTML = '<div class="thinking"><div class="dots"><span></span><span></span><span></span></div></div>';
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      listEl.innerHTML = `<div class="empty-checklist"><div class="empty-icon">☑️</div><div class="empty-title">${t.clEmpty}</div><div class="empty-sub">${t.clEmptySub}</div></div>`;
+      return;
+    }
+    const res = await fetch('/api/checklists', { headers: { 'Authorization': `Bearer ${session.access_token}` } });
+    const data = await res.json();
+    const checklists = data.checklists || [];
+    if (checklists.length === 0) {
+      listEl.innerHTML = `<div class="empty-checklist"><div class="empty-icon">☑️</div><div class="empty-title">${t.clEmpty}</div><div class="empty-sub">${t.clEmptySub}</div></div>`;
+      return;
+    }
+    listEl.innerHTML = checklists.map(cl => renderChecklistCard(cl, t)).join('');
+  } catch(e) { listEl.innerHTML = `<div class="error-box">${e.message}</div>`; }
+}
+
+function renderChecklistCard(cl, t) {
+  const weeks = cl.weeks || [];
+  const allActions = weeks.flatMap(w => w.actions || []);
+  const doneCount = allActions.filter(a => a.done).length;
+  const total = allActions.length;
+  const pct = total ? Math.round((doneCount / total) * 100) : 0;
+  const isComplete = total > 0 && doneCount === total;
+  const date = new Date(cl.created_at).toLocaleDateString(S.lang === 'es' ? 'es-MX' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+  const weeksHtml = weeks.map((w, wi) => {
+    const weekDone = w.actions.every(a => a.done);
+    return `<div class="checklist-week ${weekDone ? 'checklist-week-done' : ''}">
+      <div class="checklist-week-header">
+        <span class="checklist-week-badge">${w.title}</span>
+        ${w.subtitle ? `<span class="checklist-week-title">${w.subtitle}</span>` : ''}
+      </div>
+      <ul class="checklist-items">
+        ${(w.actions || []).map(a => `
+          <li class="checklist-item ${a.done ? 'completed' : ''}" id="item-${cl.id}-${a.id}">
+            <div class="checklist-checkbox ${a.done ? 'checked' : ''}" onclick="toggleItem('${cl.id}','${a.id}',${wi})"></div>
+            <span class="checklist-item-text">${a.text}</span>
+          </li>`).join('')}
+      </ul>
+    </div>`;
+  }).join('');
+
+  return `<div class="checklist-decision-card" id="cl-card-${cl.id}">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:12px;">
+      <div>
+        <div class="checklist-decision-label">${cl.category}</div>
+        <div class="checklist-decision-text">${cl.decision_text}</div>
+        <div style="font-size:11px;color:var(--ink3);margin-top:4px;">${date}</div>
+      </div>
+    </div>
+    ${isComplete ? `<div class="checklist-complete-banner" style="display:flex;">${t.clComplete}</div>` : ''}
+    <div class="checklist-progress-wrap">
+      <div class="checklist-progress-label">
+        <span class="checklist-progress-text">${doneCount} / ${total} steps</span>
+        <span class="checklist-progress-pct">${pct}%</span>
+      </div>
+      <div class="checklist-bar"><div class="checklist-bar-fill" id="bar-${cl.id}" style="width:${pct}%"></div></div>
+    </div>
+    ${weeksHtml}
+  </div>`;
+}
+
+async function toggleItem(clId, actionId, weekIdx) {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch(`/api/checklists?id=${clId}`, { headers: { 'Authorization': `Bearer ${session.access_token}` } });
+    const data = await res.json();
+    const cl = data.checklist;
+    const action = cl.weeks[weekIdx]?.actions?.find(a => a.id === actionId);
+    if (action) action.done = !action.done;
+    await fetch('/api/checklists', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+      body: JSON.stringify({ id: clId, weeks: cl.weeks })
+    });
+    // Re-render just this card
+    const t = T[S.lang];
+    const cardEl = document.getElementById(`cl-card-${clId}`);
+    if (cardEl) cardEl.outerHTML = renderChecklistCard(cl, t);
+  } catch(e) { console.error('Toggle failed:', e); }
+}
+
+// ── TIMELINE ROADMAP ──────────────────────────────────────
+let currentRoadmap = null;
+let timelineSpeed = 0; // -2 faster to +2 slower
+
+function showTimeline() {
+  for (let i = 0; i < 5; i++) {
+    const p = document.getElementById('p' + i);
+    if (p) p.style.display = 'none';
+  }
+  document.getElementById('p4b').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  timelineSpeed = 0;
+  generateRoadmap();
+}
+
+async function generateRoadmap() {
+  document.getElementById('roadmap-loading').style.display = 'flex';
+  document.getElementById('roadmap-body').style.display = 'none';
+  document.getElementById('roadmap-btns').style.display = 'none';
+  document.getElementById('roadmap-err').innerHTML = '';
+
+  const speedNote = timelineSpeed < 0
+    ? ' Make the timeline faster/more compressed than you normally would.'
+    : timelineSpeed > 0
+    ? ' Make the timeline longer/more gradual than you normally would.'
+    : '';
+
+  const lang = S.lang;
+  const sys = `You are Navrielle. Generate a realistic progress roadmap for this goal as JSON only. No other text, no markdown backticks.
+
+Return exactly this structure:
+{
+  "total": "X months" or "X weeks",
+  "note": "One sentence explaining why this pace makes sense",
+  "phases": [
+    { "label": "Phase 1", "title": "Short phase name", "duration": "e.g. Weeks 1-4", "emoji": "🎯", "milestones": ["milestone 1", "milestone 2"] },
+    { "label": "Phase 2", "title": "Short phase name", "duration": "e.g. Weeks 5-8", "emoji": "📈", "milestones": ["milestone 1", "milestone 2"] },
+    { "label": "Phase 3", "title": "Short phase name", "duration": "e.g. Weeks 9-12", "emoji": "🏆", "milestones": ["milestone 1", "milestone 2"] }
+  ],
+  "endLabel": "Goal achieved",
+  "endEmoji": "✅"
+}
+
+Rules: Exactly 3 phases. Each phase max 2 milestones (short, 4-6 words each). Durations must be specific and add up to the total. Be realistic and specific to their goal.${speedNote}${langSuffix()}`;
+
+  const topicCtx = S.subtopic ? `\nFocus: ${S.subtopic}` : '';
+  try {
+    const raw = await callClaude(
+      `Category: ${S.cat}${topicCtx}\nGoal: ${S.dec}\nRecommendation: ${S.rec}\n\nGenerate the roadmap JSON.`,
+      sys, 'roadmap-thinking'
+    );
+    const clean = raw.replace(/```json|```/g, '').trim();
+    currentRoadmap = JSON.parse(clean);
+    S.timeline = currentRoadmap.total;
+    renderRoadmap(currentRoadmap, lang);
+    document.getElementById('roadmap-loading').style.display = 'none';
+    document.getElementById('roadmap-body').style.display = 'block';
+    document.getElementById('roadmap-btns').style.display = 'flex';
+    // Update note
+    const noteEl = document.getElementById('roadmap-note');
+    if (noteEl) noteEl.textContent = currentRoadmap.note || '';
+    // Update labels
+    const set = (id, v) => { const el = document.getElementById(id); if(el) el.innerHTML = v; };
+    set('a-step-tl', lang === 'es' ? 'Tu timeline' : 'Your timeline');
+    set('a-t-tl', lang === 'es' ? 'Así vemos tu progreso' : 'Here\'s how we see your progress');
+    set('a-s-tl', lang === 'es' ? 'Navrielle construyó un roadmap personalizado. Dinos si quieres ir más rápido o más despacio.' : 'Navrielle built a personalized roadmap for your goal. Tell us if you\'d like to move faster or slower.');
+    set('btn-faster', lang === 'es' ? '⚡ Más rápido' : '⚡ Make it faster');
+    set('btn-slower', lang === 'es' ? '🐢 Más tiempo' : '🐢 Give me more time');
+    set('btn-gen-plan', lang === 'es' ? 'Se ve bien →' : 'This looks good →');
+  } catch(e) {
+    document.getElementById('roadmap-loading').style.display = 'none';
+    document.getElementById('roadmap-err').innerHTML = `<div class="error-box">${T[S.lang].errRetry}</div>`;
+    document.getElementById('roadmap-btns').style.display = 'flex';
+  }
+}
+
+function renderRoadmap(data, lang) {
+  const phaseColors = ['phase-1', 'phase-2', 'phase-3'];
+  const labelColors = ['', 'teal', 'amber'];
+
+  let html = '';
+  data.phases.forEach((phase, i) => {
+    if (i > 0) {
+      html += `<div class="roadmap-connector-line active"></div>`;
+    }
+    html += `
+      <div class="roadmap-node-wrap">
+        <div class="roadmap-node ${phaseColors[i]}">${phase.emoji}</div>
+        <div class="roadmap-phase-label ${labelColors[i]}">${phase.label}</div>
+        <div class="roadmap-phase-title">${phase.title}</div>
+        <div class="roadmap-phase-time">${phase.duration}</div>
+        <div class="roadmap-milestones">
+          ${(phase.milestones || []).map(m => `<div class="roadmap-milestone">→ ${m}</div>`).join('')}
+        </div>
+      </div>`;
+  });
+
+  // End node
+  html += `<div class="roadmap-connector-line active"></div>`;
+  html += `
+    <div class="roadmap-end-node">
+      <div class="roadmap-node phase-end" style="width:44px;height:44px;font-size:20px;">${data.endEmoji}</div>
+      <div class="roadmap-end-label">${data.endLabel}</div>
+      <div class="roadmap-total">${data.total}</div>
+    </div>`;
+
+  document.getElementById('roadmap-visual').innerHTML = html;
+}
+
+function adjustTimeline(direction) {
+  if (direction === 'faster') timelineSpeed = Math.max(-2, timelineSpeed - 1);
+  if (direction === 'slower') timelineSpeed = Math.min(2, timelineSpeed + 1);
+  generateRoadmap();
+}
+
+function goPhase4() {
+  document.getElementById('p4b').style.display = 'none';
+  document.getElementById('p4').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────
+const CAT_ICONS = {
+  'Career & Work': '💼', 'Finance & Money': '💰', 'Relationships': '🤝',
+  'Health & Lifestyle': '🧘', 'Education': '📚', 'Big Life Goal': '🌎', 'Custom': '✏️'
+};
+
+function getGreeting(lang) {
+  const h = new Date().getHours();
+  if (lang === 'es') {
+    if (h < 12) return 'Buenos días 👋';
+    if (h < 18) return 'Buenas tardes 👋';
+    return 'Buenas noches 👋';
+  }
+  if (h < 12) return 'Good morning 👋';
+  if (h < 18) return 'Good afternoon 👋';
+  return 'Good evening 👋';
+}
+
+function calcStreak(checklists) {
+  // Simple streak: count consecutive days with any checklist activity
+  // For now return days since first checklist was created if any active
+  if (!checklists || checklists.length === 0) return 0;
+  const latest = new Date(checklists[0].created_at);
+  const days = Math.floor((Date.now() - latest) / (1000 * 60 * 60 * 24));
+  return Math.max(1, 30 - days); // Simple placeholder streak
+}
+
+async function loadDashboard() {
+  const lang = S.lang;
+  // Update greeting
+  const email = currentUser?.email || '';
+  const name = email.split('@')[0] || '';
+  document.getElementById('dash-greeting').textContent = getGreeting(lang) + (name ? `, ${name}` : '');
+  document.getElementById('dash-eyebrow').textContent = lang === 'es' ? 'Tu progreso' : 'Your progress';
+  document.getElementById('dash-active-title').textContent = lang === 'es' ? 'Metas Activas' : 'Active Goals';
+  document.getElementById('dash-completed-title').textContent = lang === 'es' ? 'Metas Completadas' : 'Completed Goals';
+  document.getElementById('dash-add-goal').textContent = lang === 'es' ? '+ Nueva meta' : '+ New goal';
+  document.getElementById('dash-back-label').textContent = lang === 'es' ? 'Atrás' : 'Back';
+  document.getElementById('dash-stat-goals-label').textContent = lang === 'es' ? 'Metas Activas' : 'Active Goals';
+  document.getElementById('dash-stat-progress-label').textContent = lang === 'es' ? 'Progreso Promedio' : 'Avg Progress';
+  document.getElementById('dash-stat-streak-label').textContent = lang === 'es' ? 'Días Seguidos' : 'Day Streak';
+
+  if (!currentUser) {
+    document.getElementById('dash-active-goals').innerHTML = `<div class="dash-empty"><div class="dash-empty-icon">🔒</div><div class="dash-empty-title">${lang === 'es' ? 'Inicia sesión para ver tu dashboard' : 'Sign in to see your dashboard'}</div><button class="btn-primary" onclick="openModal('signin')" style="margin:0 auto;">${lang === 'es' ? 'Iniciar sesión' : 'Sign in'}</button></div>`;
+    return;
+  }
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch('/api/checklists', { headers: { 'Authorization': `Bearer ${session.access_token}` } });
+    const data = await res.json();
+    const checklists = data.checklists || [];
+
+    // Compute stats
+    const active = checklists;
+    const allProgress = active.map(cl => {
+      const all = (cl.weeks || []).flatMap(w => w.actions || []);
+      return all.length ? Math.round((all.filter(a => a.done).length / all.length) * 100) : 0;
+    });
+    const avgProgress = allProgress.length ? Math.round(allProgress.reduce((a, b) => a + b, 0) / allProgress.length) : 0;
+    const streak = calcStreak(checklists);
+
+    document.getElementById('dash-stat-goals').textContent = active.length;
+    document.getElementById('dash-stat-progress').textContent = avgProgress + '%';
+    document.getElementById('dash-stat-streak').textContent = streak;
+
+    // Render active goals
+    if (active.length === 0) {
+      document.getElementById('dash-active-goals').innerHTML = `<div class="dash-empty"><div class="dash-empty-icon">🎯</div><div class="dash-empty-title">${lang === 'es' ? 'Aún no hay metas' : 'No active goals yet'}</div><div class="dash-empty-sub">${lang === 'es' ? 'Empieza tu primera meta y aparecerá aquí.' : 'Start your first goal and it will appear here.'}</div><button class="btn-primary" onclick="startApp()" style="margin:0 auto;">${lang === 'es' ? 'Empezar una meta' : 'Start a goal'}</button></div>`;
+    } else {
+      document.getElementById('dash-active-goals').innerHTML = active.map(cl => renderGoalCard(cl, lang)).join('');
+    }
+
+    // Render completed (placeholder — goals with 100% completion)
+    const completed = checklists.filter(cl => {
+      const all = (cl.weeks || []).flatMap(w => w.actions || []);
+      return all.length > 0 && all.every(a => a.done);
+    });
+    const completedEl = document.getElementById('dash-completed-goals');
+    if (completed.length === 0) {
+      completedEl.innerHTML = `<div style="padding:20px;text-align:center;font-size:13px;color:var(--ink3);">${lang === 'es' ? 'Aún no has completado ninguna meta.' : 'No completed goals yet. Keep going!'}</div>`;
+    } else {
+      completedEl.innerHTML = completed.map(cl => {
+        const date = new Date(cl.created_at).toLocaleDateString(lang === 'es' ? 'es-MX' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        return `<div class="dash-completed-item">
+          <div class="dash-completed-check">✓</div>
+          <div class="dash-completed-name">${cl.decision_text}</div>
+          <div class="dash-completed-date">${date}</div>
+        </div>`;
+      }).join('');
+    }
+  } catch(e) {
+    document.getElementById('dash-active-goals').innerHTML = `<div class="error-box">${e.message}</div>`;
+  }
+}
+
+function renderGoalCard(cl, lang) {
+  const all = (cl.weeks || []).flatMap(w => w.actions || []);
+  const done = all.filter(a => a.done).length;
+  const pct = all.length ? Math.round((done / all.length) * 100) : 0;
+  const icon = CAT_ICONS[cl.category] || '🎯';
+  const weeks = cl.weeks || [];
+  const currentPhaseIdx = weeks.findIndex(w => w.actions && w.actions.some(a => !a.done));
+  const currentPhase = weeks[currentPhaseIdx] || weeks[weeks.length - 1];
+  const phaseName = currentPhase ? `Phase ${currentPhaseIdx + 1} — ${currentPhase.subtitle || currentPhase.title}` : '';
+  const daysAgo = Math.floor((Date.now() - new Date(cl.created_at)) / (1000 * 60 * 60 * 24));
+  const isGreen = pct >= 66;
+
+  return `<div class="dash-goal-card" onclick="showGoalDetail('${cl.id}')">
+    <div class="dash-goal-card-top">
+      <div class="dash-goal-cat">
+        <div class="dash-goal-icon">${icon}</div>
+        <div>
+          <div class="dash-goal-name">${cl.decision_text.length > 45 ? cl.decision_text.substring(0, 45) + '...' : cl.decision_text}</div>
+          <div class="dash-goal-category">${cl.category}</div>
+        </div>
+      </div>
+      <div class="dash-goal-pct">${pct}%</div>
+    </div>
+    <div class="dash-progress-bar">
+      <div class="dash-progress-fill ${isGreen ? 'teal' : ''}" style="width:${pct}%"></div>
+    </div>
+    <div class="dash-goal-meta">
+      <div class="dash-goal-phase">${phaseName}</div>
+      <div class="dash-goal-days">${lang === 'es' ? `Hace ${daysAgo}d` : `${daysAgo}d ago`}</div>
+    </div>
+  </div>`;
+}
+
+async function showGoalDetail(clId) {
+  document.getElementById('dash-main').classList.add('hidden');
+  document.getElementById('dash-detail').classList.add('visible');
+  document.getElementById('dash-detail-content').innerHTML = '<div class="thinking"><div class="dots"><span></span><span></span><span></span></div></div>';
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch(`/api/checklists?id=${clId}`, { headers: { 'Authorization': `Bearer ${session.access_token}` } });
+    const data = await res.json();
+    const cl = data.checklist;
+    const lang = S.lang;
+    const weeks = cl.weeks || [];
+    const all = weeks.flatMap(w => w.actions || []);
+    const done = all.filter(a => a.done).length;
+    const pct = all.length ? Math.round((done / all.length) * 100) : 0;
+    const currentPhaseIdx = weeks.findIndex(w => w.actions && w.actions.some(a => !a.done));
+
+    // Mini roadmap
+    let roadmapHtml = '<div class="detail-roadmap">';
+    weeks.forEach((w, i) => {
+      if (i > 0) roadmapHtml += `<div class="detail-connector ${i <= currentPhaseIdx ? 'done' : ''}"></div>`;
+      const isDone = i < currentPhaseIdx || (i === 0 && currentPhaseIdx === -1);
+      const isActive = i === currentPhaseIdx;
+      roadmapHtml += `<div class="detail-phase-node">
+        <div class="detail-phase-circle ${isDone ? 'done' : isActive ? 'active' : ''}">${isDone ? '✓' : i + 1}</div>
+        <div class="detail-phase-name ${isActive ? 'active' : ''}">${w.title || 'Phase ' + (i+1)}</div>
+      </div>`;
+    });
+    roadmapHtml += '</div>';
+
+    // Progress ring
+    const r = 36, circ = 2 * Math.PI * r;
+    const offset = circ - (pct / 100) * circ;
+    const ringHtml = `<div class="progress-ring-wrap">
+      <svg class="progress-ring-svg" width="90" height="90" viewBox="0 0 90 90">
+        <circle cx="45" cy="45" r="${r}" fill="none" stroke="var(--cream3)" stroke-width="7"/>
+        <circle cx="45" cy="45" r="${r}" fill="none" stroke="var(--teal)" stroke-width="7"
+          stroke-dasharray="${circ}" stroke-dashoffset="${offset}"
+          stroke-linecap="round" transform="rotate(-90 45 45)" style="transition:stroke-dashoffset 0.6s ease"/>
+      </svg>
+      <div class="progress-ring-info">
+        <div class="progress-ring-pct">${pct}%</div>
+        <div class="progress-ring-label">${lang === 'es' ? 'Progreso general' : 'Overall progress'}<br>${done} / ${all.length} ${lang === 'es' ? 'pasos completados' : 'steps complete'}</div>
+      </div>
+    </div>`;
+
+    // Checklist
+    const checklistHtml = weeks.map((w, wi) => `
+      <div style="margin-bottom:20px;">
+        <div style="font-size:12px;font-weight:600;color:var(--purple);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;">${w.title || 'Phase ' + (wi+1)} <span style="color:var(--ink3);font-weight:400;">${w.subtitle || ''}</span></div>
+        <div style="background:white;border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:0 16px;">
+          ${(w.actions || []).map(a => `
+            <div class="checklist-item ${a.done ? 'completed' : ''}" id="item-${cl.id}-${a.id}">
+              <div class="checklist-checkbox ${a.done ? 'checked' : ''}" onclick="toggleItem('${cl.id}','${a.id}',${wi})"></div>
+              <span class="checklist-item-text">${a.text}</span>
+            </div>`).join('')}
+        </div>
+      </div>`).join('');
+
+    // Navrielle says
+    const navrielleSays = pct === 0
+      ? (lang === 'es' ? 'Acabas de empezar — el primer paso es el más importante. Empieza hoy.' : 'You\'re just getting started — the first step is the most important. Start today.')
+      : pct < 33
+      ? (lang === 'es' ? 'Buen comienzo. Mantén el ritmo y construye el hábito en estas primeras semanas.' : 'Good start. Keep the momentum and build the habit in these early weeks.')
+      : pct < 66
+      ? (lang === 'es' ? 'Vas a la mitad. Esta es la fase donde la mayoría para — sigue adelante.' : 'You\'re halfway there. This is where most people stop — keep going.')
+      : pct < 100
+      ? (lang === 'es' ? 'Casi llegás. No pares ahora — el final está cerca.' : 'Almost there. Don\'t stop now — the finish line is close.')
+      : (lang === 'es' ? '¡Lo lograste! Meta completada. Empieza una nueva cuando estés listo.' : 'You did it! Goal complete. Start a new one when you\'re ready.');
+
+    document.getElementById('dash-detail-content').innerHTML = `
+      <div style="margin-bottom:6px;font-size:11px;color:var(--ink3);font-weight:500;text-transform:uppercase;letter-spacing:1px;">${cl.category}</div>
+      <h2 style="font-family:var(--serif);font-size:22px;font-weight:600;color:var(--ink);margin-bottom:20px;line-height:1.3;">${cl.decision_text}</h2>
+      ${roadmapHtml}
+      ${ringHtml}
+      <div class="navrielle-says">
+        <div class="navrielle-says-label">Navrielle says</div>
+        <div class="navrielle-says-text">${navrielleSays}</div>
+      </div>
+      <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:14px;">${lang === 'es' ? 'Lista de tareas' : 'Task checklist'}</div>
+      ${checklistHtml}`;
+  } catch(e) {
+    document.getElementById('dash-detail-content').innerHTML = `<div class="error-box">${e.message}</div>`;
+  }
+}
+
+function showDashMain() {
+  document.getElementById('dash-main').classList.remove('hidden');
+  document.getElementById('dash-detail').classList.remove('visible');
+  loadDashboard();
+}
+
+initAuth();
+</script>
+</body>
+</html>
