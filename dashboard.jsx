@@ -272,10 +272,84 @@ function EmptyState({ title, sub, action, onAction }) {
   );
 }
 
+/* Step workspace — activity card + notes textarea */
+function StepWorkspace({ goal, week, item, wi, ii, onItemUpdate }) {
+  const [guidance, setGuidance] = useState(item.guidance || null);
+  const [loading, setLoading] = useState(!item.guidance);
+  const [notes, setNotes] = useState(item.notes || '');
+  const [saveState, setSaveState] = useState('idle');
+  const debounceRef = useRef(null);
+
+  useEffect(() => {
+    if (item.guidance) { setLoading(false); return; }
+    fetch('/api/guidance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ goal: goal.title, category: goal.category, weekTitle: week.title, stepText: item.text })
+    })
+      .then(r => r.json())
+      .then(data => { setGuidance(data); onItemUpdate(wi, ii, { guidance: data }); })
+      .catch(() => setGuidance({ exercise: 'Take 15 minutes right now and reflect on this step. Write down the single next physical action you can take.', prompt: "What's the smallest version of this you could do today?", duration: '15 min' }))
+      .finally(() => setLoading(false));
+  }, []);
+
+  function handleNotesChange(e) {
+    const val = e.target.value;
+    setNotes(val);
+    setSaveState('saving');
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      onItemUpdate(wi, ii, { notes: val });
+      setSaveState('saved');
+      setTimeout(() => setSaveState('idle'), 2000);
+    }, 800);
+  }
+
+  return (
+    <div style={{ margin: '4px 0 20px 38px', animation: 'fadeUp 300ms var(--ease) both' }}>
+      {loading ? (
+        <div className="mono" style={{ color: 'var(--ink-3)', padding: '18px 0' }}>Generating activity…</div>
+      ) : guidance && (
+        <div style={{ background: 'var(--ink)', borderRadius: 'var(--r-md)', padding: '24px 28px', color: 'var(--paper)', marginBottom: 14 }}>
+          <div className="eyebrow gold" style={{ marginBottom: 14 }}>{guidance.duration} · do this now</div>
+          <p style={{ fontFamily: 'var(--serif)', fontSize: 18, lineHeight: 1.55, margin: '0 0 18px', letterSpacing: '-0.005em' }}>
+            {guidance.exercise}
+          </p>
+          <p style={{ fontFamily: 'var(--serif)', fontSize: 16, lineHeight: 1.5, margin: 0, fontStyle: 'italic', color: 'var(--moss-light)' }}>
+            {guidance.prompt}
+          </p>
+        </div>
+      )}
+      <div style={{ position: 'relative' }}>
+        <textarea
+          value={notes}
+          onChange={handleNotesChange}
+          placeholder="Write your notes here…"
+          rows={5}
+          style={{
+            width: '100%', fontFamily: 'var(--sans)', fontSize: 14, lineHeight: 1.6,
+            color: 'var(--ink)', background: 'var(--paper-2)', border: '0.5px solid var(--rule-2)',
+            borderRadius: 'var(--r-sm)', padding: '14px 16px', resize: 'vertical', outline: 'none',
+            transition: 'border-color 180ms var(--ease)'
+          }}
+          onFocus={e => e.target.style.borderColor = 'var(--ink)'}
+          onBlur={e => e.target.style.borderColor = 'var(--rule-2)'}
+        />
+        {saveState !== 'idle' && (
+          <div className="mono" style={{ position: 'absolute', bottom: 10, right: 12, fontSize: 10, color: 'var(--ink-4)' }}>
+            {saveState === 'saving' ? 'Saving…' : 'Saved'}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /* Goal detail with checklist + roadmap */
 function GoalDetail({ goal, onBack, onUpdate, onComplete }) {
   const isMobile = useIsMobile();
   const [weeks, setWeeks] = useState(goal.weeks);
+  const [expandedKey, setExpandedKey] = useState(null);
   const allItems = weeks.flatMap(w => w.items);
   const doneCount = allItems.filter(i => i.done).length;
   const pct = Math.round((doneCount / allItems.length) * 100);
@@ -283,13 +357,17 @@ function GoalDetail({ goal, onBack, onUpdate, onComplete }) {
   const currentWeekIdx = weeks.findIndex(w => w.items.some(i => !i.done));
   const phaseIdx = currentWeekIdx === -1 ? weeks.length - 1 : currentWeekIdx;
 
-  function toggle(wi, ii) {
+  function updateItem(wi, ii, patch) {
     const next = weeks.map((w, i) => i !== wi ? w : ({
       ...w,
-      items: w.items.map((it, j) => j !== ii ? it : ({ ...it, done: !it.done }))
+      items: w.items.map((it, j) => j !== ii ? it : { ...it, ...patch })
     }));
     setWeeks(next);
-    onUpdate({ ...goal, weeks: next, pct: Math.round((next.flatMap(w => w.items).filter(i => i.done).length / allItems.length) * 100) });
+    onUpdate({ ...goal, weeks: next, pct: Math.round((next.flatMap(w => w.items).filter(i => i.done).length / next.flatMap(w => w.items).length) * 100) });
+  }
+
+  function toggle(wi, ii) {
+    updateItem(wi, ii, { done: !weeks[wi].items[ii].done });
   }
 
   return (
@@ -372,34 +450,56 @@ function GoalDetail({ goal, onBack, onUpdate, onComplete }) {
                     <span className="mono" style={{ color: 'var(--ink-3)' }}>{wDone}/{wTotal}</span>
                   </div>
                   <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-                    {w.items.map((it, ii) => (
-                      <li key={ii} style={{
-                        display: 'flex', gap: 16, padding: '12px 0', alignItems: 'flex-start',
-                        opacity: it.done ? 0.5 : 1,
-                        cursor: 'pointer', borderTop: ii > 0 ? '0.5px solid var(--rule)' : 'none'
-                      }}
-                        onClick={() => toggle(wi, ii)}
-                      >
-                        <span style={{
-                          width: 22, height: 22, borderRadius: 4, flexShrink: 0,
-                          border: '1.5px solid ' + (it.done ? 'var(--ok)' : 'var(--rule-2)'),
-                          background: it.done ? 'var(--ok)' : 'transparent',
-                          color: 'var(--paper)',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontSize: 13, marginTop: 1,
-                          transition: 'all 180ms var(--ease)'
-                        }}>
-                          {it.done && '✓'}
-                        </span>
-                        <span style={{
-                          flex: 1, fontSize: 15.5, lineHeight: 1.55,
-                          color: it.done ? 'var(--ink-3)' : 'var(--ink-2)',
-                          textDecoration: it.done ? 'line-through' : 'none'
-                        }}>
-                          {it.text}
-                        </span>
-                      </li>
-                    ))}
+                    {w.items.map((it, ii) => {
+                      const key = `${wi}-${ii}`;
+                      const isOpen = expandedKey === key;
+                      return (
+                        <li key={ii} style={{ borderTop: ii > 0 ? '0.5px solid var(--rule)' : 'none' }}>
+                          <div
+                            style={{
+                              display: 'flex', gap: 16, padding: '12px 0', alignItems: 'flex-start',
+                              opacity: it.done ? 0.5 : 1, cursor: 'pointer'
+                            }}
+                            onClick={() => setExpandedKey(isOpen ? null : key)}
+                          >
+                            <span
+                              style={{
+                                width: 22, height: 22, borderRadius: 4, flexShrink: 0,
+                                border: '1.5px solid ' + (it.done ? 'var(--ok)' : 'var(--rule-2)'),
+                                background: it.done ? 'var(--ok)' : 'transparent',
+                                color: 'var(--paper)',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                fontSize: 13, marginTop: 1,
+                                transition: 'all 180ms var(--ease)'
+                              }}
+                              onClick={e => { e.stopPropagation(); toggle(wi, ii); }}
+                            >
+                              {it.done && '✓'}
+                            </span>
+                            <span style={{
+                              flex: 1, fontSize: 15.5, lineHeight: 1.55,
+                              color: it.done ? 'var(--ink-3)' : 'var(--ink-2)',
+                              textDecoration: it.done ? 'line-through' : 'none'
+                            }}>
+                              {it.text}
+                            </span>
+                            <span className="mono" style={{ fontSize: 10, color: 'var(--ink-4)', marginTop: 4, flexShrink: 0 }}>
+                              {isOpen ? '▲' : '▼'}
+                            </span>
+                          </div>
+                          {isOpen && (
+                            <StepWorkspace
+                              goal={goal}
+                              week={w}
+                              item={it}
+                              wi={wi}
+                              ii={ii}
+                              onItemUpdate={updateItem}
+                            />
+                          )}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               );
@@ -536,4 +636,4 @@ function Journal({ goals, completed, onOpenGoal, onBack }) {
   );
 }
 
-Object.assign(window, { Dashboard, GoalDetail, Journal, ProgressRing, Roadmap, CalendarGrid, GoalCard });
+Object.assign(window, { Dashboard, GoalDetail, Journal, ProgressRing, Roadmap, CalendarGrid, GoalCard, StepWorkspace });

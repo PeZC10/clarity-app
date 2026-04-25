@@ -2,6 +2,7 @@
   "routes": [
     { "src": "/api/config", "dest": "/api/config.js" },
     { "src": "/api/chat", "dest": "/api/chat.js" },
+    { "src": "/api/guidance", "dest": "/api/guidance.js" },
     { "src": "/(.*\\.jsx)", "headers": { "Content-Type": "text/javascript" }, "dest": "/$1" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
