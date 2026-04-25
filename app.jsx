@@ -26,8 +26,8 @@ function App() {
   const [view, setView] = useState('landing');
   const [user, setUser] = useState(null);
   const [authMode, setAuthMode] = useState(null);
-  const [goals, setGoals] = useState(SEED_GOALS);
-  const [completed, setCompleted] = useState(SEED_COMPLETED);
+  const [goals, setGoals] = useState([]);
+  const [completed, setCompleted] = useState([]);
   const [activeGoalId, setActiveGoalId] = useState(null);
 
   function handleAuth(payload) {
@@ -39,7 +39,7 @@ function App() {
   function signOut() { setUser(null); setView('landing'); }
 
   function startNew() {
-    if (!user) setUser({ name: 'Pedro', email: 'pedro@clarity.app' });
+    if (!user) setUser({ name: 'You', email: '' });
     setView('new');
   }
 
