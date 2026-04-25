@@ -1,6 +1,7 @@
 /* Clarity — landing page (soul rewrite: dawn, threshold, before/after) */
 
 function Landing({ onAuth, onStart }) {
+  const isMobile = useIsMobile();
   const [now, setNow] = useState(new Date());
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
@@ -51,7 +52,7 @@ function Landing({ onAuth, onStart }) {
         </div>
 
         {/* Center — the invitation */}
-        <div className="container" style={{ position: 'relative', zIndex: 2, padding: '40px 32px' }}>
+        <div className="container" style={{ position: 'relative', zIndex: 2, padding: isMobile ? '32px 20px' : '40px 32px' }}>
           <div style={{ maxWidth: 1100 }}>
             <div className="eyebrow" style={{ color: '#A8C290', letterSpacing: '0.22em', marginBottom: 36, fontSize: 11 }}>
               ⌛ Day Zero — the morning of —
@@ -117,7 +118,7 @@ function Landing({ onAuth, onStart }) {
         {/* Bottom — before/after dates */}
         <div className="container" style={{ position: 'relative', zIndex: 3, paddingBottom: 36, opacity: "1" }}>
           <div style={{
-            display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: 32,
+            display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr auto 1fr', gap: isMobile ? 12 : 32,
             alignItems: 'center', paddingTop: 24, opacity: "1"
           }}>
             <div>
@@ -126,9 +127,9 @@ function Landing({ onAuth, onStart }) {
                 {fmtDate(now)}
               </div>
             </div>
-            <div className="mono" style={{ color: '#A8C290', letterSpacing: '0.3em' }}>
+            {!isMobile && <div className="mono" style={{ color: '#A8C290', letterSpacing: '0.3em' }}>
               ─── 30 DAYS ───
-            </div>
+            </div>}
             <div style={{ textAlign: 'right' }}>
               <div className="mono" style={{ color: 'rgba(244,239,230,0.62)', marginBottom: 4 }}>YOU — DIFFERENT</div>
               <div style={{ fontFamily: 'var(--serif)', fontSize: 22, fontStyle: 'italic', color: '#A8C290', letterSpacing: '-0.005em' }}>
@@ -140,7 +141,7 @@ function Landing({ onAuth, onStart }) {
       </section>
 
       {/* THE LETTER — a personal letter, not marketing copy */}
-      <section style={{ padding: '120px 0 100px' }}>
+      <section style={{ padding: isMobile ? '64px 0 56px' : '120px 0 100px' }}>
         <div className="container-narrow">
           <div className="eyebrow primary" style={{ marginBottom: 24, textAlign: 'center' }}>From Clarity, to you</div>
           <div style={{
@@ -183,7 +184,7 @@ function Landing({ onAuth, onStart }) {
       } />
 
       {/* HOW IT WORKS — quiet, ceremonial */}
-      <section style={{ padding: '120px 0', background: 'var(--paper-2)' }}>
+      <section style={{ padding: isMobile ? '56px 0' : '120px 0', background: 'var(--paper-2)' }}>
         <div className="container">
           <div style={{ maxWidth: 720, marginBottom: 80 }}>
             <div className="eyebrow accent" style={{ marginBottom: 18 }}>What happens, in order</div>
@@ -202,8 +203,8 @@ function Landing({ onAuth, onStart }) {
             map((s, i) =>
             <div key={i} style={{
               display: 'grid',
-              gridTemplateColumns: '120px minmax(0, 1fr) 1fr',
-              gap: 40,
+              gridTemplateColumns: isMobile ? '1fr' : '120px minmax(0, 1fr) 1fr',
+              gap: isMobile ? 12 : 40,
               padding: '40px 0',
               borderBottom: '0.5px solid var(--rule)',
               alignItems: 'baseline'
@@ -223,7 +224,7 @@ function Landing({ onAuth, onStart }) {
       </section>
 
       {/* WHO YOU'LL BECOME — before/after, the protagonist */}
-      <section style={{ padding: '120px 0', background: 'var(--ink)', color: 'var(--paper)' }}>
+      <section style={{ padding: isMobile ? '56px 0' : '120px 0', background: 'var(--ink)', color: 'var(--paper)' }}>
         <div className="container">
           <div className="eyebrow primary" style={{ marginBottom: 24, color: '#A8C290' }}>The bet</div>
           <h2 className="h-display" style={{ fontSize: 'clamp(44px, 6.5vw, 92px)', margin: 0, marginBottom: 80, color: 'var(--paper)', lineHeight: 1.02 }}>
@@ -232,18 +233,18 @@ function Landing({ onAuth, onStart }) {
             <em style={{ color: '#A8C290' }}>Just thirty more days of practice.</em>
           </h2>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 60px 1fr', gap: 32, alignItems: 'stretch', borderTop: '0.5px solid rgba(244,239,230,0.18)', paddingTop: 56 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 60px 1fr', gap: isMobile ? 28 : 32, alignItems: 'stretch', borderTop: '0.5px solid rgba(244,239,230,0.18)', paddingTop: isMobile ? 32 : 56 }}>
             <div>
               <div className="mono" style={{ color: 'rgba(244,239,230,0.62)', marginBottom: 18 }}>TODAY · WHO YOU ARE</div>
               <div style={{ fontFamily: 'var(--serif)', fontSize: 22, fontStyle: 'italic', lineHeight: 1.5, color: 'rgba(244,239,230,0.78)' }}>
                 "I keep meaning to start. I know what I should do. I haven't yet. Something always comes up. I'm not sure why this would be different."
               </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            {!isMobile && <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
               <div style={{ width: 1, flex: 1, background: 'rgba(244,239,230,0.2)' }} />
               <span className="mono" style={{ color: '#A8C290' }}>→</span>
               <div style={{ width: 1, flex: 1, background: 'rgba(244,239,230,0.2)' }} />
-            </div>
+            </div>}
             <div>
               <div className="mono" style={{ color: '#A8C290', marginBottom: 18 }}>DAY 30 · WHO YOU'RE BECOMING</div>
               <div style={{ fontFamily: 'var(--serif)', fontSize: 22, fontStyle: 'italic', lineHeight: 1.5, color: '#C5D8B0' }}>
@@ -261,15 +262,15 @@ function Landing({ onAuth, onStart }) {
       </section>
 
       {/* VOICES — three real-feeling quotes */}
-      <section style={{ padding: '120px 0' }}>
+      <section style={{ padding: isMobile ? '56px 0' : '120px 0' }}>
         <div className="container">
-          <div style={{ marginBottom: 64, maxWidth: 640 }}>
+          <div style={{ marginBottom: isMobile ? 40 : 64, maxWidth: 640 }}>
             <div className="eyebrow primary" style={{ marginBottom: 18 }}>People who crossed</div>
             <h2 className="h-2" style={{ fontSize: 'clamp(34px, 4.5vw, 56px)', margin: 0 }}>
               Three goals.<br />Three different lives.
             </h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 40 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: isMobile ? 40 : 40 }}>
             {[
             { quote: "I'd been trying to start running for three years. Clarity just made me start, on a Tuesday, in clothes I already had.", who: 'Adaeze · 34', what: 'First 5K — Day 23' },
             { quote: "It didn't tell me I was special. It told me what I'd been avoiding. Somehow that was the kindest thing.", who: 'Mateo · 41', what: 'Quit drinking — Day 30 + 90' },
@@ -297,7 +298,7 @@ function Landing({ onAuth, onStart }) {
 
       {/* FINAL — the second invitation */}
       <section style={{
-        padding: '140px 0 120px',
+        padding: isMobile ? '72px 0 64px' : '140px 0 120px',
         background: 'linear-gradient(180deg, #f4efe6 0%, #e8eadf 50%, #d4dcc6 100%)',
         position: 'relative', overflow: 'hidden'
       }}>

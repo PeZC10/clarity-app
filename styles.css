@@ -299,9 +299,24 @@ textarea { resize: none; line-height: 1.55; }
   -webkit-overflow-scrolling: touch;
 }
 
-/* Responsive helpers */
-@media (max-width: 720px) {
-  .container, .container-narrow { padding: 0 20px; }
-  .topbar { padding: 14px 20px; }
+/* ─── Mobile ─── */
+@media (max-width: 768px) {
+  .container, .container-narrow { padding: 0 18px; }
+
+  .topbar { padding: 12px 18px; gap: 8px; }
   .topbar-nav { display: none; }
+  .topbar-logo { font-size: 20px; }
+  .user-email { display: none; }
+  .user-pill { padding: 6px 10px 6px 6px; }
+  .topbar-actions { gap: 8px; }
+  .topbar-actions .btn { padding: 9px 14px; font-size: 13px; }
+
+  .btn { white-space: normal; text-align: center; }
+
+  /* Flow — assessment grid */
+  .flow-assess-row {
+    grid-template-columns: 1fr !important;
+    gap: 4px !important;
+  }
+  .flow-assess-label { margin-bottom: 2px; }
 }

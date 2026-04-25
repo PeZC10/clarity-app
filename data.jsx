@@ -159,6 +159,17 @@ const ACCOUNT_PROMPTS = [
   "Day 28. Two more days. Don't coast."
 ];
 
+/* Mobile detection hook */
+function useIsMobile(bp = 768) {
+  const [mobile, setMobile] = useState(window.innerWidth < bp);
+  useEffect(() => {
+    const handler = () => setMobile(window.innerWidth < bp);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, [bp]);
+  return mobile;
+}
+
 /* Supabase client */
 let _sb = null;
 async function getSB() {
@@ -216,5 +227,6 @@ async function markGoalComplete(userId, goal) {
 Object.assign(window, {
   CATEGORIES, TONE_LINES, MOCK_CLARIFY, MOCK_ASSESSMENT, MOCK_PLAN,
   SEED_GOALS, SEED_COMPLETED, ACCOUNT_PROMPTS,
-  getSB, loadGoals, loadCompleted, saveGoal, markGoalComplete
+  getSB, loadGoals, loadCompleted, saveGoal, markGoalComplete,
+  useIsMobile
 });
