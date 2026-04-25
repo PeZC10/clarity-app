@@ -62,6 +62,7 @@ No markdown. No extra text. Just the JSON object.`,
       );
       setAssessment(parseJSON(raw));
     } catch(e) {
+      console.error('Assessment API error:', e);
       setAssessment(MOCK_ASSESSMENT(goal));
     }
     setThinking(false);
@@ -90,6 +91,7 @@ No markdown. No extra text. Just the JSON array.`,
       );
       setPlan(parseJSON(raw));
     } catch(e) {
+      console.error('Plan API error:', e);
       setPlan(MOCK_PLAN);
     }
     setThinking(false);

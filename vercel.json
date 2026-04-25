@@ -1,5 +1,6 @@
 {
   "routes": [
+    { "src": "/api/chat", "dest": "/api/chat.js" },
     { "src": "/(.*\\.jsx)", "headers": { "Content-Type": "text/javascript" }, "dest": "/$1" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
