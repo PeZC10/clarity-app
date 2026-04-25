@@ -130,11 +130,31 @@ function AuthModal({ mode, onClose, onSubmit }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const isSignup = mode === 'signup';
 
-  function submit(e) {
+  async function submit(e) {
     e.preventDefault();
-    onSubmit({ email, password, name: name || email.split('@')[0] });
+    setLoading(true);
+    setError('');
+    try {
+      const sb = await getSB();
+      if (isSignup) {
+        const { error: signUpErr } = await sb.auth.signUp({ email, password });
+        if (signUpErr) throw signUpErr;
+        const { data, error: signInErr } = await sb.auth.signInWithPassword({ email, password });
+        if (signInErr) throw signInErr;
+        onSubmit({ name: name || email.split('@')[0], email, user: data.user });
+      } else {
+        const { data, error: signInErr } = await sb.auth.signInWithPassword({ email, password });
+        if (signInErr) throw signInErr;
+        onSubmit({ name: data.user.user_metadata?.name || email.split('@')[0], email, user: data.user });
+      }
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
   }
   return (
     <div
@@ -180,8 +200,13 @@ function AuthModal({ mode, onClose, onSubmit }) {
             <label className="eyebrow" style={{ display: 'block', marginBottom: 8 }}>Password</label>
             <input type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required />
           </div>
-          <button type="submit" className="btn btn-primary" style={{ marginTop: 8, justifyContent: 'center' }}>
-            {isSignup ? 'Begin —' : 'Sign in —'}
+          {error && (
+            <div style={{ color: '#b53b2a', fontSize: 13, padding: '10px 14px', background: '#f2dcd8', borderRadius: 8 }}>
+              {error}
+            </div>
+          )}
+          <button type="submit" className="btn btn-primary" disabled={loading} style={{ marginTop: 8, justifyContent: 'center' }}>
+            {loading ? 'One moment…' : isSignup ? 'Begin —' : 'Sign in —'}
           </button>
         </form>
 

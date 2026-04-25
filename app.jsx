@@ -29,21 +29,61 @@ function App() {
   const [goals, setGoals] = useState([]);
   const [completed, setCompleted] = useState([]);
   const [activeGoalId, setActiveGoalId] = useState(null);
+  const [sessionLoading, setSessionLoading] = useState(true);
 
-  function handleAuth(payload) {
-    if (payload.switch) { setAuthMode(payload.switch); return; }
-    setUser({ name: (payload.name || 'Pedro').split(' ')[0], email: payload.email || 'pedro@clarity.app' });
-    setAuthMode(null);
+  /* Restore session on load */
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        const sb = await getSB();
+        const { data: { session } } = await sb.auth.getSession();
+        if (session?.user) {
+          await loginUser(session.user);
+        }
+      } catch (e) {
+        console.error('Session restore failed:', e);
+      }
+      setSessionLoading(false);
+    }
+    checkSession();
+  }, []);
+
+  async function loginUser(sbUser) {
+    const name = sbUser.user_metadata?.name || sbUser.email.split('@')[0];
+    setUser({ name, email: sbUser.email, id: sbUser.id });
+    try {
+      const [active, done] = await Promise.all([
+        loadGoals(sbUser.id),
+        loadCompleted(sbUser.id)
+      ]);
+      setGoals(active);
+      setCompleted(done);
+    } catch (e) {
+      console.error('Failed to load goals:', e);
+    }
     setView('dashboard');
   }
-  function signOut() { setUser(null); setView('landing'); }
 
-  function startNew() {
-    if (!user) setUser({ name: 'You', email: '' });
-    setView('new');
+  async function handleAuth(payload) {
+    if (payload.switch) { setAuthMode(payload.switch); return; }
+    setAuthMode(null);
+    await loginUser(payload.user);
   }
 
-  function completeFlow(g) {
+  async function signOut() {
+    try {
+      const sb = await getSB();
+      await sb.auth.signOut();
+    } catch (e) { console.error(e); }
+    setUser(null);
+    setGoals([]);
+    setCompleted([]);
+    setView('landing');
+  }
+
+  function startNew() { setView('new'); }
+
+  async function completeFlow(g) {
     const id = 'g' + Date.now();
     const newGoal = {
       id, title: g.title, category: g.category, catId: g.catId, icon: g.icon,
@@ -53,16 +93,45 @@ function App() {
     setGoals(gs => [newGoal, ...gs]);
     setActiveGoalId(id);
     setView('goal');
+    if (user?.id) {
+      try { await saveGoal(user.id, newGoal); } catch (e) { console.error('Save goal failed:', e); }
+    }
   }
-  function updateGoal(g) { setGoals(gs => gs.map(x => x.id === g.id ? g : x)); }
-  function completeGoal(g) {
-    setCompleted(c => [{ id: g.id, title: g.title, category: g.category,
-      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) }, ...c]);
+
+  async function updateGoal(g) {
+    setGoals(gs => gs.map(x => x.id === g.id ? g : x));
+    if (user?.id) {
+      try { await saveGoal(user.id, g); } catch (e) { console.error('Update goal failed:', e); }
+    }
+  }
+
+  async function completeGoal(g) {
+    const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    setCompleted(c => [{ id: g.id, title: g.title, category: g.category, date }, ...c]);
     setGoals(gs => gs.filter(x => x.id !== g.id));
     setView('dashboard');
+    if (user?.id) {
+      try { await markGoalComplete(user.id, g); } catch (e) { console.error('Complete goal failed:', e); }
+    }
   }
 
   const activeGoal = goals.find(g => g.id === activeGoalId);
+
+  if (sessionLoading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--paper)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+          <div style={{ display: 'inline-flex', gap: 5 }}>
+            {[0,1,2].map(i => (
+              <span key={i} style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--primary)',
+                animation: `pulseDot 1.4s ${i * 0.2}s infinite ease-in-out`, display: 'block' }} />
+            ))}
+          </div>
+          <style>{`@keyframes pulseDot { 0%,80%,100%{opacity:.3;transform:scale(.7)}40%{opacity:1;transform:scale(1)} }`}</style>
+        </div>
+      </div>
+    );
+  }
 
   const body = (
     <div className="app-shell">

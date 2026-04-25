@@ -159,14 +159,62 @@ const ACCOUNT_PROMPTS = [
   "Day 28. Two more days. Don't coast."
 ];
 
+/* Supabase client */
+let _sb = null;
+async function getSB() {
+  if (_sb) return _sb;
+  const { supabaseUrl, supabaseAnonKey } = await fetch('/api/config').then(r => r.json());
+  _sb = supabase.createClient(supabaseUrl, supabaseAnonKey);
+  return _sb;
+}
+
+async function loadGoals(userId) {
+  const sb = await getSB();
+  const { data, error } = await sb.from('goals')
+    .select('*').eq('user_id', userId).eq('is_completed', false)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return data.map(g => ({
+    id: g.id, title: g.title, category: g.category, catId: g.cat_id,
+    icon: g.icon, pct: g.pct, phase: g.phase, days: g.days_label,
+    streak: g.streak, started: g.started, weeks: g.weeks
+  }));
+}
+
+async function loadCompleted(userId) {
+  const sb = await getSB();
+  const { data, error } = await sb.from('goals')
+    .select('id, title, category, completed_date')
+    .eq('user_id', userId).eq('is_completed', true)
+    .order('completed_date', { ascending: false });
+  if (error) throw error;
+  return data.map(g => ({ id: g.id, title: g.title, category: g.category, date: g.completed_date }));
+}
+
+async function saveGoal(userId, goal) {
+  const sb = await getSB();
+  const { error } = await sb.from('goals').upsert({
+    id: goal.id, user_id: userId, title: goal.title, category: goal.category,
+    cat_id: goal.catId, icon: goal.icon, pct: goal.pct, phase: goal.phase,
+    days_label: goal.days, streak: goal.streak, started: goal.started,
+    weeks: goal.weeks, is_completed: false
+  });
+  if (error) throw error;
+}
+
+async function markGoalComplete(userId, goal) {
+  const sb = await getSB();
+  const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const { error } = await sb.from('goals')
+    .update({ is_completed: true, completed_date: date })
+    .eq('id', goal.id).eq('user_id', userId);
+  if (error) throw error;
+  return date;
+}
+
 /* Export to global scope */
 Object.assign(window, {
-  CATEGORIES,
-  TONE_LINES,
-  MOCK_CLARIFY,
-  MOCK_ASSESSMENT,
-  MOCK_PLAN,
-  SEED_GOALS,
-  SEED_COMPLETED,
-  ACCOUNT_PROMPTS
+  CATEGORIES, TONE_LINES, MOCK_CLARIFY, MOCK_ASSESSMENT, MOCK_PLAN,
+  SEED_GOALS, SEED_COMPLETED, ACCOUNT_PROMPTS,
+  getSB, loadGoals, loadCompleted, saveGoal, markGoalComplete
 });
