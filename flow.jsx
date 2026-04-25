@@ -1,11 +1,11 @@
 /* Clarity — goal creation flow + action plan + checklist */
 
-async function callClaude(system, userMessage, maxTokens = 800) {
+async function callClaude(system, userMessage, maxTokens = 800, model = 'claude-haiku-4-5-20251001') {
   const res = await fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
+      model,
       max_tokens: maxTokens,
       system,
       messages: [{ role: 'user', content: userMessage }]
@@ -43,10 +43,22 @@ function GoalFlow({ onComplete, onBack }) {
 
   async function submitClarify() {
     setThinking(true);
+    const firstName = signature.trim().split(' ')[0] || 'them';
     try {
       const raw = await callClaude(
-        'You are Clarity, a direct goal advisor. Return ONLY a JSON object with exactly these keys: verdict (2-4 word string), reading (2-3 sentence honest read), truth (1-2 sentence uncomfortable truth), bet (1-2 sentence commitment payoff), chips (array of exactly 4 short lowercase tag strings). No markdown, no extra text.',
-        `Goal: "${goal}". Category: ${cat?.label}. Focus: ${sub || customSub}. Why it hasn't happened: "${clarify}".`
+        `You are Clarity — a direct, unflinching personal advisor. No fluff, no generic coaching language. You give people the honest read that a trusted mentor who actually knows them would give. You reference specifics from what they've told you. You use their name. You do not give pep talks.
+
+Return ONLY a valid JSON object with exactly these keys:
+- verdict: 2-4 words, specific and honest (not "achievable with work" — something like "doable, but not yet real" or "the gap is internal")
+- reading: 2-3 sentences that reference their specific goal and what they said about why it hasn't happened. Be direct and personal.
+- truth: 1-2 sentences of uncomfortable specificity — the thing they actually need to hear, not a platitude. Reference what they told you.
+- bet: 1-2 sentences on what actually becomes possible if they commit for 30 days. Make it concrete to their goal.
+- chips: array of exactly 4 short lowercase tags that describe this person's specific situation (not generic tags like "high effort" — think "avoidance pattern" or "external blocker" or "identity gap")
+
+No markdown. No extra text. Just the JSON object.`,
+        `Name: ${firstName}. Goal: "${goal}". Life area: ${cat?.label}. Specific focus: ${sub || customSub}. In their own words, why this hasn't happened yet: "${clarify}".`,
+        1000,
+        'claude-sonnet-4-6'
       );
       setAssessment(parseJSON(raw));
     } catch(e) {
@@ -58,11 +70,23 @@ function GoalFlow({ onComplete, onBack }) {
 
   async function submitAssessment() {
     setThinking(true);
+    const firstName = signature.trim().split(' ')[0] || 'them';
     try {
       const raw = await callClaude(
-        'You are Clarity. Return ONLY a JSON array of exactly 4 week objects. Each: { "week": number, "title": string, "days": string (e.g. "Days 1–7"), "items": array of exactly 5 specific action strings }. Make items concrete and specific to the user\'s goal. No markdown, no extra text.',
-        `Goal: "${goal}". Category: ${cat?.label}. Verdict: "${assessment?.verdict}".`,
-        1400
+        `You are Clarity. You've assessed someone's goal and now need to build their actual 30-day plan. The plan must be built around THEIR specific goal — not generic advice that could apply to anyone. Each action should be concrete enough that they know exactly what to do, specific enough that it couldn't be copy-pasted onto someone else's goal. Think about the real actions that move the needle for this particular person and goal.
+
+Return ONLY a valid JSON array of exactly 4 week objects. Each object:
+{
+  "week": number (1-4),
+  "title": string (a short evocative title specific to where they are that week — not generic like "build habits"),
+  "days": string (e.g. "Days 1–7"),
+  "items": array of exactly 5 strings (concrete, specific actions — not "stay consistent", but the actual thing to do)
+}
+
+No markdown. No extra text. Just the JSON array.`,
+        `Name: ${firstName}. Goal: "${goal}". Life area: ${cat?.label}. Focus: ${sub || customSub}. Why it hasn't happened: "${clarify}". Clarity's verdict on them: "${assessment?.verdict}". Reading: "${assessment?.reading}".`,
+        1800,
+        'claude-sonnet-4-6'
       );
       setPlan(parseJSON(raw));
     } catch(e) {
@@ -323,9 +347,10 @@ function StepClarify({ goal, sub, cat, signature, clarify, setClarify, thinking,
   const [loadingQ, setLoadingQ] = useState(true);
 
   useEffect(() => {
+    const firstName = signature.trim().split(' ')[0] || 'friend';
     callClaude(
-      'You are Clarity, a direct goal advisor. Ask ONE penetrating question that gets to the real reason this goal hasn\'t happened yet. Be specific, direct, and slightly uncomfortable. Return ONLY the question itself — no preamble, no label, just the question.',
-      `Category: ${cat?.label}. Focus: ${sub}. Goal: "${goal}".`
+      `You are Clarity — a direct, unflinching personal advisor. You ask the ONE question that cuts through to the real reason someone hasn't achieved their goal yet. Not the surface reason — the actual one. The question should feel like it comes from someone who knows them well and won't let them off the hook. It should be specific to their goal and situation, slightly uncomfortable, and impossible to answer with a easy yes or no. Return ONLY the question itself. No preamble, no label, no "here's my question:" — just the question.`,
+      `Name: ${firstName}. Life area: ${cat?.label}. Specific focus: ${sub}. Their goal in their own words: "${goal}". Ask the one question that gets to the real blocker.`
     ).then(q => { setQuestion(q); setLoadingQ(false); })
      .catch(() => { setQuestion(MOCK_CLARIFY(goal, sub)); setLoadingQ(false); });
   }, []);
