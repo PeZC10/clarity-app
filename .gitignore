@@ -1,0 +1,6 @@
+.claude/
+clarity-app/
+Clarity V2/
+*.zip
+node_modules/
+.env
