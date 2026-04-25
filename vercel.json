@@ -1,11 +1,11 @@
 {
   "version": 2,
+  "builds": [
+    { "src": "api/chat.js", "use": "@vercel/node" }
+  ],
   "routes": [
-    {
-      "src": "/(.*\\.jsx)",
-      "headers": { "Content-Type": "text/javascript" },
-      "dest": "/$1"
-    },
+    { "src": "/api/chat", "dest": "/api/chat.js" },
+    { "src": "/(.*\\.jsx)", "headers": { "Content-Type": "text/javascript" }, "dest": "/$1" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
 }

@@ -1,5 +1,26 @@
 /* Clarity — goal creation flow + action plan + checklist */
 
+async function callClaude(system, userMessage, maxTokens = 800) {
+  const res = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: maxTokens,
+      system,
+      messages: [{ role: 'user', content: userMessage }]
+    })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'API error');
+  return data.content[0].text.trim();
+}
+
+function parseJSON(raw) {
+  const clean = raw.replace(/^```json?\s*/i, '').replace(/```\s*$/i, '').trim();
+  return JSON.parse(clean);
+}
+
 function GoalFlow({ onComplete, onBack }) {
   const [step, setStep] = useState(0); // 0 threshold, 1 cat, 2 focus, 3 describe, 4 clarify, 5 assess, 6 plan
   const [cat, setCat] = useState(null);
@@ -10,6 +31,7 @@ function GoalFlow({ onComplete, onBack }) {
   const [clarify, setClarify] = useState('');
   const [thinking, setThinking] = useState(false);
   const [assessment, setAssessment] = useState(null);
+  const [plan, setPlan] = useState(null);
 
   const totalSteps = 7;
   const progress = ((step + 1) / totalSteps) * 100;
@@ -17,23 +39,41 @@ function GoalFlow({ onComplete, onBack }) {
   function next() { setStep(s => Math.min(s + 1, totalSteps - 1)); }
   function back() { if (step === 0) onBack(); else setStep(s => s - 1); }
 
-  function think(cb, ms = 1400) {
-    setThinking(true);
-    setTimeout(() => { setThinking(false); cb(); }, ms);
-  }
+  function submitDescribe() { next(); }
 
-  function submitDescribe() {
+  async function submitClarify() {
+    setThinking(true);
+    try {
+      const raw = await callClaude(
+        'You are Clarity, a direct goal advisor. Return ONLY a JSON object with exactly these keys: verdict (2-4 word string), reading (2-3 sentence honest read), truth (1-2 sentence uncomfortable truth), bet (1-2 sentence commitment payoff), chips (array of exactly 4 short lowercase tag strings). No markdown, no extra text.',
+        `Goal: "${goal}". Category: ${cat?.label}. Focus: ${sub || customSub}. Why it hasn't happened: "${clarify}".`
+      );
+      setAssessment(parseJSON(raw));
+    } catch(e) {
+      setAssessment(MOCK_ASSESSMENT(goal));
+    }
+    setThinking(false);
     next();
   }
 
-  function submitClarify() {
-    think(() => {
-      setAssessment(MOCK_ASSESSMENT(goal));
-      next();
-    }, 1800);
+  async function submitAssessment() {
+    setThinking(true);
+    try {
+      const raw = await callClaude(
+        'You are Clarity. Return ONLY a JSON array of exactly 4 week objects. Each: { "week": number, "title": string, "days": string (e.g. "Days 1–7"), "items": array of exactly 5 specific action strings }. Make items concrete and specific to the user\'s goal. No markdown, no extra text.',
+        `Goal: "${goal}". Category: ${cat?.label}. Verdict: "${assessment?.verdict}".`,
+        1400
+      );
+      setPlan(parseJSON(raw));
+    } catch(e) {
+      setPlan(MOCK_PLAN);
+    }
+    setThinking(false);
+    next();
   }
 
   function acceptPlan() {
+    const finalPlan = plan || MOCK_PLAN;
     onComplete({
       title: goal,
       category: cat?.label,
@@ -41,9 +81,9 @@ function GoalFlow({ onComplete, onBack }) {
       icon: cat?.icon,
       sub: sub || customSub,
       assessment,
-      weeks: MOCK_PLAN.map((w, i) => ({
+      weeks: finalPlan.map(w => ({
         ...w,
-        items: w.items.map(it => ({ text: it, done: false }))
+        items: w.items.map(it => ({ text: typeof it === 'string' ? it : it.text, done: false }))
       }))
     });
   }
@@ -68,9 +108,9 @@ function GoalFlow({ onComplete, onBack }) {
         {step === 1 && <StepCategory cat={cat} setCat={(c) => { setCat(c); }} onNext={() => cat && next()} />}
         {step === 2 && <StepFocus cat={cat} sub={sub} setSub={setSub} customSub={customSub} setCustomSub={setCustomSub} onNext={() => (sub || customSub) && next()} />}
         {step === 3 && <StepDescribe goal={goal} setGoal={setGoal} sub={sub || customSub} cat={cat} onNext={submitDescribe} />}
-        {step === 4 && <StepClarify goal={goal} sub={sub || customSub} signature={signature} clarify={clarify} setClarify={setClarify} thinking={thinking} onNext={submitClarify} />}
-        {step === 5 && <StepAssessment assessment={assessment} signature={signature} thinking={thinking} onNext={next} />}
-        {step === 6 && <StepPlan goal={goal} signature={signature} onAccept={acceptPlan} />}
+        {step === 4 && <StepClarify goal={goal} sub={sub || customSub} cat={cat} signature={signature} clarify={clarify} setClarify={setClarify} thinking={thinking} onNext={submitClarify} />}
+        {step === 5 && <StepAssessment assessment={assessment} signature={signature} thinking={thinking} onNext={submitAssessment} />}
+        {step === 6 && <StepPlan goal={goal} signature={signature} plan={plan} thinking={thinking} onAccept={acceptPlan} />}
       </div>
     </div>
   );
@@ -278,8 +318,18 @@ function ThinkingDots() {
   );
 }
 
-function StepClarify({ goal, sub, signature, clarify, setClarify, thinking, onNext }) {
-  const question = MOCK_CLARIFY(goal, sub);
+function StepClarify({ goal, sub, cat, signature, clarify, setClarify, thinking, onNext }) {
+  const [question, setQuestion] = useState(null);
+  const [loadingQ, setLoadingQ] = useState(true);
+
+  useEffect(() => {
+    callClaude(
+      'You are Clarity, a direct goal advisor. Ask ONE penetrating question that gets to the real reason this goal hasn\'t happened yet. Be specific, direct, and slightly uncomfortable. Return ONLY the question itself — no preamble, no label, just the question.',
+      `Category: ${cat?.label}. Focus: ${sub}. Goal: "${goal}".`
+    ).then(q => { setQuestion(q); setLoadingQ(false); })
+     .catch(() => { setQuestion(MOCK_CLARIFY(goal, sub)); setLoadingQ(false); });
+  }, []);
+
   const firstName = signature.trim().split(' ')[0] || 'friend';
   return (
     <div className="fade-up">
@@ -287,9 +337,11 @@ function StepClarify({ goal, sub, signature, clarify, setClarify, thinking, onNe
 
       <div className="card-ink" style={{ padding: '32px 36px', borderRadius: 'var(--r-md)', marginBottom: 24, color: 'var(--paper)' }}>
         <div className="eyebrow gold" style={{ marginBottom: 14 }}>{firstName}, one question first</div>
-        <p style={{ fontFamily: 'var(--serif)', fontSize: 'clamp(22px, 3vw, 30px)', lineHeight: 1.35, margin: 0, color: 'var(--paper)', letterSpacing: '-0.005em' }}>
-          {question}
-        </p>
+        {loadingQ ? <ThinkingDots /> : (
+          <p style={{ fontFamily: 'var(--serif)', fontSize: 'clamp(22px, 3vw, 30px)', lineHeight: 1.35, margin: 0, color: 'var(--paper)', letterSpacing: '-0.005em' }}>
+            {question}
+          </p>
+        )}
       </div>
 
       <textarea
@@ -303,7 +355,7 @@ function StepClarify({ goal, sub, signature, clarify, setClarify, thinking, onNe
       {thinking ? <ThinkingDots /> : (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 20 }}>
           <div className="mono" style={{ color: 'var(--ink-3)' }}>This stays between you and Clarity.</div>
-          <button className="btn btn-primary" onClick={onNext} disabled={clarify.trim().length < 10}>
+          <button className="btn btn-primary" onClick={onNext} disabled={clarify.trim().length < 10 || loadingQ}>
             Get the read —
           </button>
         </div>
@@ -359,9 +411,10 @@ function StepAssessment({ assessment, signature, thinking, onNext }) {
   );
 }
 
-function StepPlan({ goal, signature, onAccept }) {
+function StepPlan({ goal, signature, plan, thinking, onAccept }) {
   const [openWeek, setOpenWeek] = useState(0);
   const firstName = signature.trim().split(' ')[0] || 'you';
+  if (thinking || !plan) return <ThinkingDots />;
   return (
     <div className="fade-up">
       <div className="eyebrow primary" style={{ marginBottom: 16 }}>{firstName}'s 30-day plan</div>
@@ -374,7 +427,7 @@ function StepPlan({ goal, signature, onAccept }) {
       </p>
 
       <div style={{ borderTop: '0.5px solid var(--rule-2)' }}>
-        {MOCK_PLAN.map((w, i) => {
+        {plan.map((w, i) => {
           const open = openWeek === i;
           return (
             <div key={i} style={{ borderBottom: '0.5px solid var(--rule)' }}>
