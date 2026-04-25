@@ -30,22 +30,37 @@ function App() {
   const [completed, setCompleted] = useState([]);
   const [activeGoalId, setActiveGoalId] = useState(null);
   const [sessionLoading, setSessionLoading] = useState(true);
+  const loggedInRef = useRef(false);
 
-  /* Restore session on load */
+  /* Restore session on load + handle OAuth redirect callbacks */
   useEffect(() => {
-    async function checkSession() {
+    let authSub;
+    async function init() {
       try {
         const sb = await getSB();
+
+        // Subscribe before getSession so OAuth redirects are caught reliably
+        const { data: { subscription } } = sb.auth.onAuthStateChange(async (event, session) => {
+          if (event === 'SIGNED_IN' && session?.user && !loggedInRef.current) {
+            loggedInRef.current = true;
+            await loginUser(session.user);
+            setSessionLoading(false);
+          }
+        });
+        authSub = subscription;
+
         const { data: { session } } = await sb.auth.getSession();
-        if (session?.user) {
+        if (session?.user && !loggedInRef.current) {
+          loggedInRef.current = true;
           await loginUser(session.user);
         }
       } catch (e) {
-        console.error('Session restore failed:', e);
+        console.error('Auth init failed:', e);
       }
       setSessionLoading(false);
     }
-    checkSession();
+    init();
+    return () => authSub?.unsubscribe();
   }, []);
 
   async function loginUser(sbUser) {

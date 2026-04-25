@@ -134,6 +134,23 @@ function AuthModal({ mode, onClose, onSubmit }) {
   const [error, setError] = useState('');
   const isSignup = mode === 'signup';
 
+  async function oauthSignIn(provider) {
+    setLoading(true);
+    setError('');
+    try {
+      const sb = await getSB();
+      const { error: oauthErr } = await sb.auth.signInWithOAuth({
+        provider,
+        options: { redirectTo: window.location.origin }
+      });
+      if (oauthErr) throw oauthErr;
+      // browser redirects away — no further action
+    } catch (err) {
+      setError(err.message);
+      setLoading(false);
+    }
+  }
+
   async function submit(e) {
     e.preventDefault();
     setLoading(true);
@@ -156,6 +173,7 @@ function AuthModal({ mode, onClose, onSubmit }) {
       setLoading(false);
     }
   }
+
   return (
     <div
       onClick={onClose}
@@ -170,7 +188,7 @@ function AuthModal({ mode, onClose, onSubmit }) {
         className="card"
         style={{
           width: 460, maxWidth: '100%', padding: '40px 36px',
-          animation: 'fadeUp 350ms var(--ease)'
+          animation: 'fadeUp 350ms var(--ease)', maxHeight: '90vh', overflowY: 'auto'
         }}
       >
         <div className="eyebrow primary" style={{ marginBottom: 14 }}>
@@ -184,6 +202,44 @@ function AuthModal({ mode, onClose, onSubmit }) {
             ? "We'll hold the structure. You'll do the showing up."
             : "Your goals are still waiting."}
         </p>
+
+        {/* OAuth buttons */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={() => oauthSignIn('google')}
+            disabled={loading}
+            style={{ justifyContent: 'center', gap: 12 }}
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908C16.658 14.013 17.64 11.705 17.64 9.2z" fill="#4285F4"/>
+              <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/>
+              <path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+              <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+            </svg>
+            Continue with Google
+          </button>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={() => oauthSignIn('apple')}
+            disabled={loading}
+            style={{ justifyContent: 'center', gap: 12 }}
+          >
+            <svg width="15" height="18" viewBox="0 0 15 18" fill="currentColor">
+              <path d="M14.18 12.57c-.28.65-.62 1.25-1.01 1.79-.53.76-0.97 1.28-1.3 1.57-.52.48-1.08.72-1.68.73-.43 0-.95-.12-1.55-.37-.6-.25-1.15-.37-1.65-.37-.53 0-1.09.12-1.69.37-.6.25-1.09.38-1.47.39-.58.02-1.15-.23-1.7-.74-.36-.31-.82-.85-1.36-1.62C.17 13.53-.28 12.38-.28 11.18c0-1.12.24-2.08.73-2.88.38-.64.9-1.15 1.56-1.53.65-.38 1.36-.57 2.12-.58.42 0 .97.13 1.65.39.68.26 1.12.39 1.31.39.14 0 .62-.15 1.42-.46.76-.29 1.4-.41 1.93-.37 1.43.12 2.5.68 3.21 1.71-1.28.77-1.91 1.86-1.9 3.25.01 1.08.4 1.98 1.17 2.69.35.33.74.59 1.17.77l-.43 1.01zM10.8.36c0 .85-.31 1.64-.93 2.37-.74.87-1.64 1.37-2.62 1.29-.01-.1-.02-.21-.02-.32 0-.81.35-1.68.98-2.39.31-.36.71-.66 1.2-.9.48-.23.94-.36 1.37-.39.01.11.02.23.02.34z"/>
+            </svg>
+            Continue with Apple
+          </button>
+        </div>
+
+        {/* Divider */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 24 }}>
+          <div style={{ flex: 1, borderTop: '0.5px solid var(--rule)' }} />
+          <span className="mono" style={{ color: 'var(--ink-4)', fontSize: 10 }}>OR</span>
+          <div style={{ flex: 1, borderTop: '0.5px solid var(--rule)' }} />
+        </div>
 
         <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {isSignup && (
