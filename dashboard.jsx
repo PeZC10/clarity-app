@@ -64,6 +64,7 @@ function CalendarGrid({ day, total = 30, accent = 'var(--primary)' }) {
 }
 
 function Dashboard({ user, goals, completed, onOpenGoal, onNewGoal, onJournal }) {
+  const isMobile = useIsMobile();
   const totalActive = goals.length;
   const totalDone = completed.length;
   const today = new Date();
@@ -113,9 +114,9 @@ function Dashboard({ user, goals, completed, onOpenGoal, onNewGoal, onJournal })
             <div style={{
               border: '0.5px solid var(--ink)',
               borderRadius: 'var(--r-md)',
-              padding: '40px 44px',
+              padding: isMobile ? '24px 20px' : '40px 44px',
               background: 'var(--paper)',
-              display: 'grid', gridTemplateColumns: '1fr auto', gap: 40, alignItems: 'center'
+              display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: isMobile ? 20 : 40, alignItems: isMobile ? 'flex-start' : 'center'
             }}>
               <div>
                 <div className="eyebrow primary" style={{ marginBottom: 14 }}>Today's one thing</div>
@@ -193,12 +194,12 @@ function Dashboard({ user, goals, completed, onOpenGoal, onNewGoal, onJournal })
             <div style={{ borderTop: '0.5px solid var(--rule)' }}>
               {completed.map(c => (
                 <div key={c.id} style={{
-                  display: 'grid', gridTemplateColumns: '60px 1fr auto auto', gap: 24,
-                  alignItems: 'center', padding: '20px 0', borderBottom: '0.5px solid var(--rule)'
+                  display: 'grid', gridTemplateColumns: isMobile ? '1fr auto' : '60px 1fr auto auto', gap: isMobile ? 12 : 24,
+                  alignItems: 'center', padding: '16px 0', borderBottom: '0.5px solid var(--rule)'
                 }}>
-                  <div className="mono" style={{ color: 'var(--ok)' }}>DONE</div>
-                  <div style={{ fontFamily: 'var(--serif)', fontSize: 19, color: 'var(--ink)' }}>{c.title}</div>
-                  <div className="mono" style={{ color: 'var(--ink-3)' }}>{c.category}</div>
+                  {!isMobile && <div className="mono" style={{ color: 'var(--ok)' }}>DONE</div>}
+                  <div style={{ fontFamily: 'var(--serif)', fontSize: isMobile ? 16 : 19, color: 'var(--ink)' }}>{c.title}</div>
+                  {!isMobile && <div className="mono" style={{ color: 'var(--ink-3)' }}>{c.category}</div>}
                   <div className="mono" style={{ color: 'var(--ink-3)', opacity: 0.75 }}>{c.date}</div>
                 </div>
               ))}
@@ -212,6 +213,7 @@ function Dashboard({ user, goals, completed, onOpenGoal, onNewGoal, onJournal })
 
 /* GOAL CARD — calendar grid + identity, no % bar */
 function GoalCard({ goal, onClick }) {
+  const isMobile = useIsMobile();
   const { day, total } = dayNumberFromGoal(goal);
   const remaining = total - day + 1;
   return (
@@ -219,9 +221,9 @@ function GoalCard({ goal, onClick }) {
       onClick={onClick}
       style={{
         textAlign: 'left', background: 'transparent', border: '0.5px solid var(--rule-2)',
-        borderRadius: 'var(--r-md)', padding: '28px 32px', cursor: 'pointer',
+        borderRadius: 'var(--r-md)', padding: isMobile ? '20px 18px' : '28px 32px', cursor: 'pointer',
         transition: 'all 200ms var(--ease)', fontFamily: 'var(--sans)',
-        display: 'grid', gridTemplateColumns: '1fr 360px', gap: 36, alignItems: 'center'
+        display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 360px', gap: isMobile ? 16 : 36, alignItems: 'center'
       }}
       onMouseEnter={e => { e.currentTarget.style.background = 'var(--paper-2)'; e.currentTarget.style.borderColor = 'var(--ink)'; }}
       onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'var(--rule-2)'; }}
@@ -249,13 +251,13 @@ function GoalCard({ goal, onClick }) {
           {goal.phase}
         </div>
       </div>
-      <div>
+      {!isMobile && <div>
         <CalendarGrid day={day} total={total} />
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10 }}>
           <span className="mono" style={{ color: 'var(--ink-3)' }}>D 01</span>
           <span className="mono" style={{ color: 'var(--ink-3)' }}>D {String(total).padStart(2, '0')}</span>
         </div>
-      </div>
+      </div>}
     </button>
   );
 }
@@ -272,6 +274,7 @@ function EmptyState({ title, sub, action, onAction }) {
 
 /* Goal detail with checklist + roadmap */
 function GoalDetail({ goal, onBack, onUpdate, onComplete }) {
+  const isMobile = useIsMobile();
   const [weeks, setWeeks] = useState(goal.weeks);
   const allItems = weeks.flatMap(w => w.items);
   const doneCount = allItems.filter(i => i.done).length;
@@ -296,7 +299,7 @@ function GoalDetail({ goal, onBack, onUpdate, onComplete }) {
         <div className="container">
           <button className="btn-link" onClick={onBack} style={{ fontSize: 12, marginBottom: 28 }}>← Back to dashboard</button>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 280px', gap: 60, alignItems: 'end' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'minmax(0, 1fr) 280px', gap: isMobile ? 24 : 60, alignItems: 'end' }}>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16 }}>
                 <span style={{ fontFamily: 'var(--serif)', fontSize: 32, color: 'var(--primary)' }}>{goal.icon}</span>
@@ -307,7 +310,7 @@ function GoalDetail({ goal, onBack, onUpdate, onComplete }) {
               </h1>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'flex-end' }}>
+            <div style={{ display: 'flex', flexDirection: isMobile ? 'row' : 'column', gap: 16, alignItems: isMobile ? 'center' : 'flex-end' }}>
               <ProgressRing pct={pct} size={140} />
               <div style={{ textAlign: 'right' }}>
                 <div className="mono" style={{ color: 'var(--ink-3)' }}>{goal.days || `${doneCount} of ${allItems.length} done`}</div>
@@ -466,6 +469,7 @@ function Roadmap({ weeks, currentIdx }) {
 
 /* Journal */
 function Journal({ goals, completed, onOpenGoal, onBack }) {
+  const isMobile = useIsMobile();
   const all = [
     ...goals.map(g => ({ ...g, status: 'active' })),
     ...completed.map(c => ({ ...c, status: 'done' }))
@@ -494,8 +498,8 @@ function Journal({ goals, completed, onOpenGoal, onBack }) {
                 onClick={() => item.status === 'active' && onOpenGoal(item.id)}
                 style={{
                   width: '100%', display: 'grid',
-                  gridTemplateColumns: '90px 1fr 200px 100px 80px',
-                  gap: 24, padding: '28px 0', alignItems: 'center',
+                  gridTemplateColumns: isMobile ? '1fr auto' : '90px 1fr 200px 100px 80px',
+                  gap: isMobile ? 12 : 24, padding: isMobile ? '18px 0' : '28px 0', alignItems: 'center',
                   borderBottom: '0.5px solid var(--rule)', textAlign: 'left',
                   background: 'none', border: 0, borderBottom: '0.5px solid var(--rule)',
                   cursor: item.status === 'active' ? 'pointer' : 'default',
@@ -504,19 +508,21 @@ function Journal({ goals, completed, onOpenGoal, onBack }) {
                 onMouseEnter={e => { if (item.status === 'active') e.currentTarget.style.background = 'var(--paper-2)'; }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
               >
-                <div className="mono" style={{ color: item.status === 'done' ? 'var(--ok)' : 'var(--primary)' }}>
+                {!isMobile && <div className="mono" style={{ color: item.status === 'done' ? 'var(--ok)' : 'var(--primary)' }}>
                   {item.status === 'done' ? 'DONE' : 'IN MOTION'}
+                </div>}
+                <div>
+                  {isMobile && <div className="mono" style={{ color: item.status === 'done' ? 'var(--ok)' : 'var(--primary)', marginBottom: 4, fontSize: 10 }}>{item.status === 'done' ? 'DONE' : 'IN MOTION'}</div>}
+                  <div style={{ fontFamily: 'var(--serif)', fontSize: isMobile ? 18 : 22, color: 'var(--ink)', letterSpacing: '-0.005em' }}>{item.title}</div>
+                  {isMobile && <div className="mono" style={{ color: 'var(--ink-3)', marginTop: 4 }}>{item.category}</div>}
                 </div>
-                <div style={{ fontFamily: 'var(--serif)', fontSize: 22, color: 'var(--ink)', letterSpacing: '-0.005em' }}>
-                  {item.title}
-                </div>
-                <div className="mono" style={{ color: 'var(--ink-3)' }}>{item.category}</div>
-                <div style={{ fontSize: 13, color: 'var(--ink-3)', textAlign: 'right' }}>
+                {!isMobile && <div className="mono" style={{ color: 'var(--ink-3)' }}>{item.category}</div>}
+                {!isMobile && <div style={{ fontSize: 13, color: 'var(--ink-3)', textAlign: 'right' }}>
                   {item.status === 'done' ? item.date : item.days}
-                </div>
+                </div>}
                 <div style={{ textAlign: 'right' }}>
                   {item.status === 'active' ? (
-                    <span style={{ fontFamily: 'var(--serif)', fontSize: 24, color: 'var(--primary)' }}>{item.pct}<span style={{ fontSize: 13, color: 'var(--ink-3)' }}>%</span></span>
+                    <span style={{ fontFamily: 'var(--serif)', fontSize: isMobile ? 18 : 24, color: 'var(--primary)' }}>{item.pct}<span style={{ fontSize: 13, color: 'var(--ink-3)' }}>%</span></span>
                   ) : (
                     <span className="mono" style={{ color: 'var(--ok)' }}>✓</span>
                   )}

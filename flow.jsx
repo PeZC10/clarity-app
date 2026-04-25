@@ -392,6 +392,7 @@ function StepClarify({ goal, sub, cat, signature, clarify, setClarify, thinking,
 }
 
 function StepAssessment({ assessment, signature, thinking, onNext }) {
+  const isMobile = useIsMobile();
   if (thinking || !assessment) return <ThinkingDots />;
   const firstName = signature.trim().split(' ')[0] || 'friend';
   return (
@@ -415,8 +416,8 @@ function StepAssessment({ assessment, signature, thinking, onNext }) {
             padding: '28px 0',
             borderBottom: '0.5px solid var(--rule)',
             display: 'grid',
-            gridTemplateColumns: '160px 1fr',
-            gap: 24
+            gridTemplateColumns: isMobile ? '1fr' : '160px 1fr',
+            gap: isMobile ? 8 : 24
           }}>
             <div className={`eyebrow ${s.accent ? 'primary' : ''}`}>{s.label}</div>
             <p style={{
